@@ -14,3 +14,19 @@
 Route::get('/', function () {
     return view('welcome');
 });
+
+
+Route::get('auth/signin',function(){
+	return 'login page';
+});
+
+Route::get('auth/signout',function(){
+	return 'logout page';
+});
+
+Route::get('auth/signup',function(){
+	return 'signup page';
+});
+Route::get('auth/signdrop',function(){
+	return 'signdrop page';
+});
