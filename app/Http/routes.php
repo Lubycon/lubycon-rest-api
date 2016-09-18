@@ -15,18 +15,36 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+//Route::resource('members', 'AuthController');
 
-Route::get('auth/signin',function(){
-	return 'login page';
+
+Route::post('members/signin',function(){
+
+    $data = Request::json()->all();
+
+    print_r($data);
+
+	$credentials = [
+        'email'    => $data['email'],
+        'password' => $data['password']
+    ];
+
+
+    if (! Auth::attempt($credentials)) {
+        return 'Incorrect username and password combination';
+    }
+
+    return 'signin user '.Auth::user()->name;
 });
 
-Route::get('auth/signout',function(){
-	return 'logout page';
+Route::get('members/signout',function(){
+	Auth::logout();
+
+    return 'sign out success';
 });
 
-Route::get('auth/signup',function(){
-	return 'signup page';
-});
-Route::get('auth/signdrop',function(){
+Route::post('members/signup', 'Auth\AuthController@postRegister');
+
+Route::get('members/signdrop',function(){
 	return 'signdrop page';
 });

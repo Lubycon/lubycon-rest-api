@@ -60,6 +60,12 @@ class AuthController extends Controller
             'name' => $data['name'],
             'email' => $data['email'],
             'password' => bcrypt($data['password']),
+            'remember_token' => makeRandomTokenKey(),
+            'sns_code' => $data['snsCode'],
+            'country' => $data['country'],
+            'is_active' => 'inactive',
+            'is_accept_terms' => $data['newletter'].'11',
+            'is_opened' => 0000
         ]);
     }
 }
