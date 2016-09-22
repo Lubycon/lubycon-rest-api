@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Auth;
 
-use Cors;
+use cors;
 use Auth;
 use Request;
 use App\User;
