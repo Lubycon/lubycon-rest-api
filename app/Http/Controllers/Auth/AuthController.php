@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers\Auth;
 
+use Auth;
+use Request;
 use App\User;
 use Validator;
 use App\Http\Controllers\Controller;
+use Illuminate\Http\Response;
 use Illuminate\Foundation\Auth\ThrottlesLogins;
 use Illuminate\Foundation\Auth\AuthenticatesAndRegistersUsers;
 
@@ -48,21 +51,46 @@ class AuthController extends Controller
         ]);
     }
 
+    protected function signin()
+    {
+        $data = Request::json()->all();
+        $credentials = [
+            'email'    => $data['email'],
+            'password' => $data['password']
+        ];
+
+        if (! Auth::attempt($credentials,true)) {
+            return 'Incorrect username and password combination';
+        }
+        return response()->json([
+            'X-lubycon-token' => Auth::user()->remember_token
+        ]);
+    }
+
+    protected function signout()
+    {
+        Auth::logout();
+        return response()->json([
+            'state' => 'signout'
+        ]);
+    }
+
     /**
      * Create a new user instance after a valid registration.
      *
      * @param  array  $data
      * @return User
      */
-    protected function create(array $data)
+    protected function signup()
     {
+        $data = Request::json()->all();
+
         return User::create([
             'name' => $data['name'],
             'email' => $data['email'],
             'password' => bcrypt($data['password']),
-            'remember_token' => makeRandomTokenKey(),
             'sns_code' => $data['snsCode'],
-            'country' => $data['country'],
+            'country_id' => $data['country'],
             'is_active' => 'inactive',
             'is_accept_terms' => $data['newletter'].'11',
             'is_opened' => 0000

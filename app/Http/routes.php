@@ -12,38 +12,12 @@
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return 'this is index route';
 });
 
-//Route::resource('members', 'AuthController');
-
-
-Route::post('members/signin',function(){
-
-    $data = Request::json()->all();
-
-    print_r($data);
-
-	$credentials = [
-        'email'    => $data['email'],
-        'password' => $data['password']
-    ];
-
-
-    if (! Auth::attempt($credentials)) {
-        return 'Incorrect username and password combination';
-    }
-
-    return 'signin user '.Auth::user()->name;
-});
-
-Route::get('members/signout',function(){
-	Auth::logout();
-
-    return 'sign out success';
-});
-
-Route::post('members/signup', 'Auth\AuthController@postRegister');
+Route::post('members/signin', 'Auth\AuthController@signin');
+Route::get('members/signout', 'Auth\AuthController@signout');
+Route::post('members/signup', 'Auth\AuthController@signup');
 
 Route::get('members/signdrop',function(){
 	return 'signdrop page';
