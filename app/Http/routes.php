@@ -22,3 +22,8 @@ Route::POST('members/signup', 'Auth\AuthController@signup');
 Route::GET('members/signdrop',function(){
 	return 'signdrop page';
 });
+
+Route::get('/clear-cache', function() {
+    $exitCode = Artisan::call('cache:clear');
+    // return what you want
+});
