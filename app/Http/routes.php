@@ -11,9 +11,9 @@
 |
 */
 
-Route::get('/', function () {
-    return 'this is index route';
-});
+//Route::get('/', function () {
+//    return 'this is index route';
+//});
 
 Route::post('members/signin', 'Auth\AuthController@signin');
 Route::put('members/signout', 'Auth\AuthController@signout');
