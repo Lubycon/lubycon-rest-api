@@ -15,10 +15,10 @@
 //    return 'this is index route';
 //});
 
-Route::post('members/signin', 'Auth\AuthController@signin');
-Route::put('members/signout', 'Auth\AuthController@signout');
-Route::post('members/signup', 'Auth\AuthController@signup');
+Route::POST('members/signin', 'Auth\AuthController@signin');
+Route::GET('members/signout', 'Auth\AuthController@signout');
+Route::POST('members/signup', 'Auth\AuthController@signup');
 
-Route::get('members/signdrop',function(){
+Route::GET('members/signdrop',function(){
 	return 'signdrop page';
 });
