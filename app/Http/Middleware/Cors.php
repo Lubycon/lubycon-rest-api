@@ -9,13 +9,29 @@ class Cors
     public function handle($request, Closure $next)
     {
         $headers = [
-            'Access-Control-Allow-Origin' =>' *',
+            'Access-Control-Allow-Origin' =>' http://aws.lubycon.com',
             'Access-Control-Allow-Methods'=>' POST, GET, OPTIONS, PUT, DELETE',
-            'Access-Control-Allow-Headers'=>' Content-Type, Accept, Authorization, X-Requested-With'
+            'Access-Control-Allow-Headers'=>' 
+                Content-Length, 
+                Content-Type, 
+                X-lubycon-token,
+                X-lubycon-version,
+                X-lubycon-country,
+                X-lubycon-language,
+                X-lubycon-device-os',
+            'Access-Control-Expose-Headers' =>' 
+                Content-Length, 
+                Content-Type, 
+                X-lubycon-token,
+                X-lubycon-version,
+                X-lubycon-country,
+                X-lubycon-language,
+                X-lubycon-device-os',
+            'Access-Control-Allow-Credentials' => true
         ];
 
         if($request->getMethod() == "OPTIONS") {
-            return \Response::make('OK', 200, $headers);
+            return Response::make('OK', 200, $headers);
         }
 
         $response = $next($request);
