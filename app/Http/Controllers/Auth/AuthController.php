@@ -88,13 +88,16 @@ class AuthController extends Controller
         $data = Request::json()->all();
 
         return User::create([
-            'name' => $data['name'],
+            'name' => $data['nickname'],
             'email' => $data['email'],
             'password' => bcrypt($data['password']),
-            'sns_code' => $data['snsCode'],
-            'country_id' => $data['country'],
+            'sns_code' => 0,
+            //'sns_code' => $data['snsCode'],
+            //'country_id' => $data['country'],
+            'country_id' => 'test',
             'is_active' => 'inactive',
-            'is_accept_terms' => $data['newletter'].'11',
+            'is_accept_terms' => '111',
+            //'is_accept_terms' => $data['newletter'].'11',
             'is_opened' => 0000
         ]);
     }
