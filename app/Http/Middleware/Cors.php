@@ -31,7 +31,7 @@ class Cors
         ];
 
         if($request->getMethod() == "OPTIONS") {
-            return Response::make('OK', 200, $headers);
+            return response()->withHeaders($headers);
         }
 
         $response = $next($request);
