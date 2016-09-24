@@ -11,15 +11,15 @@
 |
 */
 
-//Route::get('/', function () {
-//    return 'this is index route';
-//});
+Route::get('/', function () {
+    return 'this is index route';
+});
 
-Route::POST('members/signin', 'Auth\AuthController@signin');
-Route::GET('members/signout', 'Auth\AuthController@signout');
-Route::POST('members/signup', 'Auth\AuthController@signup');
+Route::post('members/signin', 'Auth\AuthController@signin');
+Route::get('members/signout', 'Auth\AuthController@signout');
+Route::post('members/signup', 'Auth\AuthController@signup');
 
-Route::GET('members/signdrop',function(){
+Route::get('members/signdrop',function(){
 	return 'signdrop page';
 });
 
