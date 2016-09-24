@@ -102,12 +102,12 @@
 
 namespace App\Http\Controllers\Auth;
 
-use Auth;
-use Request;
+//use Auth;
+//use Request;
 use App\User;
 use Validator;
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Response;
+//use Illuminate\Http\Response;
 use Illuminate\Foundation\Auth\ThrottlesLogins;
 use Illuminate\Foundation\Auth\AuthenticatesAndRegistersUsers;
 
