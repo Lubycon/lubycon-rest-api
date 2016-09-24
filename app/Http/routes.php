@@ -1,9 +1,5 @@
 <?php
 
-Route::get('/', function () {
-    return 'this is index route';
-});
-
 Route::post('members/signin', 'Auth\AuthController@signin');
 Route::get('members/signout', 'Auth\AuthController@signout');
 Route::post('members/signup', 'Auth\AuthController@signup');
