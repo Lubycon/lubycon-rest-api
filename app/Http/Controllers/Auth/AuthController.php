@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Auth;
 
-use Auth;;
+use Auth;
 use Request;
 use App\User;
 use Validator;
@@ -36,6 +36,7 @@ class AuthController extends Controller
     public function __construct()
     {
         $this->middleware('guest', ['except' => 'getLogout']);
+        $this->middleware('cors');
     }
 
     /**
