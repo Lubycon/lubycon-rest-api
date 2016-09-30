@@ -3,14 +3,12 @@
 namespace App\Http\Controllers\Auth;
 
 use Auth;
-use Request;
 use App\User;
 use Validator;
+use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\ThrottlesLogins;
 use Illuminate\Foundation\Auth\AuthenticatesAndRegistersUsers;
-//use Barryvdh\Cors\HandleCors;
-
 
 
 class AuthController extends Controller
@@ -69,7 +67,7 @@ class AuthController extends Controller
         ]);
     }
 
-    protected function signout()
+    protected function signout(Request $request)
     {
         Auth::logout();
         return response()->json([
