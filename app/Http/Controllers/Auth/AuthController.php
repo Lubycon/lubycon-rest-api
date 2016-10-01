@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Auth;
 
+use DB;
 use Auth;
 use App\User;
 use Validator;
@@ -53,28 +54,38 @@ class AuthController extends Controller
         ];
         return Validator::make($data, $rules);
     }
-    protected function signin()
+    protected function signin(Request $request)
     {
-        $data = Request::json()->all();
+        $data = $request->json()->all();
         $credentials = [
             'email'    => $data['email'],
             'password' => $data['password']
         ];
 
         if (! Auth::attempt($credentials,true)) {
-            return 'Incorrect username and password combination';
+            return response()->json([
+                'status' => (object)array(
+                    'code' => '0010',
+                    'msg' => "signout fail",
+                    "devMsg" => 'unmatched email and password'
+                )
+            ]);
         }
+
         return response()->json([
-            'X-lubycon-token' => Auth::user()->remember_token
-        ]);
+                'status' => (object)array(
+                    'code' => '0000',
+                    'msg' => "signin success",
+                    "devMsg" => ''
+                )
+            ])
+            ->header('X-lubycon-token', Auth::user()->remember_token);
+
     }
 
-    protected function signout(Request $request)
+    protected function signout()
     {
         Auth::logout();
-        return response()->json([
-            'state' => 'signout'
-        ]);
     }
 
     /**
@@ -124,4 +135,12 @@ class AuthController extends Controller
             ]);
         }
     }
+
+    protected function signdrop($id,$reasonCode,$reason)
+    {
+        $dropUser = DB::table('users')
+            ->where('id', $id)
+            ->update(['is_active' => 'drop']);
+    }
 }
+
