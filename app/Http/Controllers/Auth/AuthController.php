@@ -45,11 +45,13 @@ class AuthController extends Controller
      */
     protected function validator(array $data)
     {
-        return Validator::make($data, [
+        $rules = [
             'name' => 'required|max:255',
             'email' => 'required|email|max:255|unique:users',
-            'password' => 'required|confirmed|min:6',
-        ]);
+            'password' => 'required|min:6',
+            //'password' => 'required|confirmed|min:6',
+        ];
+        return Validator::make($data, $rules);
     }
     protected function signin()
     {
@@ -81,11 +83,10 @@ class AuthController extends Controller
      * @param  array  $data
      * @return User
      */
-    protected function signup()
+    protected function signup(Request $request)
     {
-        $data = Request::json()->all();
-
-        return User::create([
+        $data = $request->json()->all();
+        $createData = [
             'name' => $data['nickname'],
             'email' => $data['email'],
             'password' => bcrypt($data['password']),
@@ -97,6 +98,30 @@ class AuthController extends Controller
             'is_accept_terms' => '111',
             //'is_accept_terms' => $data['newletter'].'11',
             'is_opened' => 0000
-        ]);
+        ];
+
+        $validator = $this->validator($createData);
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => (object)array(
+                    'code' => '0030',
+                    'msg' => "wrong datas",
+                    "devMsg" => $validator->errors()
+                )
+            ]);
+        };
+
+        if(User::create($createData)){
+            return response()->json([
+                'status' => (object)array(
+                    'code' => '0000',
+                    'msg' => "account success",
+                    "devMsg" => ''
+                ),
+                'result' => (object)array(
+                    "email" => $data['nickname']
+                )
+            ]);
+        }
     }
 }
