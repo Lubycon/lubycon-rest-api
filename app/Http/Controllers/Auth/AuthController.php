@@ -77,15 +77,24 @@ class AuthController extends Controller
                     'code' => '0000',
                     'msg' => "signin success",
                     "devMsg" => ''
+                ),
+                'result' => (object)array(
+                    'X-lubycon-token', Auth::user()->remember_token
                 )
-            ])
-            ->header('X-lubycon-token', Auth::user()->remember_token);
-
+            ]);
     }
 
     protected function signout()
     {
-        Auth::logout();
+        if(Auth::logout()){
+            return response()->json([
+                'status' => (object)array(
+                    'code' => '0000',
+                    'msg' => "signout success",
+                    "devMsg" => ''
+                )
+            ]);
+        };
     }
 
     /**
