@@ -68,7 +68,8 @@ class AuthController extends Controller
                     'code' => '0010',
                     'msg' => "signin fail, unmatched email and password",
                     "devMsg" => 'unmatched email and password'
-                )
+                ),
+                'result' => null
             ]);
         }
 
@@ -78,7 +79,8 @@ class AuthController extends Controller
                     'code' => '0010',
                     'msg' => "signin fail please check your mail",
                     "devMsg" => 'inactive user'
-                )
+                ),
+                'result' => null
             ]);
         }
 
@@ -147,6 +149,18 @@ class AuthController extends Controller
                 'password' => $data['password']
             ];
             Auth::attempt($credentials,true);
+
+            $to = 'YOUR@EMAIL.ADDRESS';
+            $subject = 'Studying sending email in Laravel';
+            $data = [
+                'title' => 'Hi there',
+                'body'  => 'This is the body of an email message',
+                'user'  => App\User::find(1)
+            ];
+
+            Mail::send('emails.signup', $data, function($message) use($to, $subject) {
+                $message->to($to)->subject($subject);
+            });
 
             return response()->json([
                 'status' => (object)array(
