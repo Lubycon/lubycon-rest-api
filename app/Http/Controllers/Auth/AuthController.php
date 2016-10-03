@@ -66,8 +66,18 @@ class AuthController extends Controller
             return response()->json([
                 'status' => (object)array(
                     'code' => '0010',
-                    'msg' => "signout fail",
+                    'msg' => "signin fail, unmatched email and password",
                     "devMsg" => 'unmatched email and password'
+                )
+            ]);
+        }
+
+        if (Auth::user()->is_active == 'inactive') {
+            return response()->json([
+                'status' => (object)array(
+                    'code' => '0010',
+                    'msg' => "signin fail please check your mail",
+                    "devMsg" => 'inactive user'
                 )
             ]);
         }
@@ -79,7 +89,7 @@ class AuthController extends Controller
                     "devMsg" => ''
                 ),
                 'result' => (object)array(
-                    'X-lubycon-token', Auth::user()->remember_token
+                    'X-lubycon-token' => Auth::user()->remember_token
                 )
             ]);
     }
@@ -132,6 +142,12 @@ class AuthController extends Controller
         };
 
         if(User::create($createData)){
+            $credentials = [
+                'email'    => $data['email'],
+                'password' => $data['password']
+            ];
+            Auth::attempt($credentials,true);
+
             return response()->json([
                 'status' => (object)array(
                     'code' => '0000',
