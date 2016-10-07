@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Auth;
 
+use Mail;
 use DB;
 use Auth;
 use App\User;
@@ -150,12 +151,10 @@ class AuthController extends Controller
             ];
             Auth::attempt($credentials,true);
 
-            $to = 'YOUR@EMAIL.ADDRESS';
-            $subject = 'Studying sending email in Laravel';
+            $to = $data['email'];
+            $subject = 'account success to Lubycon!';
             $data = [
-                'title' => 'Hi there',
-                'body'  => 'This is the body of an email message',
-                'user'  => App\User::find(1)
+                'user'  => Auth::user()
             ];
 
             Mail::send('emails.signup', $data, function($message) use($to, $subject) {
@@ -169,7 +168,7 @@ class AuthController extends Controller
                     "devMsg" => ''
                 ),
                 'result' => (object)array(
-                    "email" => $data['nickname']
+                    "email" => Auth::user()->email
                 )
             ]);
         }
@@ -180,6 +179,141 @@ class AuthController extends Controller
         $dropUser = DB::table('users')
             ->where('id', $id)
             ->update(['is_active' => 'drop']);
+    }
+    protected function getRetrieve($user_code)
+    {
+        $findUser = User::find($user_code);
+        if($findUser){
+            return response()->json([
+                'status' => (object)array(
+                    'code' => '0000',
+                    'msg' => "retrieve success",
+                    "devMsg" => ''
+                ),
+                'result' => (object)array(
+                    'userData' => (object)array(
+                        "id" => $findUser->id,
+                        "email" => $findUser->email,
+                        "name" => $findUser->name,
+                        "profile" => $findUser->profile,
+                        "job" => $findUser->job,
+                        "country" => $findUser->country,
+                        "city" => $findUser->city,
+                        "mobile" => $findUser->mobile,
+                        "fax" => $findUser->fax,
+                        "website" => $findUser->website,
+                        "position" => $findUser->position,
+                        "description" => $findUser->description
+                    ),
+                    "language" => (object)array(
+                        "name" => null,
+                        "level" => null
+                    ),
+                    "history" => (object)array(
+                        "year" => null,
+                        "month" => null,
+                        "category" => null,
+                        "content" => null
+                    ),
+                    "publicOption" => (object)array(
+                        "mobile" => null,
+                        "fax" => null,
+                        "website" => null
+                    )
+                )
+            ]);
+        }else{
+            return response()->json([
+                'status' => (object)array(
+                    'code' => '0030',
+                    'msg' => "dose not exist user",
+                    "devMsg" => "user number " . $user_code . " dose not exist"
+                )
+            ]);
+        }
+    }
+    protected function postRetrieve(Request $request , $user_code)
+    {
+        $data = $request->json()->all();
+        $findUser = User::find($user_code);
+        if($findUser){
+            return response()->json([
+                'status' => (object)array(
+                    'code' => '0000',
+                    'msg' => "retrieve success",
+                    "devMsg" => ''
+                ),
+                'result' => (object)array(
+                    'userData' => (object)array(
+                        $findUser->id = $data->id,
+                        $findUser->email = $data->email,
+                        $findUser->name = $data->name,
+                        $findUser->profile = $data->profile,
+                        $findUser->job = $data->job,
+                        $findUser->country = $data->country,
+                        $findUser->city = $data->city,
+                        $findUser->mobile = $data->mobile,
+                        $findUser->fax = $data->fax,
+                        $findUser->website = $data->website,
+                        $findUser->position = $data->position,
+                        $findUser->description = $data->description
+                    ),
+                    "language" => (object)array(
+                        "name" => null,
+                        "level" => null
+                    ),
+                    "history" => (object)array(
+                        "year" => null,
+                        "month" => null,
+                        "category" => null,
+                        "content" => null
+                    ),
+                    "publicOption" => (object)array(
+                        "mobile" => null,
+                        "fax" => null,
+                        "website" => null
+                    )
+                )
+            ]);
+        }else{
+            return response()->json([
+                'status' => (object)array(
+                    'code' => '0030',
+                    'msg' => "dose not exist user",
+                    "devMsg" => "user number " . $user_code . " dose not exist"
+                )
+            ]);
+        }
+    }
+    protected function checkMemberExist(Request $request)
+    {
+        $data = $request->json()->all();
+        $user = User::whereRaw("email = '".$data['email']."' and sns_code = ".$data['snsCode'])->get();
+
+        if(!$user->isempty()){
+            return response()->json([
+                'status' => (object)array(
+                    'code' => '0000',
+                    'msg' => "member exist",
+                    "devMsg" => ''
+                ),
+                'result' => (object)array(
+                    "exist" => true
+                )
+            ]);
+        }else{
+            return response()->json([
+                'status' => (object)array(
+                    'code' => '0000',
+                    'msg' => "member dose not exist",
+                    "devMsg" => ''
+                ),
+                'result' => (object)array(
+                    "exist" => false
+                )
+            ]);
+        }
+
     }
 }
 
