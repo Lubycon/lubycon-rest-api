@@ -8,6 +8,7 @@ use Auth;
 use App\User;
 use Validator;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\ThrottlesLogins;
 use Illuminate\Foundation\Auth\AuthenticatesAndRegistersUsers;
@@ -63,7 +64,7 @@ class AuthController extends Controller
             'password' => $data['password']
         ];
 
-        if (! Auth::attempt($credentials,true)) {
+        if (! Auth::once($credentials)) {
             return response()->json([
                 'status' => (object)array(
                     'code' => '0010',
@@ -85,6 +86,8 @@ class AuthController extends Controller
             ]);
         }
 
+        $this->makeToken();
+        //return response()->success($data);
         return response()->json([
                 'status' => (object)array(
                     'code' => '0000',
@@ -92,22 +95,22 @@ class AuthController extends Controller
                     "devMsg" => ''
                 ),
                 'result' => (object)array(
-                    'X-lubycon-token' => Auth::user()->remember_token
+                    'token' => Auth::user()->remember_token
                 )
             ]);
     }
 
+    protected function makeToken(){
+        $userId = Auth::user()->getAuthIdentifier();
+        $device = 'w';
+        $randomStr = Str::random(30);
+        $token = $device.$randomStr.$userId; //need change first src from header device kind
+        Auth::user()->setRememberToken($token);
+    }
+
     protected function signout()
     {
-        if(Auth::logout()){
-            return response()->json([
-                'status' => (object)array(
-                    'code' => '0000',
-                    'msg' => "signout success",
-                    "devMsg" => ''
-                )
-            ]);
-        };
+        // need somthing other logic
     }
 
     /**
@@ -174,12 +177,98 @@ class AuthController extends Controller
         }
     }
 
-    protected function signdrop($id,$reasonCode,$reason)
+    protected function signdrop(Request $request,$reasonCode,$reason)
     {
-        $dropUser = DB::table('users')
-            ->where('id', $id)
-            ->update(['is_active' => 'drop']);
+        $tokenData = $this->checkToken($request);
+
+        $user = User::find($tokenData->id);
+        $userExist = $this->checkUserExistById($tokenData->id);
+
+        if($userExist){
+            $user->delete();
+            return response()->json([
+                'status' => (object)array(
+                    'code' => '0000',
+                    'msg' => "member drop success",
+                    "devMsg" => ''
+                ),
+                'result' =>null
+            ]);
+        }else{
+            return response()->json([
+                'status' => (object)array(
+                    'code' => '0030',
+                    'msg' => "dose not exist user",
+                    "devMsg" => ''
+                ),
+                'result' =>null
+            ]);
+        };
     }
+
+    protected function signrestore($id){
+        $user = User::onlyTrashed()->find($id);
+        $userExist = $this->checkUserExistByIdOnlyTrashed($id);
+
+        if($userExist){
+            $user->restore();
+            return response()->json([
+                'status' => (object)array(
+                    'code' => '0000',
+                    'msg' => "member restore success",
+                    "devMsg" => ''
+                ),
+                'result' =>null
+            ]);
+        }else{
+            return response()->json([
+                'status' => (object)array(
+                    'code' => '0030',
+                    'msg' => "dose not exist user",
+                    "devMsg" => ''
+                ),
+                'result' =>null
+            ]);
+        };
+    }
+
+    protected function simpleRetrieve(Request $request){
+        $tokenData = $this->checkToken($request);
+
+        $findUser = User::find($tokenData->id);
+        $userExist = $this->checkUserExistById($tokenData->id);
+
+        if($userExist){
+            return response()->json([
+                'status' => (object)array(
+                    'code' => '0000',
+                    'msg' => "retrieve success",
+                    "devMsg" => ''
+                ),
+                'result' => (object)array(
+                    "id" => $findUser->id,
+                    "email" => $findUser->email,
+                    "name" => $findUser->name,
+                    "profile" => $findUser->profile,
+                    "job" => $findUser->job,
+                    "country" => $findUser->country,
+                    "city" => $findUser->city,
+                    "position" => $findUser->position,
+                    "description" => $findUser->description
+                )
+            ]);
+        }else{
+            return response()->json([
+                'status' => (object)array(
+                    'code' => '0030',
+                    'msg' => "dose not exist user",
+                    "devMsg" => ''
+                ),
+                'result' => null
+            ]);
+        }
+    }
+
     protected function getRetrieve($user_code)
     {
         $findUser = User::find($user_code);
@@ -313,7 +402,32 @@ class AuthController extends Controller
                 )
             ]);
         }
+    }
 
+    public function checkToken($request){
+        $token = $request->header('X-lubycon-token');
+        $tokenData = (object)array(
+            "device" => substr($token, 0, 1),
+            "token" => substr($token, 1, 30),
+            "id" => substr($token, 31),
+        );
+        return $tokenData;
+    }
+
+    public function checkUserExistById($id){
+        $user=User::find($id);
+        if (!is_null($user)) {
+            return true;
+        }
+        return false;
+    }
+
+    public function checkUserExistByIdOnlyTrashed($id){
+        $user=User::onlyTrashed()->find($id);
+        if (!is_null($user)) {
+            return true;
+        }
+        return false;
     }
 }
 
