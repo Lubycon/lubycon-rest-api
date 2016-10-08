@@ -78,7 +78,7 @@ class AuthController extends Controller
         if (Auth::user()->is_active == 'inactive') {
             return response()->json([
                 'status' => (object)array(
-                    'code' => '0010',
+                    'code' => '0014',
                     'msg' => "signin fail please check your mail",
                     "devMsg" => 'inactive user'
                 ),
