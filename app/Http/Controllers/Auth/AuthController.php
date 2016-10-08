@@ -65,39 +65,27 @@ class AuthController extends Controller
         ];
 
         if (! Auth::once($credentials)) {
-            return response()->json([
-                'status' => (object)array(
-                    'code' => '0010',
-                    'msg' => "signin fail, unmatched email and password",
-                    "devMsg" => 'unmatched email and password'
-                ),
-                'result' => null
-            ]);
+            $status = (object)array(
+                'code' => '0010'
+            );
+            return response()->error($status);
         }
 
-        if (Auth::user()->is_active == 'inactive') {
-            return response()->json([
-                'status' => (object)array(
-                    'code' => '0014',
-                    'msg' => "signin fail please check your mail",
-                    "devMsg" => 'inactive user'
-                ),
-                'result' => null
-            ]);
+        if (Auth::user()->is_active == 'inactive'){
+            $result = (object)array(
+                'token' => Auth::user()->remember_token,
+                'condition' => 'inactive',
+            );
+            return response()->success($result);
         }
 
         $this->makeToken();
-        //return response()->success($data);
-        return response()->json([
-                'status' => (object)array(
-                    'code' => '0000',
-                    'msg' => "signin success",
-                    "devMsg" => ''
-                ),
-                'result' => (object)array(
-                    'token' => Auth::user()->remember_token
-                )
-            ]);
+
+        $result = (object)array(
+            'token' => Auth::user()->remember_token,
+            'condition' => 'active',
+         );
+        return response()->success($result);
     }
 
     protected function makeToken(){
@@ -269,10 +257,13 @@ class AuthController extends Controller
         }
     }
 
-    protected function getRetrieve($user_code)
+    protected function getRetrieve(Request $request)
     {
-        $findUser = User::find($user_code);
-        if($findUser){
+        $tokenData = $this->checkToken($request);
+
+        $findUser = User::find($tokenData->id);
+        $userExist = $this->checkUserExistById($tokenData->id);
+        if($userExist){
             return response()->json([
                 'status' => (object)array(
                     'code' => '0000',
@@ -316,16 +307,19 @@ class AuthController extends Controller
                 'status' => (object)array(
                     'code' => '0030',
                     'msg' => "dose not exist user",
-                    "devMsg" => "user number " . $user_code . " dose not exist"
+                    "devMsg" => "user number " . $tokenData->id . " dose not exist"
                 )
             ]);
         }
     }
-    protected function postRetrieve(Request $request , $user_code)
+    protected function postRetrieve(Request $request)
     {
         $data = $request->json()->all();
-        $findUser = User::find($user_code);
-        if($findUser){
+        $tokenData = $this->checkToken($request);
+
+        $findUser = User::find($tokenData->id);
+        $userExist = $this->checkUserExistById($tokenData->id);
+        if($userExist){
             return response()->json([
                 'status' => (object)array(
                     'code' => '0000',
@@ -369,7 +363,7 @@ class AuthController extends Controller
                 'status' => (object)array(
                     'code' => '0030',
                     'msg' => "dose not exist user",
-                    "devMsg" => "user number " . $user_code . " dose not exist"
+                    "devMsg" => "user number " . $tokenData->id . " dose not exist"
                 )
             ]);
         }
