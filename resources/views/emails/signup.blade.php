@@ -1,2 +1,2 @@
 your token is <br/>
-{{ $user->remember_token }}
+http://localhost:3000/certs/code/signup?code={{ $user->remember_token }}

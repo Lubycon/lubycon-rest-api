@@ -15,6 +15,7 @@ Route::post('/members/pwd/mail', 'Auth\PasswordController@postEmail');
 Route::post('/members/pwd/reset', 'Auth\PasswordController@postReset');
 
 Route::post('/certs/token', 'CertificateController@certToken');
+Route::get('/certs/signup/time', 'CertificateController@certTokenTimeCheck');
 Route::post('/certs/signup/code', 'CertificateController@certSignupToken');
 Route::post('/certs/pwd', 'CertificateController@certPassword');
 

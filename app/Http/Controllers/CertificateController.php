@@ -32,6 +32,14 @@ class CertificateController extends Controller
             return response()->success($result);
         }
     }
+    protected function certTokenTimeCheck(Request $request){
+        $certToken = json_decode($this->certToken($request)->getContent());
+        $data = $request->json()->all();
+        $findUser = User::whereRaw("email = '".$this->user[0]->email."' and remember_token = '".$request->header('X-lubycon-token')."'")->get();
+
+        return $findUser;
+
+    }
 
     protected function certSignupToken(Request $request){
         $certToken = json_decode($this->certToken($request)->getContent());
