@@ -21,27 +21,15 @@ class CertificateController extends Controller
         $this->user = User::where('remember_token','=',$token)->get();
 
         if(!$this->user->isempty()){
-            return response()->json([
-                'status' => (object)array(
-                    'code' => '0000',
-                    'msg' => "token available",
-                    "devMsg" => ''
-                ),
-                'result' => (object)array(
-                    "validity" => true
-                )
-            ]);
+            $result = (object)array(
+                "validity" => true
+            );
+            return response()->success($result);
         }else{
-            return response()->json([
-                'status' => (object)array(
-                    'code' => '0000',
-                    'msg' => "token unavailable",
-                    "devMsg" => ''
-                ),
-                'result' => (object)array(
-                    "validity" => false
-                )
-            ]);
+            $result = (object)array(
+                "validity" => false
+            );
+            return response()->success($result);
         }
     }
 
@@ -54,27 +42,16 @@ class CertificateController extends Controller
 
             $this->activeUser($findUser);
 
-            return response()->json([
-                'status' => (object)array(
-                    'code' => '0000',
-                    'msg' => "attempt success",
-                    "devMsg" => ''
-                ),
-                'result' => (object)array(
-                    "validity" => true
-                )
-            ]);
+            $result = (object)array(
+                "validity" => true
+            );
+            return response()->success($result);
         }
-        return response()->json([
-            'status' => (object)array(
-                'code' => '0030',
-                'msg' => "attempt fail",
-                "devMsg" => ''
-            ),
-            'result' => (object)array(
-                "validity" => false
-            )
-        ]);
+
+        $result = (object)array(
+            "validity" => false
+        );
+        return response()->success($result);
     }
 
 
@@ -88,27 +65,15 @@ class CertificateController extends Controller
         ];
 
         if (Auth::attempt($credentials)) {
-            return response()->json([
-                'status' => (object)array(
-                    'code' => '0000',
-                    'msg' => "attempt success",
-                    "devMsg" => ''
-                ),
-                'result' => (object)array(
-                    "validity" => true
-                )
-            ]);
+            $result = (object)array(
+                "validity" => true
+            );
+            return response()->success($result);
         }
-        return response()->json([
-            'status' => (object)array(
-                'code' => '0030',
-                'msg' => "attempt fail",
-                "devMsg" => ''
-            ),
-            'result' => (object)array(
-                "validity" => false
-            )
-        ]);
+        $result = (object)array(
+            "validity" => false
+        );
+        return response()->success($result);
     }
 
     protected function activeUser($user){

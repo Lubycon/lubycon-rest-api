@@ -46,6 +46,19 @@ class Handler extends ExceptionHandler
             $e = new NotFoundHttpException($e->getMessage(), $e);
         }
 
-        return parent::render($request, $e);
+        return $this->response($request, $e);
+    }
+
+    public function response($request, Exception $e)
+    {
+        $errorMsg = $e->getMessage();
+        if ($this->isHttpException($e)) {
+            $errorMsg .= 'errorCode is '.$e->getStatusCode();
+        }
+        $status = (object)array(
+            'code' => '9999',
+            'devMsg' => 'errorcode : '.$errorMsg
+        );
+        return response()->error($status);
     }
 }

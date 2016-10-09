@@ -45,23 +45,12 @@ class PasswordController extends Controller
 
         switch ($response) {
             case Password::RESET_LINK_SENT:
-                return response()->json([
-                    'status' => (object)array(
-                        'code' => '0000',
-                        'msg' => "password token mail send success",
-                        "devMsg" => ''
-                    ),
-                    'result' => null
-                ]);
+                return response()->success();
             case Password::INVALID_USER:
-                return response()->json([
-                    'status' => (object)array(
-                        'code' => '0030',
-                        'msg' => "INVALID_USER",
-                        "devMsg" => 'unmatched email in database'
-                    ),
-                    'result' => null
-                ]);
+                $status = (object)array(
+                    'code' => '0030'
+                );
+                return response()->error($status);
         }
     }
 
@@ -79,14 +68,11 @@ class PasswordController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return response()->json([
-                'status' => (object)array(
-                    'code' => '0030',
-                    'msg' => "validate fail",
-                    "devMsg" => $validator->errors()
-                ),
-                'result' => null
-            ]);
+            $status = (object)array(
+                'code' => '0030',
+                "devMsg" => $validator->errors()
+            );
+            return response()->error($status);
         }
 
         $credentials = $request->only(
@@ -99,23 +85,12 @@ class PasswordController extends Controller
 
         switch ($response) {
             case Password::PASSWORD_RESET:
-                return response()->json([
-                    'status' => (object)array(
-                        'code' => '0000',
-                        'msg' => "password change success",
-                        "devMsg" => ''
-                    ),
-                    'result' => null
-                ]);
+                return response()->success();
             default:
-                return response()->json([
-                    'status' => (object)array(
-                        'code' => '0030',
-                        'msg' => "wrong data",
-                        "devMsg" => 'unmatched validate'
-                    ),
-                    'result' => null
-                ]);
+                $status = (object)array(
+                    'code' => '0030'
+                );
+                return response()->error($status);
         }
     }
 

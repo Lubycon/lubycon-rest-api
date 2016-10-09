@@ -64,12 +64,14 @@ class AuthController extends Controller
             'password' => $data['password']
         ];
 
-        if (! Auth::once($credentials)) {
+        if ( !Auth::once($credentials)) {
             $status = (object)array(
                 'code' => '0010'
             );
             return response()->error($status);
         }
+
+        $this->makeToken(Auth::user());
 
         if (Auth::user()->is_active == 'inactive'){
             $result = (object)array(
@@ -79,12 +81,12 @@ class AuthController extends Controller
             return response()->success($result);
         }
 
-        $this->makeToken();
 
         $result = (object)array(
             'token' => Auth::user()->remember_token,
             'condition' => 'active',
          );
+
         return response()->success($result);
     }
 
@@ -93,7 +95,8 @@ class AuthController extends Controller
         $device = 'w';
         $randomStr = Str::random(30);
         $token = $device.$randomStr.$userId; //need change first src from header device kind
-        Auth::user()->setRememberToken($token);
+        Auth::user()->remember_token = $token;
+        Auth::user()->save();
     }
 
     protected function signout()
@@ -126,13 +129,11 @@ class AuthController extends Controller
 
         $validator = $this->validator($createData);
         if ($validator->fails()) {
-            return response()->json([
-                'status' => (object)array(
-                    'code' => '0030',
-                    'msg' => "wrong datas",
-                    "devMsg" => $validator->errors()
-                )
-            ]);
+            $status = (object)array(
+                'code' => '0030',
+                "devMsg" => $validator->errors()
+            );
+            return response()->error($status);
         };
 
         if(User::create($createData)){
@@ -140,7 +141,10 @@ class AuthController extends Controller
                 'email'    => $data['email'],
                 'password' => $data['password']
             ];
-            Auth::attempt($credentials,true);
+
+            if(Auth::once($credentials)){
+                $this->makeToken();
+            }
 
             $to = $data['email'];
             $subject = 'account success to Lubycon!';
@@ -152,16 +156,10 @@ class AuthController extends Controller
                 $message->to($to)->subject($subject);
             });
 
-            return response()->json([
-                'status' => (object)array(
-                    'code' => '0000',
-                    'msg' => "account success",
-                    "devMsg" => ''
-                ),
-                'result' => (object)array(
-                    "email" => Auth::user()->email
-                )
-            ]);
+            $result = (object)array(
+                "email" => Auth::user()->email
+            );
+            return response()->success($result);
         }
     }
 
@@ -174,23 +172,12 @@ class AuthController extends Controller
 
         if($userExist){
             $user->delete();
-            return response()->json([
-                'status' => (object)array(
-                    'code' => '0000',
-                    'msg' => "member drop success",
-                    "devMsg" => ''
-                ),
-                'result' =>null
-            ]);
+            return response()->success();
         }else{
-            return response()->json([
-                'status' => (object)array(
-                    'code' => '0030',
-                    'msg' => "dose not exist user",
-                    "devMsg" => ''
-                ),
-                'result' =>null
-            ]);
+            $status = (object)array(
+                'code' => '0030'
+            );
+            return response()->error($status);
         };
     }
 
@@ -200,23 +187,12 @@ class AuthController extends Controller
 
         if($userExist){
             $user->restore();
-            return response()->json([
-                'status' => (object)array(
-                    'code' => '0000',
-                    'msg' => "member restore success",
-                    "devMsg" => ''
-                ),
-                'result' =>null
-            ]);
+            return response()->success();
         }else{
-            return response()->json([
-                'status' => (object)array(
-                    'code' => '0030',
-                    'msg' => "dose not exist user",
-                    "devMsg" => ''
-                ),
-                'result' =>null
-            ]);
+            $status = (object)array(
+                'code' => '0030'
+            );
+            return response()->error($status);
         };
     }
 
@@ -227,33 +203,23 @@ class AuthController extends Controller
         $userExist = $this->checkUserExistById($tokenData->id);
 
         if($userExist){
-            return response()->json([
-                'status' => (object)array(
-                    'code' => '0000',
-                    'msg' => "retrieve success",
-                    "devMsg" => ''
-                ),
-                'result' => (object)array(
-                    "id" => $findUser->id,
-                    "email" => $findUser->email,
-                    "name" => $findUser->name,
-                    "profile" => $findUser->profile,
-                    "job" => $findUser->job,
-                    "country" => $findUser->country,
-                    "city" => $findUser->city,
-                    "position" => $findUser->position,
-                    "description" => $findUser->description
-                )
-            ]);
+            $result = (object)array(
+                "id" => $findUser->id,
+                "email" => $findUser->email,
+                "name" => $findUser->name,
+                "profile" => $findUser->profile,
+                "job" => $findUser->job,
+                "country" => $findUser->country,
+                "city" => $findUser->city,
+                "position" => $findUser->position,
+                "description" => $findUser->description
+            );
+            return response()->success($result);
         }else{
-            return response()->json([
-                'status' => (object)array(
-                    'code' => '0030',
-                    'msg' => "dose not exist user",
-                    "devMsg" => ''
-                ),
-                'result' => null
-            ]);
+            $status = (object)array(
+                'code' => '0030'
+            );
+            return response()->error($status);
         }
     }
 
@@ -264,52 +230,44 @@ class AuthController extends Controller
         $findUser = User::find($tokenData->id);
         $userExist = $this->checkUserExistById($tokenData->id);
         if($userExist){
-            return response()->json([
-                'status' => (object)array(
-                    'code' => '0000',
-                    'msg' => "retrieve success",
-                    "devMsg" => ''
+            $result = (object)array(
+                'userData' => (object)array(
+                    "id" => $findUser->id,
+                    "email" => $findUser->email,
+                    "name" => $findUser->name,
+                    "profile" => $findUser->profile,
+                    "job" => $findUser->job,
+                    "country" => $findUser->country,
+                    "city" => $findUser->city,
+                    "mobile" => $findUser->mobile,
+                    "fax" => $findUser->fax,
+                    "website" => $findUser->website,
+                    "position" => $findUser->position,
+                    "description" => $findUser->description
                 ),
-                'result' => (object)array(
-                    'userData' => (object)array(
-                        "id" => $findUser->id,
-                        "email" => $findUser->email,
-                        "name" => $findUser->name,
-                        "profile" => $findUser->profile,
-                        "job" => $findUser->job,
-                        "country" => $findUser->country,
-                        "city" => $findUser->city,
-                        "mobile" => $findUser->mobile,
-                        "fax" => $findUser->fax,
-                        "website" => $findUser->website,
-                        "position" => $findUser->position,
-                        "description" => $findUser->description
-                    ),
-                    "language" => (object)array(
-                        "name" => null,
-                        "level" => null
-                    ),
-                    "history" => (object)array(
-                        "year" => null,
-                        "month" => null,
-                        "category" => null,
-                        "content" => null
-                    ),
-                    "publicOption" => (object)array(
-                        "mobile" => null,
-                        "fax" => null,
-                        "website" => null
-                    )
+                "language" => (object)array(
+                    "name" => null,
+                    "level" => null
+                ),
+                "history" => (object)array(
+                    "year" => null,
+                    "month" => null,
+                    "category" => null,
+                    "content" => null
+                ),
+                "publicOption" => (object)array(
+                    "mobile" => null,
+                    "fax" => null,
+                    "website" => null
                 )
-            ]);
+            );
+            return response()->success($result);
         }else{
-            return response()->json([
-                'status' => (object)array(
-                    'code' => '0030',
-                    'msg' => "dose not exist user",
-                    "devMsg" => "user number " . $tokenData->id . " dose not exist"
-                )
-            ]);
+            $status = (object)array(
+                'code' => '0030',
+                "devMsg" => "user number " . $tokenData->id . " dose not exist"
+            );
+            return response()->error($status);
         }
     }
     protected function postRetrieve(Request $request)
@@ -320,52 +278,44 @@ class AuthController extends Controller
         $findUser = User::find($tokenData->id);
         $userExist = $this->checkUserExistById($tokenData->id);
         if($userExist){
-            return response()->json([
-                'status' => (object)array(
-                    'code' => '0000',
-                    'msg' => "retrieve success",
-                    "devMsg" => ''
+            $result = (object)array(
+                'userData' => (object)array(
+                    $findUser->id = $data->id,
+                    $findUser->email = $data->email,
+                    $findUser->name = $data->name,
+                    $findUser->profile = $data->profile,
+                    $findUser->job = $data->job,
+                    $findUser->country = $data->country,
+                    $findUser->city = $data->city,
+                    $findUser->mobile = $data->mobile,
+                    $findUser->fax = $data->fax,
+                    $findUser->website = $data->website,
+                    $findUser->position = $data->position,
+                    $findUser->description = $data->description
                 ),
-                'result' => (object)array(
-                    'userData' => (object)array(
-                        $findUser->id = $data->id,
-                        $findUser->email = $data->email,
-                        $findUser->name = $data->name,
-                        $findUser->profile = $data->profile,
-                        $findUser->job = $data->job,
-                        $findUser->country = $data->country,
-                        $findUser->city = $data->city,
-                        $findUser->mobile = $data->mobile,
-                        $findUser->fax = $data->fax,
-                        $findUser->website = $data->website,
-                        $findUser->position = $data->position,
-                        $findUser->description = $data->description
-                    ),
-                    "language" => (object)array(
-                        "name" => null,
-                        "level" => null
-                    ),
-                    "history" => (object)array(
-                        "year" => null,
-                        "month" => null,
-                        "category" => null,
-                        "content" => null
-                    ),
-                    "publicOption" => (object)array(
-                        "mobile" => null,
-                        "fax" => null,
-                        "website" => null
-                    )
+                "language" => (object)array(
+                    "name" => null,
+                    "level" => null
+                ),
+                "history" => (object)array(
+                    "year" => null,
+                    "month" => null,
+                    "category" => null,
+                    "content" => null
+                ),
+                "publicOption" => (object)array(
+                    "mobile" => null,
+                    "fax" => null,
+                    "website" => null
                 )
-            ]);
+            );
+            return response()->success($result);
         }else{
-            return response()->json([
-                'status' => (object)array(
-                    'code' => '0030',
-                    'msg' => "dose not exist user",
-                    "devMsg" => "user number " . $tokenData->id . " dose not exist"
-                )
-            ]);
+            $status = (object)array(
+                'code' => '0030',
+                "devMsg" => "user number " . $tokenData->id . " dose not exist"
+            );
+            return response()->error($status);
         }
     }
     protected function checkMemberExist(Request $request)
@@ -374,27 +324,15 @@ class AuthController extends Controller
         $user = User::whereRaw("email = '".$data['email']."' and sns_code = ".$data['snsCode'])->get();
 
         if(!$user->isempty()){
-            return response()->json([
-                'status' => (object)array(
-                    'code' => '0000',
-                    'msg' => "member exist",
-                    "devMsg" => ''
-                ),
-                'result' => (object)array(
-                    "exist" => true
-                )
-            ]);
+            $result = (object)array(
+                "exist" => true
+            );
+            return response()->success($result);
         }else{
-            return response()->json([
-                'status' => (object)array(
-                    'code' => '0000',
-                    'msg' => "member dose not exist",
-                    "devMsg" => ''
-                ),
-                'result' => (object)array(
-                    "exist" => false
-                )
-            ]);
+            $result = (object)array(
+                "exist" => false
+            );
+            return response()->success($result);
         }
     }
 
