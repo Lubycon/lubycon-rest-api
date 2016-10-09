@@ -70,7 +70,9 @@ class AuthController extends Controller
             return response()->error($status);
         }
 
-        $this->makeToken(Auth::user());
+        if(Auth::user()->is_active == 'active'){
+            $this->makeToken(Auth::user());
+        }
 
         if (Auth::user()->is_active == 'inactive'){
             $result = (object)array(
