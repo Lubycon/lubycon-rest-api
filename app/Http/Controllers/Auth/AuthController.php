@@ -126,7 +126,7 @@ class AuthController extends Controller
         }
     }
 
-    protected function signdrop(Request $request,$reasonCode,$reason)
+    protected function signdrop(Request $request)
     {
         $tokenData = CheckContoller::checkToken($request);
 
