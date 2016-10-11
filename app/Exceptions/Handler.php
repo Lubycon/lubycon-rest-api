@@ -46,7 +46,8 @@ class Handler extends ExceptionHandler
             $e = new NotFoundHttpException($e->getMessage(), $e);
         }
 
-        return $this->response($request, $e);
+        return parent::render($request , $e); //for develop
+//        return $this->response($request, $e); //for provide
     }
 
     public function response($request, Exception $e)

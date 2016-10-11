@@ -2,13 +2,14 @@
 
 namespace App\Http\Controllers\Auth;
 
-use Mail;
 use DB;
 use Auth;
+use Event;
 use App\User;
 use Validator;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use App\Http\Controllers\mailSendController;
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\ThrottlesLogins;
 use Illuminate\Foundation\Auth\AuthenticatesAndRegistersUsers;
@@ -16,35 +17,13 @@ use Illuminate\Foundation\Auth\AuthenticatesAndRegistersUsers;
 
 class AuthController extends Controller
 {
-    /*
-    |--------------------------------------------------------------------------
-    | Registration & Login Controller
-    |--------------------------------------------------------------------------
-    |
-    | This controller handles the registration of new users, as well as the
-    | authentication of existing users. By default, this controller uses
-    | a simple trait to add these behaviors. Why don't you explore it?
-    |
-    */
-
     use AuthenticatesAndRegistersUsers, ThrottlesLogins;
 
-    /**
-     * Create a new authentication controller instance.
-     *
-     * @return void
-     */
     public function __construct()
     {
         $this->middleware('guest', ['except' => 'getLogout']);
     }
 
-    /**
-     * Get a validator for an incoming registration request.
-     *
-     * @param  array  $data
-     * @return \Illuminate\Contracts\Validation\Validator
-     */
     protected function validator(array $data)
     {
         $rules = [
@@ -91,26 +70,12 @@ class AuthController extends Controller
         return response()->success($result);
     }
 
-    protected function makeToken(){
-        $userId = Auth::user()->getAuthIdentifier();
-        $device = 'w';
-        $randomStr = Str::random(30);
-        $token = $device.$randomStr.$userId; //need change first src from header device kind
-        Auth::user()->remember_token = $token;
-        Auth::user()->save();
-    }
 
     protected function signout()
     {
         // need somthing other logic
     }
 
-    /**
-     * Create a new user instance after a valid registration.
-     *
-     * @param  array  $data
-     * @return User
-     */
     protected function signup(Request $request)
     {
         $data = $request->json()->all();
@@ -147,15 +112,12 @@ class AuthController extends Controller
                 $this->makeToken();
             }
 
-            $to = $data['email'];
-            $subject = 'account success to Lubycon!';
-            $data = [
-                'user'  => Auth::user()
-            ];
+            Event::fire(new MailSendEvent([
+                'email'    => $data['email'],
+                'type'     => 'signup'
+            ]));
 
-            Mail::send('emails.signup', $data, function($message) use($to, $subject) {
-                $message->to($to)->subject($subject);
-            });
+            //mailSendController::signupTokenSend($request);
 
             $result = (object)array(
                 "email" => Auth::user()->email
@@ -166,10 +128,10 @@ class AuthController extends Controller
 
     protected function signdrop(Request $request,$reasonCode,$reason)
     {
-        $tokenData = $this->checkToken($request);
+        $tokenData = CheckContoller::checkToken($request);
 
         $user = User::find($tokenData->id);
-        $userExist = $this->checkUserExistById($tokenData->id);
+        $userExist = CheckContoller::checkUserExistById($tokenData->id);
 
         if($userExist){
             $user->delete();
@@ -184,7 +146,7 @@ class AuthController extends Controller
 
     protected function signrestore($id){
         $user = User::onlyTrashed()->find($id);
-        $userExist = $this->checkUserExistByIdOnlyTrashed($id);
+        $userExist = CheckContoller::checkUserExistByIdOnlyTrashed($id);
 
         if($userExist){
             $user->restore();
@@ -198,10 +160,10 @@ class AuthController extends Controller
     }
 
     protected function simpleRetrieve(Request $request){
-        $tokenData = $this->checkToken($request);
+        $tokenData = CheckContoller::checkToken($request);
 
         $findUser = User::find($tokenData->id);
-        $userExist = $this->checkUserExistById($tokenData->id);
+        $userExist = CheckContoller::checkUserExistById($tokenData->id);
 
         if($userExist){
             $result = (object)array(
@@ -226,10 +188,10 @@ class AuthController extends Controller
 
     protected function getRetrieve(Request $request)
     {
-        $tokenData = $this->checkToken($request);
+        $tokenData = CheckContoller::checkToken($request);
 
         $findUser = User::find($tokenData->id);
-        $userExist = $this->checkUserExistById($tokenData->id);
+        $userExist = CheckContoller::checkUserExistById($tokenData->id);
         if($userExist){
             $result = (object)array(
                 'userData' => (object)array(
@@ -274,10 +236,10 @@ class AuthController extends Controller
     protected function postRetrieve(Request $request)
     {
         $data = $request->json()->all();
-        $tokenData = $this->checkToken($request);
+        $tokenData = CheckContoller::checkToken($request);
 
         $findUser = User::find($tokenData->id);
-        $userExist = $this->checkUserExistById($tokenData->id);
+        $userExist = CheckContoller::checkUserExistById($tokenData->id);
         if($userExist){
             $result = (object)array(
                 'userData' => (object)array(
@@ -319,12 +281,13 @@ class AuthController extends Controller
             return response()->error($status);
         }
     }
+
     protected function checkMemberExist(Request $request)
     {
         $data = $request->json()->all();
-        $user = User::whereRaw("email = '".$data['email']."' and sns_code = ".$data['snsCode'])->get();
+        $check = CheckContoller::checkUserExistByEmail($data);
 
-        if(!$user->isempty()){
+        if($check){
             $result = (object)array(
                 "exist" => true
             );
@@ -337,30 +300,13 @@ class AuthController extends Controller
         }
     }
 
-    public function checkToken($request){
-        $token = $request->header('X-lubycon-token');
-        $tokenData = (object)array(
-            "device" => substr($token, 0, 1),
-            "token" => substr($token, 1, 30),
-            "id" => substr($token, 31),
-        );
-        return $tokenData;
-    }
-
-    public function checkUserExistById($id){
-        $user=User::find($id);
-        if (!is_null($user)) {
-            return true;
-        }
-        return false;
-    }
-
-    public function checkUserExistByIdOnlyTrashed($id){
-        $user=User::onlyTrashed()->find($id);
-        if (!is_null($user)) {
-            return true;
-        }
-        return false;
+    protected function makeToken(){
+        $userId = Auth::user()->getAuthIdentifier();
+        $device = 'w';
+        $randomStr = Str::random(30);
+        $token = $device.$randomStr.$userId; //need change first src from header device kind
+        Auth::user()->remember_token = $token;
+        Auth::user()->save();
     }
 }
 

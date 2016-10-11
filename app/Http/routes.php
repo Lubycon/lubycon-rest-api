@@ -3,7 +3,7 @@
 Route::post('/members/signin', 'Auth\AuthController@signin');
 Route::put('/members/signout', 'Auth\AuthController@signout');
 Route::post('/members/signup', 'Auth\AuthController@signup');
-Route::put('/members/signdrop/{reasonCode}/{reason}', 'Auth\AuthController@signdrop');
+Route::put('/members/signdrop', 'Auth\AuthController@signdrop');
 Route::put('/members/signrestore/{id}', 'Auth\AuthController@signrestore');
 
 Route::post('/members/isexist' , 'Auth\AuthController@checkMemberExist');
@@ -19,3 +19,5 @@ Route::get('/certs/signup/time', 'CertificateController@certTokenTimeCheck');
 Route::post('/certs/signup/code', 'CertificateController@certSignupToken');
 Route::post('/certs/pwd', 'CertificateController@certPassword');
 
+Route::put('mail/signup','mailSendController@signupTokenSend');
+Route::put('mail/pwd','mailSendController@passwordResetTokenSend');

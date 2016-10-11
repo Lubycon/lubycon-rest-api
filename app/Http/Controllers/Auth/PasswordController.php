@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use Validator;
+use App\Http\Controllers\mailSendController;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Mail\Message;
@@ -39,9 +40,7 @@ class PasswordController extends Controller
     {
         $this->validate($request, ['email' => 'required|email']);
 
-        $response = Password::sendResetLink($request->only('email'), function (Message $message) {
-            $message->subject($this->getEmailSubject());
-        });
+        $response = mailSendController::passwordResetTokenSend($request);
 
         switch ($response) {
             case Password::RESET_LINK_SENT:
@@ -52,11 +51,6 @@ class PasswordController extends Controller
                 );
                 return response()->error($status);
         }
-    }
-
-    protected function getEmailSubject()
-    {
-        return property_exists($this, 'subject') ? $this->subject : 'Your Password Reset Link';
     }
 
     public function postReset(Request $request)

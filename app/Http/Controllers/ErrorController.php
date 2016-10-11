@@ -7,6 +7,9 @@ use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 
+
+// not uesing
+
 class ErrorController extends Controller
 {
     public $errors = [
