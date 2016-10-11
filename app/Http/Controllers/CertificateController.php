@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Auth\CheckContoller;
 use Auth;
+use Carbon\Carbon;
 use App\User;
+use App\signup_allow;
 use Validator;
 use Illuminate\Http\Request;
 use App\Http\Requests;
@@ -33,35 +36,46 @@ class CertificateController extends Controller
         }
     }
     protected function certTokenTimeCheck(Request $request){
-        $certToken = json_decode($this->certToken($request)->getContent());
-        $data = $request->json()->all();
-        $findUser = User::whereRaw("email = '".$this->user[0]->email."' and remember_token = '".$request->header('X-lubycon-token')."'")->get();
+        $data = CheckContoller::checkToken($request);
 
-        return $findUser;
+        $createTime = signup_allow::find($data->id)->created_at;
+        $hours = 6;
+        $diffTime = $this->checkDiffTime($createTime,$hours);
 
+        return response()->success([
+            "time" => $diffTime
+        ]);
+    }
+
+    protected function checkDiffTime($createTime,$hours){
+        $startTime = Carbon::now();
+        $endTime = $createTime->addhours($hours);
+
+        if($startTime > $endTime){
+            return 0;
+        }
+        return $startTime->diffInSeconds($endTime);
     }
 
     protected function certSignupToken(Request $request){
-        $certToken = json_decode($this->certToken($request)->getContent());
-        $data = $request->json()->all();
-        $findUser = User::whereRaw("email = '".$this->user[0]->email."' and remember_token = '".$data['code']."'")->get();
+        $data = CheckContoller::checkToken($request);
+        $token = $request->only('token');
 
-        if($certToken->status->code == '0000' && !$findUser->isempty()){
+        $validateToken = signup_allow::whereRaw("id = '".$data->id."' and token = '".$token['token']."'")->get();
 
-            $this->activeUser($findUser);
+        if(!$validateToken->isempty()){
+            $user = User::find($data->id);
+            $this->activeUser($user);
+            $validateToken->delete();
 
-            $result = (object)array(
+            return response()->success([
                 "validity" => true
-            );
-            return response()->success($result);
+            ]);
         }
-
-        $result = (object)array(
+        return response()->success([
             "validity" => false
-        );
-        return response()->success($result);
+        ]);
     }
-
 
     protected function certPassword(Request $request){
         $data = $request->json()->all();
@@ -85,7 +99,7 @@ class CertificateController extends Controller
     }
 
     protected function activeUser($user){
-        $user[0]->is_active = 'active';
-        $user[0]->save();
+        $user->is_active = 'active';
+        $user->save();
     }
 }

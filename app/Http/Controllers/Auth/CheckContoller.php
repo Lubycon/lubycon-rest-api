@@ -4,12 +4,41 @@ namespace App\Http\Controllers\Auth;
 
 use Illuminate\Http\Request;
 use App\User;
+use App\signup_allow;
+use Illuminate\Support\Str;
 
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 
 class CheckContoller extends Controller
 {
+    public static function insertRememberToken($id){
+        $user = User::findorfail($id);
+
+        $userId = $user->id;
+        $device = 'w';
+        $randomStr = Str::random(30);
+        $token = $device.$randomStr.$userId; //need change first src from header device kind
+
+        $user->remember_token = $token;
+        $user->save();
+    }
+
+    public static function insertSignupToken($id){
+        $user = User::findorfail($id);
+
+        $recoded = signup_allow::find($id);
+
+        if(!is_null($recoded)){
+            $recoded->delete();
+        }
+        $signup = new signup_allow;
+        $signup->id = $user->id;
+        $signup->email = $user->email;
+        $signup->token = Str::random(50);
+        $signup->save();
+    }
+
     public static function checkToken($request){
         $token = $request->header('X-lubycon-token');
         $tokenData = (object)array(

@@ -31,13 +31,11 @@ class MailSendEventListener implements ShouldQueue
     {
         $getData = $event->getData();
 
-        $to = $getData['email'];
-        $subject = $getData['subject'];
-        $data = [
-            'user'  => $getData['user']
-        ];
+        $to = $getData->email;
+        $subject = $getData->subject;
+        $data = ['user'  => $getData->user];
 
-        Mail::send("emails.".$getData['type'], $data, function($message) use($to, $subject) {
+        Mail::send("emails.".$getData->type, $data, function($message) use($to, $subject) {
             $message->to($to)->subject($subject);
         });
 

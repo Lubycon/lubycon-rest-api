@@ -19,5 +19,5 @@ Route::get('/certs/signup/time', 'CertificateController@certTokenTimeCheck');
 Route::post('/certs/signup/code', 'CertificateController@certSignupToken');
 Route::post('/certs/pwd', 'CertificateController@certPassword');
 
-Route::put('mail/signup','mailSendController@signupTokenSend');
+Route::put('mail/signup','mailSendController@againSignupTokenSet');
 Route::put('mail/pwd','mailSendController@passwordResetTokenSend');

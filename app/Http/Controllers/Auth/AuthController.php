@@ -2,13 +2,12 @@
 
 namespace App\Http\Controllers\Auth;
 
-use DB;
 use Auth;
 use Event;
 use App\User;
+use App\signup_allow;
 use Validator;
 use Illuminate\Http\Request;
-use Illuminate\Support\Str;
 use App\Http\Controllers\mailSendController;
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\ThrottlesLogins;
@@ -50,7 +49,8 @@ class AuthController extends Controller
         }
 
         if(Auth::user()->is_active == 'active'){
-            $this->makeToken(Auth::user());
+            $id = Auth::user()->getAuthIdentifier();
+            CheckContoller::insertRememberToken($id);
         }
 
         if (Auth::user()->is_active == 'inactive'){
@@ -109,15 +109,12 @@ class AuthController extends Controller
             ];
 
             if(Auth::once($credentials)){
-                $this->makeToken();
+                $id = Auth::user()->getAuthIdentifier();
+                CheckContoller::insertSignupToken($id);
+                CheckContoller::insertRememberToken($id);
             }
 
-            Event::fire(new MailSendEvent([
-                'email'    => $data['email'],
-                'type'     => 'signup'
-            ]));
-
-            //mailSendController::signupTokenSend($request);
+            mailSendController::signupTokenSet(Auth::user());
 
             $result = (object)array(
                 "email" => Auth::user()->email
@@ -298,15 +295,6 @@ class AuthController extends Controller
             );
             return response()->success($result);
         }
-    }
-
-    protected function makeToken(){
-        $userId = Auth::user()->getAuthIdentifier();
-        $device = 'w';
-        $randomStr = Str::random(30);
-        $token = $device.$randomStr.$userId; //need change first src from header device kind
-        Auth::user()->remember_token = $token;
-        Auth::user()->save();
     }
 }
 

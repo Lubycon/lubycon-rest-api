@@ -17,20 +17,36 @@ use App\Http\Controllers\Controller;
 
 class mailSendController extends Controller
 {
-    public static function signupTokenSend(Request $request){
+    public static function signupTokenSet($user){
+        $data = (object)array(
+            "email" => $user->email,
+            "type" => 'signup',
+            "subject" => 'account success to Lubycon!',
+            "user" => $user
+        );
+        mailSendController::normalMailSend($data);
+    }
+
+    public static function againSignupTokenSet(Request $request){
 
         $tokenData = CheckContoller::checkToken($request);
 
         $user = User::findOrFail($tokenData->id);
-        $to = $user->id;
 
-        Event::fire(new MailSendEvent([
-            'email'    =>  $to,
-            'type'     => 'signup',
-            'subject'  => 'account success to Lubycon!',
-            'user'     => $user
-        ]));
+        $data = (object)array(
+            "email" => $user->email,
+            "type" => 'signup',
+            "subject" => 'resend account mail from Lubycon!',
+            "user" => $user
+        );
+        checkContoller::insertSignupToken($user->id);
+        mailSendController::normalMailSend($data);
     }
+
+    protected static function normalMailSend($data){
+        Event::fire(new MailSendEvent($data));
+    }
+
 
     public static function passwordResetTokenSend(Request $request){
 
