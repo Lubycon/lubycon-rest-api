@@ -17,8 +17,8 @@ class AddUsersCoulmns extends Migration
             $table->integer('job_id')->nullable();
             $table->integer('country_id')->nullable();
             $table->integer('log_group_id')->nullable();
-            $table->integer('lagnuage_group_id')->nullable();
-            $table->integer('carrer_group_id')->nullable();
+            $table->integer('language_group_id')->nullable();
+            $table->integer('career_group_id')->nullable();
             $table->enum('is_active', ['active','inactive','drop']);
             $table->integer('is_accept_terms');
             $table->integer('is_opened');
@@ -44,8 +44,8 @@ class AddUsersCoulmns extends Migration
             $table->dropColumn('job_id');
             $table->dropColumn('country_id');
             $table->dropColumn('log_group_id');
-            $table->dropColumn('lagnuage_group_id');
-            $table->dropColumn('carrer_group_id');
+            $table->dropColumn('language_group_id');
+            $table->dropColumn('career_group_id');
             $table->dropColumn('is_active');
             $table->dropColumn('is_accept_terms');
             $table->dropColumn('is_opened');
