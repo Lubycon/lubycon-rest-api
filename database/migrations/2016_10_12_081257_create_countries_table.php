@@ -22,7 +22,7 @@ class CreateCountriesTable extends Migration
         });
 
         Schema::table('users', function(Blueprint $table) {
-            $table->foreign('country_id')->references('country_id')->on('countries');
+            $table->foreign('id')->references('country_id')->on('countries');
         });
     }
 
