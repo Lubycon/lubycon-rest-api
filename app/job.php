@@ -8,6 +8,6 @@ class job extends Model
 {
     public function user()
     {
-        return $this->belongsTo('App\User','job_id','job_id');
+        return $this->belongsTo('App\User');
     }
 }

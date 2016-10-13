@@ -18,16 +18,6 @@ class CreateJobsTable extends Migration
             $table->string('occupation',255);
             $table->timestamps();
         });
-
-        $data = array(
-            array('occupation'=>'Artist'),
-            array('occupation'=>'Designer'),
-            array('occupation'=>'Developer'),
-            array('occupation'=>'Student'),
-            array('occupation'=>'Others'),
-        );
-
-        \App\job::insert($data); // Eloquent
     }
 
     /**

@@ -8,6 +8,6 @@ class career extends Model
 {
     public function user()
     {
-        return $this->belongsTo('App\User','career_group_id','career_group_id');
+        return $this->belongsTo('App\User');
     }
 }

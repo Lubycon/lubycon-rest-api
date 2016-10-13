@@ -14,11 +14,8 @@ class AddUsersCoulmns extends Migration
     {
         Schema::table('users', function(Blueprint $table) {
             $table->timestamp('last_login_time')->nullable();
-            $table->integer('job_id')->unsigned()->nullable();
-            $table->integer('country_id')->unsigned()->nullable();
-            $table->integer('log_group_id')->unsigned()->nullable();
-            $table->integer('language_group_id')->unsigned()->nullable();
-            $table->integer('career_group_id')->unsigned()->nullable();
+            $table->integer('job')->unsigned()->nullable();
+            $table->integer('country')->unsigned()->nullable();
             $table->enum('is_active', ['active','inactive','drop']);
             $table->integer('is_accept_terms')->unsigned();
             $table->integer('is_opened')->unsigned();
@@ -41,11 +38,8 @@ class AddUsersCoulmns extends Migration
     {
         Schema::table('users', function(Blueprint $table) {
             $table->dropColumn('last_login_time');
-            $table->dropColumn('job_id');
-            $table->dropColumn('country_id');
-            $table->dropColumn('log_group_id');
-            $table->dropColumn('language_group_id');
-            $table->dropColumn('career_group_id');
+            $table->dropColumn('job');
+            $table->dropColumn('country');
             $table->dropColumn('is_active');
             $table->dropColumn('is_accept_terms');
             $table->dropColumn('is_opened');

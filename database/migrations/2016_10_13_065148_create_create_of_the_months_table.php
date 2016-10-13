@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateCareersTable extends Migration
+class CreateCreateOfTheMonthsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -12,16 +12,16 @@ class CreateCareersTable extends Migration
      */
     public function up()
     {
-        Schema::create('careers', function (Blueprint $table) {
+        Schema::create('create_of_the_months', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('user_id')->unsigned()->index();
-            $table->string('location',255);
-            $table->dateTime('date');
-            $table->enum('category',['work_experience','education','awards']);
+            $table->date('date');
+            $table->string('introduce',255);
+            $table->text('interview_url');
             $table->timestamps();
         });
         Schema::table('users', function(Blueprint $table) {
-            $table->foreign('id')->references('user_id')->on('careers');
+            $table->foreign('id')->references('users_id')->on('create_of_the_months');
         });
     }
 
@@ -35,6 +35,6 @@ class CreateCareersTable extends Migration
         Schema::table('users', function(Blueprint $table) {
             $table->dropForeign('users_id_foreign');
         });
-        Schema::drop('careers');
+        Schema::drop('create_of_the_months');
     }
 }
