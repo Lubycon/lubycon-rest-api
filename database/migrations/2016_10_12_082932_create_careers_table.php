@@ -14,7 +14,7 @@ class CreateCareersTable extends Migration
     {
         Schema::create('careers', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('career_group_id');
+            $table->integer('career_group_id')->unsigned()->index();
             $table->string('location',255);
             $table->dateTime('date');
             $table->enum('category',['work_experience','education','awards']);
