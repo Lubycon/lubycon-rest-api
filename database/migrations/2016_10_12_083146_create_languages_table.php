@@ -14,13 +14,10 @@ class CreateLanguagesTable extends Migration
     {
         Schema::create('languages', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('language_group_id');
+            $table->integer('language_group_id')->unsigned()->index();
             $table->string('name',255);
             $table->enum('level',['beginner','advanced','fluent']);
             $table->timestamps();
-        });
-        Schema::table('users', function(Blueprint $table) {
-            $table->foreign('language_group_id')->references('language_group_id')->on('languages');
         });
     }
 
@@ -31,9 +28,6 @@ class CreateLanguagesTable extends Migration
      */
     public function down()
     {
-        Schema::table('users', function(Blueprint $table) {
-            $table->dropForeign('users_language_group_id_foreign');
-        });
         Schema::drop('languages');
     }
 }

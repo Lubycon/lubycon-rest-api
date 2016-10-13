@@ -15,9 +15,9 @@ class CreateLogsTable extends Migration
         Schema::create('logs', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('logs_group_id')->unsigned()->index();
-            $table->foreign('logs_group_id')->references('id')->on('users');
             $table->string('ip',255);
             $table->dateTime('date');
+            $table->timestamps();
         });
     }
 
@@ -28,9 +28,6 @@ class CreateLogsTable extends Migration
      */
     public function down()
     {
-        Schema::table('logs', function(Blueprint $table) {
-            $table->dropForeign('users_logs_group_id_foreign');
-        });
         Schema::drop('logs');
     }
 }

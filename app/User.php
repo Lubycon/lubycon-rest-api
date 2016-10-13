@@ -35,31 +35,31 @@ class User extends Model implements AuthenticatableContract,
     protected $dates = ['deleted_at'];
 
     // 1 : 1
-    public function job()
+    public function jobs()
     {
-        return $this->hasOne('App\job');
+        return $this->hasOne('App\job','job_id','job');
     }
-    public function country()
+    public function countries()
     {
-        return $this->hasOne('App\country');
+        return $this->hasOne('App\country','country_id','country');
     }
 
     // 1: n
-    public function log()
+    public function logs()
     {
-        return $this->hasMany('App\log');
+        return $this->hasMany('App\log','log_group_id');
     }
-    public function career()
+    public function careers()
     {
-        return $this->hasMany('App\career');
+        return $this->hasMany('App\career','career_group_id');
     }
-    public function language()
+    public function languages()
     {
-        return $this->hasMany('App\language');
+        return $this->hasMany('App\language','language_group_id');
     }
-    public function createOfTheMonth()
+    public function createOfTheMonths()
     {
-        return $this->hasMany('App\createOfTheMonth');
+        return $this->hasMany('App\createOfTheMonth','create_of_the_month_group_id');
     }
 
 }
