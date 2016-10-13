@@ -14,7 +14,7 @@ class CreateLanguagesTable extends Migration
     {
         Schema::create('languages', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('language_group_id')->unsigned()->index();
+            $table->integer('language_group_id');
             $table->string('name',255);
             $table->enum('level',['beginner','advanced','fluent']);
             $table->timestamps();
