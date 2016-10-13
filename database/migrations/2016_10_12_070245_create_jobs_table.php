@@ -15,19 +15,10 @@ class CreateJobsTable extends Migration
     {
         Schema::create('jobs', function (Blueprint $table) {
             $table->increments('job_id');
+            //$table->foreign('job_id')->references('job')->on('users');
             $table->string('occupation',255);
             $table->timestamps();
         });
-
-        $data = array(
-            array('occupation'=>'Artist'),
-            array('occupation'=>'Designer'),
-            array('occupation'=>'Developer'),
-            array('occupation'=>'Student'),
-            array('occupation'=>'Others'),
-        );
-
-        \App\job::insert($data); // Eloquent
     }
 
     /**
@@ -37,6 +28,9 @@ class CreateJobsTable extends Migration
      */
     public function down()
     {
+        Schema::table('jobs', function(Blueprint $table) {
+            $table->dropForeign('users_job_id_foreign');
+        });
         Schema::drop('jobs');
     }
 }

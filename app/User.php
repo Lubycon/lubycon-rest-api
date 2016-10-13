@@ -37,24 +37,29 @@ class User extends Model implements AuthenticatableContract,
     // 1 : 1
     public function job()
     {
-        return $this->hasOne('App\job','job_id','job_id');
+        return $this->hasOne('App\job');
     }
     public function country()
     {
-        return $this->hasOne('App\country','country_id','country_id');
+        return $this->hasOne('App\country');
     }
 
     // 1: n
     public function log()
     {
-        return $this->hasMany('App\log','log_group_id','log_group_id');
+        return $this->hasMany('App\log');
     }
     public function career()
     {
-        return $this->hasMany('App\career','career_group_id','career_group_id');
+        return $this->hasMany('App\career');
     }
     public function language()
     {
-        return $this->hasMany('App\language','language_group_id','language_group_id');
+        return $this->hasMany('App\language');
     }
+    public function createOfTheMonth()
+    {
+        return $this->hasMany('App\createOfTheMonth');
+    }
+
 }
