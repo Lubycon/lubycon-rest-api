@@ -14,14 +14,12 @@ class CreateCreateOfTheMonthsTable extends Migration
     {
         Schema::create('create_of_the_months', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('user_id')->unsigned()->index();
+            $table->integer('create_of_the_months_group_id')->unsigned()->index();
+            $table->foreign('create_of_the_months_group_id')->references('id')->on('users');
             $table->date('date');
             $table->string('introduce',255);
             $table->text('interview_url');
             $table->timestamps();
-        });
-        Schema::table('users', function(Blueprint $table) {
-            $table->foreign('id')->references('users_id')->on('create_of_the_months');
         });
     }
 
@@ -32,8 +30,8 @@ class CreateCreateOfTheMonthsTable extends Migration
      */
     public function down()
     {
-        Schema::table('users', function(Blueprint $table) {
-            $table->dropForeign('users_id_foreign');
+        Schema::table('create_of_the_months', function(Blueprint $table) {
+            $table->dropForeign('users_create_of_the_months_group_id_foreign');
         });
         Schema::drop('create_of_the_months');
     }

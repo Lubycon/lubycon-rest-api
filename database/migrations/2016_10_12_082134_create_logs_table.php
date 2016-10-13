@@ -14,13 +14,11 @@ class CreateLogsTable extends Migration
     {
         Schema::create('logs', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('user_id')->unsigned()->index();
+            $table->integer('logs_group_id')->unsigned()->index();
+            $table->foreign('logs_group_id')->references('id')->on('users');
             $table->string('ip',255);
             $table->dateTime('date');
             $table->timestamps();
-        });
-        Schema::table('users', function(Blueprint $table) {
-            $table->foreign('id')->references('user_id')->on('logs');
         });
     }
 
@@ -31,8 +29,8 @@ class CreateLogsTable extends Migration
      */
     public function down()
     {
-        Schema::table('users', function(Blueprint $table) {
-            $table->dropForeign('users_id_foreign');
+        Schema::table('logs', function(Blueprint $table) {
+            $table->dropForeign('users_logs_group_id_foreign');
         });
         Schema::drop('logs');
     }
