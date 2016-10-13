@@ -14,6 +14,7 @@ class CreateCountriesTable extends Migration
     {
         Schema::create('countries', function (Blueprint $table) {
             $table->integer('country_id')->unsigned()->index();
+            $table->foreign('country_id')->references('id')->on('users');
             $table->tinyInteger('utc');
             $table->enum('region',['east asia', 'central asia', 'south asia', 'northern asia', 'south east asia', 'south west asia', 'eastern europe', 'central europe', 'western europe', 'southern europe', 'northern europe', 'south east europe','south west europe', 'eastern africa', 'central africa', 'western africa','northern africa','southern africa']);
             $table->enum('continent',['asia', 'europe', 'africa', 'americas', 'oceania','undecided']);
@@ -22,7 +23,6 @@ class CreateCountriesTable extends Migration
         });
 
         Schema::table('users', function(Blueprint $table) {
-            $table->foreign('id')->references('country_id')->on('countries');
         });
     }
 
@@ -33,7 +33,7 @@ class CreateCountriesTable extends Migration
      */
     public function down()
     {
-        Schema::table('users', function(Blueprint $table) {
+        Schema::table('countries', function(Blueprint $table) {
             $table->dropForeign('users_country_id_foreign');
         });
         Schema::drop('countries');
