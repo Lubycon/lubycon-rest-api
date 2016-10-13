@@ -15,9 +15,8 @@ class CreateJobsTable extends Migration
     {
         Schema::create('jobs', function (Blueprint $table) {
             $table->increments('job_id');
-            //$table->foreign('job_id')->references('job')->on('users');
+            $table->foreign('job_id')->references('job')->on('users');
             $table->string('occupation',255);
-            $table->timestamps();
         });
     }
 

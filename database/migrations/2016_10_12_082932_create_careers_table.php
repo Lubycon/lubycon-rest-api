@@ -18,7 +18,6 @@ class CreateCareersTable extends Migration
             $table->string('location',255);
             $table->dateTime('date');
             $table->enum('category',['work_experience','education','awards']);
-            $table->timestamps();
         });
         Schema::table('users', function(Blueprint $table) {
             $table->foreign('career_group_id')->references('career_group_id')->on('careers');

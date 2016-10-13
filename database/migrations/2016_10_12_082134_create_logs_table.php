@@ -18,7 +18,6 @@ class CreateLogsTable extends Migration
             $table->foreign('logs_group_id')->references('id')->on('users');
             $table->string('ip',255);
             $table->dateTime('date');
-            $table->timestamps();
         });
     }
 
