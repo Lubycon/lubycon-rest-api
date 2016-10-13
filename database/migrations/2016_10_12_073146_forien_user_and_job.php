@@ -13,7 +13,7 @@ class ForienUserAndJob extends Migration
     public function up()
     {
         Schema::table('users', function(Blueprint $table) {
-            $table->foreign('job_id')->references('job_id')->on('jobs');
+            $table->foreign('id')->references('job_id')->on('jobs');
         });
     }
 
