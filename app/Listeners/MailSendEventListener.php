@@ -9,7 +9,7 @@ use App\Events\MailSendEvent;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
-class MailSendEventListener implements ShouldQueue
+class MailSendEventListener //implements ShouldQueue
 {
     /**
      * Create the event listener.
@@ -29,6 +29,7 @@ class MailSendEventListener implements ShouldQueue
      */
     public function handle(MailSendEvent $event)
     {
+        Log::info('mail send start');
         $getData = $event->getData();
 
         $to = $getData->email;
