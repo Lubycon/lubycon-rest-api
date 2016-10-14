@@ -46,7 +46,6 @@ class CreateCountriesTable extends Migration
             ]);
             $table->enum('continent',['asia', 'europe', 'africa', 'americas', 'oceania','undecided']);
             $table->string('name',255);
-            $table->timestamps();
         });
     }
 

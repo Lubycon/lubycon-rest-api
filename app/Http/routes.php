@@ -21,3 +21,5 @@ Route::post('/certs/pwd', 'CertificateController@certPassword');
 
 Route::put('mail/signup','mailSendController@againSignupTokenSet');
 Route::put('mail/pwd','mailSendController@passwordResetTokenSend');
+
+Route::get('data/{id}','dataResponseController@dataSimpleResponse');

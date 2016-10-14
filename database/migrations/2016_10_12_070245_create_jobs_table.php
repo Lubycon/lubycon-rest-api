@@ -2,7 +2,6 @@
 
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
-use Illuminate\Database\Eloquent\Model;
 
 class CreateJobsTable extends Migration
 {
@@ -16,7 +15,6 @@ class CreateJobsTable extends Migration
         Schema::create('jobs', function (Blueprint $table) {
             $table->increments('job_id');
             $table->string('occupation',255);
-            $table->timestamps();
         });
     }
 
