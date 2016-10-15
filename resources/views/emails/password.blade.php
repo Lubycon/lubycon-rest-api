@@ -1,1 +1,1 @@
-Click here to reset your password: {{ url('password/reset/'.$token) }}
+Click here to reset your password: http://{{ $_SERVER['HTTP_ORIGIN'].'password/reset/'.$token }}

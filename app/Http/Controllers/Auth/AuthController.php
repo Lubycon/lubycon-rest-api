@@ -111,15 +111,14 @@ class AuthController extends Controller
             if(Auth::once($credentials)){
                 $id = Auth::user()->getAuthIdentifier();
                 CheckContoller::insertSignupToken($id);
-                CheckContoller::insertRememberToken($id);
+                $rememberToken = CheckContoller::insertRememberToken($id);
             }
 
             mailSendController::signupTokenSet(Auth::user());
 
-            $result = (object)array(
-                "email" => Auth::user()->email
-            );
-            return response()->success($result);
+            return response()->success([
+                "token" => $rememberToken
+            ]);
         }
     }
 

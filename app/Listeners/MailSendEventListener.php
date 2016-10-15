@@ -34,7 +34,10 @@ class MailSendEventListener //implements ShouldQueue
 
         $to = $getData->email;
         $subject = $getData->subject;
-        $data = ['user'  => $getData->user];
+        $data = [
+            'user' => $getData->user,
+            'token' => $getData->token
+        ];
 
         Mail::send("emails.".$getData->type, $data, function($message) use($to, $subject) {
             $message->to($to)->subject($subject);

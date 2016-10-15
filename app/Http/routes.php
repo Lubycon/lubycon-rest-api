@@ -1,25 +1,45 @@
 <?php
 
-Route::post('/members/signin', 'Auth\AuthController@signin');
-Route::put('/members/signout', 'Auth\AuthController@signout');
-Route::post('/members/signup', 'Auth\AuthController@signup');
-Route::put('/members/signdrop', 'Auth\AuthController@signdrop');
-Route::put('/members/signrestore/{id}', 'Auth\AuthController@signrestore');
+//about members event
+Route::group(['prefix' => '/members/'], function () {
+    //authenicates
+    Route::post('signin', 'Auth\AuthController@signin');
+    Route::put('signout', 'Auth\AuthController@signout');
+    Route::post('signup', 'Auth\AuthController@signup');
+    Route::put('signdrop', 'Auth\AuthController@signdrop');
+    Route::put('signrestore/{id}', 'Auth\AuthController@signrestore');
 
-Route::post('/members/isexist' , 'Auth\AuthController@checkMemberExist');
-Route::get('/members/simple', 'Auth\AuthController@simpleRetrieve');
-Route::get('/members/detail', 'Auth\AuthController@getRetrieve');
-Route::post('/members/detail', 'Auth\AuthController@postRetrieve');
+    //member data check and get
+    Route::post('isexist' , 'Auth\AuthController@checkMemberExist');
+    Route::get('simple', 'Auth\AuthController@simpleRetrieve');
+    Route::get('detail', 'Auth\AuthController@getRetrieve');
+    Route::post('detail', 'Auth\AuthController@postRetrieve');
 
-Route::post('/members/pwd/mail', 'Auth\PasswordController@postEmail');
-Route::post('/members/pwd/reset', 'Auth\PasswordController@postReset');
+    //about password
+    Route::group(['prefix' => 'pwd/'], function () {
+        Route::post('mail', 'Auth\PasswordController@postEmail');
+        Route::post('reset', 'Auth\PasswordController@postReset');
+    });
+});
 
-Route::post('/certs/token', 'CertificateController@certToken');
-Route::get('/certs/signup/time', 'CertificateController@certTokenTimeCheck');
-Route::post('/certs/signup/code', 'CertificateController@certSignupToken');
-Route::post('/certs/pwd', 'CertificateController@certPassword');
+//certificate receive data
+Route::group(['prefix' => '/certs/'], function () {
+    Route::post('token', 'CertificateController@certToken');
+    Route::post('pwd', 'CertificateController@certPassword');
 
-Route::put('mail/signup','mailSendController@againSignupTokenSet');
-Route::put('mail/pwd','mailSendController@passwordResetTokenSend');
+    Route::group(['prefix' => 'signup/'], function () {
+        Route::get('time', 'CertificateController@certTokenTimeCheck');
+        Route::post('code', 'CertificateController@certSignupToken');
+    });
+});
 
-Route::get('data/{id}','dataResponseController@dataSimpleResponse');
+//just send mail
+Route::group(['prefix' => '/mail/'], function () {
+    Route::put('signup','mailSendController@againSignupTokenSet');
+    Route::put('pwd','mailSendController@passwordResetTokenSend');
+});
+
+//provide databases data
+Route::group(['prefix' => '/data/'], function () {
+    Route::get('id','dataResponseController@dataSimpleResponse');
+});

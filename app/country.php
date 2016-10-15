@@ -10,4 +10,5 @@ class country extends Model
     {
         return $this->belongsTo('App\User');
     }
+    protected $guarded = array('*');
 }

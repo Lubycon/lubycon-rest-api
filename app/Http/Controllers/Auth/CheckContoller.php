@@ -22,12 +22,14 @@ class CheckContoller extends Controller
 
         $user->remember_token = $token;
         $user->save();
+
+        return $token;
     }
 
     public static function insertSignupToken($id){
         $user = User::findorfail($id);
 
-        $recoded = signup_allow::find($id);
+        $recoded = signup_allow::where('email', $user->email);
 
         if(!is_null($recoded)){
             $recoded->delete();
