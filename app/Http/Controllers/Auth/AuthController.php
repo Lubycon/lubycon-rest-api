@@ -1,202 +1,297 @@
 <?php
-//
-//namespace App\Http\Controllers\Auth;
-//
-////use cors;
-//use Auth;
-////use Request;
-//use App\User;
-//use Validator;
-//use App\Http\Controllers\Controller;
-//use Illuminate\Foundation\Auth\ThrottlesLogins;
-////use Illuminate\Http\Response;
-//use Illuminate\Foundation\Auth\AuthenticatesAndRegistersUsers;
-//
-//class AuthController extends Controller
-//{
-//    /*
-//    |--------------------------------------------------------------------------
-//    | Registration & Login Controller
-//    |--------------------------------------------------------------------------
-//    |
-//    | This controller handles the registration of new users, as well as the
-//    | authentication of existing users. By default, this controller uses
-//    | a simple trait to add these behaviors. Why don't you explore it?
-//    |
-//    */
-//
-//    use AuthenticatesAndRegistersUsers, ThrottlesLogins;
-//
-//    /**
-//     * Create a new authentication controller instance.
-//     *
-//     * @return void
-//     */
-//    public function __construct()
-//    {
-//        $this->middleware('guest', ['except' => 'getLogout']);
-//    }
-//
-//    /**
-//     * Get a validator for an incoming registration request.
-//     *
-//     * @param  array  $data
-//     * @return \Illuminate\Contracts\Validation\Validator
-//     */
-//    protected function validator(array $data)
-//    {
-//        return Validator::make($data, [
-//            'name' => 'required|max:255',
-//            'email' => 'required|email|max:255|unique:users',
-//            'password' => 'required|confirmed|min:6',
-//        ]);
-//    }
-//
-//    protected function signin()
-//    {
-//        $data = Request::json()->all();
-//        $credentials = [
-//            'email'    => $data['email'],
-//            'password' => $data['password']
-//        ];
-//
-//        if (! Auth::attempt($credentials,true)) {
-//            return 'Incorrect username and password combination';
-//        }
-//        return response()->json([
-//            'X-lubycon-token' => Auth::user()->remember_token
-//        ]);
-//    }
-//
-//    protected function signout()
-//    {
-//        Auth::logout();
-//        return response()->json([
-//            'state' => 'signout'
-//        ]);
-//    }
-//
-//    /**
-//     * Create a new user instance after a valid registration.
-//     *
-//     * @param  array  $data
-//     * @return User
-//     */
-//    protected function signup()
-//    {
-//        $data = Request::json()->all();
-//
-//        return User::create([
-//            'name' => $data['name'],
-//            'email' => $data['email'],
-//            'password' => bcrypt($data['password']),
-//            'sns_code' => $data['snsCode'],
-//            'country_id' => $data['country'],
-//            'is_active' => 'inactive',
-//            'is_accept_terms' => $data['newletter'].'11',
-//            'is_opened' => 0000
-//        ]);
-//    }
-//}
-
 
 namespace App\Http\Controllers\Auth;
 
 use Auth;
-use Request;
+use Event;
 use App\User;
+use App\signup_allow;
 use Validator;
+use Illuminate\Http\Request;
+use App\Http\Controllers\mailSendController;
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Response;
 use Illuminate\Foundation\Auth\ThrottlesLogins;
 use Illuminate\Foundation\Auth\AuthenticatesAndRegistersUsers;
 
+
 class AuthController extends Controller
 {
-    /*
-    |--------------------------------------------------------------------------
-    | Registration & Login Controller
-    |--------------------------------------------------------------------------
-    |
-    | This controller handles the registration of new users, as well as the
-    | authentication of existing users. By default, this controller uses
-    | a simple trait to add these behaviors. Why don't you explore it?
-    |
-    */
-
     use AuthenticatesAndRegistersUsers, ThrottlesLogins;
 
-    /**
-     * Create a new authentication controller instance.
-     *
-     * @return void
-     */
     public function __construct()
     {
         $this->middleware('guest', ['except' => 'getLogout']);
     }
 
-    /**
-     * Get a validator for an incoming registration request.
-     *
-     * @param  array  $data
-     * @return \Illuminate\Contracts\Validation\Validator
-     */
     protected function validator(array $data)
     {
-        return Validator::make($data, [
+        $rules = [
             'name' => 'required|max:255',
             'email' => 'required|email|max:255|unique:users',
-            'password' => 'required|confirmed|min:6',
-        ]);
+            'password' => 'required|min:6',
+            //'password' => 'required|confirmed|min:6',
+        ];
+        return Validator::make($data, $rules);
     }
-
-    protected function signin()
+    protected function signin(Request $request)
     {
-        $data = Request::json()->all();
+        $data = $request->json()->all();
         $credentials = [
             'email'    => $data['email'],
             'password' => $data['password']
         ];
 
-        if (! Auth::attempt($credentials,true)) {
-            return 'Incorrect username and password combination';
+        if ( !Auth::once($credentials)) {
+            $status = (object)array(
+                'code' => '0010'
+            );
+            return response()->error($status);
         }
-        return response()->json([
-            'X-lubycon-token' => Auth::user()->remember_token
-        ]);
+
+        if(Auth::user()->is_active == 'active'){
+            $id = Auth::user()->getAuthIdentifier();
+            CheckContoller::insertRememberToken($id);
+        }
+
+        if (Auth::user()->is_active == 'inactive'){
+            $result = (object)array(
+                'token' => Auth::user()->remember_token,
+                'condition' => 'inactive',
+            );
+            return response()->success($result);
+        }
+
+
+        $result = (object)array(
+            'token' => Auth::user()->remember_token,
+            'condition' => 'active',
+         );
+
+        return response()->success($result);
     }
+
 
     protected function signout()
     {
-        Auth::logout();
-        return response()->json([
-            'state' => 'signout'
-        ]);
+        // need somthing other logic
     }
 
-    /**
-     * Create a new user instance after a valid registration.
-     *
-     * @param  array  $data
-     * @return User
-     */
-    protected function signup()
+    protected function signup(Request $request)
     {
-        $data = Request::json()->all();
-
-        return User::create([
-            'name' => $data['name'],
+        $data = $request->json()->all();
+        $createData = [
+            'name' => $data['nickname'],
             'email' => $data['email'],
             'password' => bcrypt($data['password']),
-            'sns_code' => $data['snsCode'],
-            'country_id' => $data['country'],
+            'sns_code' => 0,
+            //'sns_code' => $data['snsCode'],
+            'country_id' => 'test',
+            //'country_id' => $data['country'],
             'is_active' => 'inactive',
-            'is_accept_terms' => $data['newletter'].'11',
+            'is_accept_terms' => '111',
+            //'is_accept_terms' => $data['newletter'].'11',
             'is_opened' => 0000
-        ]);
+        ];
+
+        $validator = $this->validator($createData);
+        if ($validator->fails()) {
+            $status = (object)array(
+                'code' => '0030',
+                "devMsg" => $validator->errors()
+            );
+            return response()->error($status);
+        };
+
+        if(User::create($createData)){
+            $credentials = [
+                'email'    => $data['email'],
+                'password' => $data['password']
+            ];
+
+            if(Auth::once($credentials)){
+                $id = Auth::user()->getAuthIdentifier();
+                CheckContoller::insertSignupToken($id);
+                $rememberToken = CheckContoller::insertRememberToken($id);
+            }
+
+            mailSendController::signupTokenSet(Auth::user());
+
+            return response()->success([
+                "token" => $rememberToken
+            ]);
+        }
+    }
+
+    protected function signdrop(Request $request)
+    {
+        $tokenData = CheckContoller::checkToken($request);
+
+        $user = User::find($tokenData->id);
+        $userExist = CheckContoller::checkUserExistById($tokenData->id);
+
+        if($userExist){
+            $user->delete();
+            return response()->success();
+        }else{
+            $status = (object)array(
+                'code' => '0030'
+            );
+            return response()->error($status);
+        };
+    }
+
+    protected function signrestore($id){
+        $user = User::onlyTrashed()->find($id);
+        $userExist = CheckContoller::checkUserExistByIdOnlyTrashed($id);
+
+        if($userExist){
+            $user->restore();
+            return response()->success();
+        }else{
+            $status = (object)array(
+                'code' => '0030'
+            );
+            return response()->error($status);
+        };
+    }
+
+    protected function simpleRetrieve(Request $request){
+        $tokenData = CheckContoller::checkToken($request);
+
+        $findUser = User::find($tokenData->id);
+        $userExist = CheckContoller::checkUserExistById($tokenData->id);
+
+        if($userExist){
+            $result = (object)array(
+                "id" => $findUser->id,
+                "email" => $findUser->email,
+                "name" => $findUser->name,
+                "profile" => $findUser->profile,
+                "job" => $findUser->job,
+                "country" => $findUser->country,
+                "city" => $findUser->city,
+                "position" => $findUser->position,
+                "description" => $findUser->description
+            );
+            return response()->success($result);
+        }else{
+            $status = (object)array(
+                'code' => '0030'
+            );
+            return response()->error($status);
+        }
+    }
+
+    protected function getRetrieve($id)
+    {
+        $findUser = User::find($id);
+        $userExist = CheckContoller::checkUserExistById($id);
+        if($userExist){
+            $result = (object)array(
+                'userData' => (object)array(
+                    "id" => $findUser->id,
+                    "email" => $findUser->email,
+                    "name" => $findUser->name,
+                    "profile" => $findUser->profile_img,
+                    "job" => $findUser->job,
+                    "country" => $findUser->country,
+                    "city" => $findUser->city,
+                    "mobile" => $findUser->telephone,
+                    "fax" => $findUser->fax_number,
+                    "website" => $findUser->web_url,
+                    "position" => $findUser->company,
+                    "description" => $findUser->description
+                ),
+                "language" => (object)array(
+                    "name" => null,
+                    "level" => null
+                ),
+                "history" => (object)array(
+                    "year" => null,
+                    "month" => null,
+                    "category" => null,
+                    "content" => null
+                ),
+                "publicOption" => (object)array(
+                    "mobile" => null,
+                    "fax" => null,
+                    "website" => null
+                )
+            );
+            return response()->success($result);
+        }else{
+            $status = (object)array(
+                'code' => '0030',
+                "devMsg" => "user number " . id . " dose not exist"
+            );
+            return response()->error($status);
+        }
+    }
+    protected function postRetrieve(Request $request)
+    {
+        $data = $request->json()->all();
+        $tokenData = CheckContoller::checkToken($request);
+
+        $findUser = User::find($tokenData->id);
+        $userExist = CheckContoller::checkUserExistById($tokenData->id);
+        if($userExist){
+            $result = (object)array(
+                'userData' => (object)array(
+                    $findUser->id = $data->id,
+                    $findUser->email = $data->email,
+                    $findUser->name = $data->name,
+                    $findUser->profile = $data->profile,
+                    $findUser->job = $data->job,
+                    $findUser->country = $data->country,
+                    $findUser->city = $data->city,
+                    $findUser->mobile = $data->mobile,
+                    $findUser->fax = $data->fax,
+                    $findUser->website = $data->website,
+                    $findUser->position = $data->position,
+                    $findUser->description = $data->description
+                ),
+                "language" => (object)array(
+                    "name" => null,
+                    "level" => null
+                ),
+                "history" => (object)array(
+                    "year" => null,
+                    "month" => null,
+                    "category" => null,
+                    "content" => null
+                ),
+                "publicOption" => (object)array(
+                    "mobile" => null,
+                    "fax" => null,
+                    "website" => null
+                )
+            );
+            return response()->success($result);
+        }else{
+            $status = (object)array(
+                'code' => '0030',
+                "devMsg" => "user number " . $tokenData->id . " dose not exist"
+            );
+            return response()->error($status);
+        }
+    }
+
+    protected function checkMemberExist(Request $request)
+    {
+        $data = $request->json()->all();
+        $check = CheckContoller::checkUserExistByEmail($data);
+
+        if($check){
+            $result = (object)array(
+                "exist" => true
+            );
+            return response()->success($result);
+        }else{
+            $result = (object)array(
+                "exist" => false
+            );
+            return response()->success($result);
+        }
     }
 }
-
-
 

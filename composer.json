@@ -7,8 +7,9 @@
     "require": {
         "php": ">=5.5.9",
         "laravel/framework": "5.1.*",
-        "netresearch/jsonmapper": "^0.11.0",
-	"aws/aws-sdk-php-laravel": "~3.0"
+        "asm89/stack-cors": "dev-master as 0.2.2",
+        "barryvdh/laravel-cors": "^0.7.3",
+        "pda/pheanstalk": "^3.1"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",

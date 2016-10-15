@@ -138,6 +138,8 @@ return [
         Illuminate\View\ViewServiceProvider::class,
         Aws\Laravel\AwsServiceProvider::class,
 
+        Barryvdh\Cors\ServiceProvider::class,
+
         /*
          * Application Service Providers...
          */
@@ -145,7 +147,7 @@ return [
         App\Providers\AuthServiceProvider::class,
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
-
+        App\Providers\ResponseMacroServiceProvider::class,
     ],
 
     /*
