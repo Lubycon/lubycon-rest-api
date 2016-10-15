@@ -59,10 +59,10 @@ class CertificateController extends Controller
 
     protected function certSignupToken(Request $request){
         $data = CheckContoller::checkToken($request);
-        $token = $request->only('token');
+        $code = $request->only('token');
         $user = User::find($data->id);
 
-        $validateToken = signup_allow::whereRaw("email = '".$user->email."' and token = '".$token['token']."'")->get();
+        $validateToken = signup_allow::whereRaw("email = '".$user->email."' and token = '".$code['code']."'")->get();
 
         if(!$validateToken->isempty()){
             $this->activeUser($user);
