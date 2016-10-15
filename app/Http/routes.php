@@ -12,8 +12,8 @@ Route::group(['prefix' => '/members/'], function () {
     //member data check and get
     Route::post('isexist' , 'Auth\AuthController@checkMemberExist');
     Route::get('simple', 'Auth\AuthController@simpleRetrieve');
-    Route::get('detail', 'Auth\AuthController@getRetrieve');
-    Route::post('detail', 'Auth\AuthController@postRetrieve');
+    Route::get('detail/{id}', 'Auth\AuthController@getRetrieve');
+    Route::post('detail/{id}', 'Auth\AuthController@postRetrieve');
 
     //about password
     Route::group(['prefix' => 'pwd/'], function () {

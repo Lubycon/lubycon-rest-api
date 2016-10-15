@@ -21,6 +21,7 @@ class AddUsersCoulmns extends Migration
             $table->integer('is_opened')->unsigned();
             $table->string('token',100)->nullable();
             $table->string('profile_img')->nullable();
+            $table->string('description',255)->nullbable();
             $table->string('company',255)->nullable();
             $table->string('city',255)->nullable();
             $table->string('telephone',255)->nullable();
@@ -46,6 +47,7 @@ class AddUsersCoulmns extends Migration
             $table->dropColumn('token');
             $table->dropColumn('profile_img');
             $table->dropColumn('company');
+            $table->dropColumn('description');
             $table->dropColumn('city');
             $table->dropColumn('telephone');
             $table->dropColumn('fax_number');

@@ -182,26 +182,24 @@ class AuthController extends Controller
         }
     }
 
-    protected function getRetrieve(Request $request)
+    protected function getRetrieve($id)
     {
-        $tokenData = CheckContoller::checkToken($request);
-
-        $findUser = User::find($tokenData->id);
-        $userExist = CheckContoller::checkUserExistById($tokenData->id);
+        $findUser = User::find($id);
+        $userExist = CheckContoller::checkUserExistById($id);
         if($userExist){
             $result = (object)array(
                 'userData' => (object)array(
                     "id" => $findUser->id,
                     "email" => $findUser->email,
                     "name" => $findUser->name,
-                    "profile" => $findUser->profile,
+                    "profile" => $findUser->profile_img,
                     "job" => $findUser->job,
                     "country" => $findUser->country,
                     "city" => $findUser->city,
-                    "mobile" => $findUser->mobile,
-                    "fax" => $findUser->fax,
-                    "website" => $findUser->website,
-                    "position" => $findUser->position,
+                    "mobile" => $findUser->telephone,
+                    "fax" => $findUser->fax_number,
+                    "website" => $findUser->web_url,
+                    "position" => $findUser->company,
                     "description" => $findUser->description
                 ),
                 "language" => (object)array(
@@ -224,7 +222,7 @@ class AuthController extends Controller
         }else{
             $status = (object)array(
                 'code' => '0030',
-                "devMsg" => "user number " . $tokenData->id . " dose not exist"
+                "devMsg" => "user number " . id . " dose not exist"
             );
             return response()->error($status);
         }
