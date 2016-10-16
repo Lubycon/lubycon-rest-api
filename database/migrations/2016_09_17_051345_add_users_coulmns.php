@@ -17,8 +17,8 @@ class AddUsersCoulmns extends Migration
             $table->integer('job')->unsigned()->nullable();
             $table->integer('country')->unsigned()->nullable();
             $table->enum('is_active', ['active','inactive','drop']);
-            $table->integer('is_accept_terms')->unsigned();
-            $table->integer('is_opened')->unsigned();
+            $table->string('is_accept_terms',255);
+            $table->string('is_opened',255);
             $table->string('token',100)->nullable();
             $table->string('profile_img')->nullable();
             $table->string('description',255)->nullbable();

@@ -41,5 +41,5 @@ Route::group(['prefix' => '/mail/'], function () {
 
 //provide databases data
 Route::group(['prefix' => '/data/'], function () {
-    Route::get('id','dataResponseController@dataSimpleResponse');
+    Route::get('{id}','dataResponseController@dataSimpleResponse');
 });
