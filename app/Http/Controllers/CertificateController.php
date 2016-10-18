@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use DB;
 use App\Http\Controllers\Auth\CheckContoller;
 use Auth;
 use Carbon\Carbon;
@@ -39,17 +40,30 @@ class CertificateController extends Controller
         $data = CheckContoller::checkToken($request);
 
         $createTime = signup_allow::find($data->id)->created_at;
-        $hours = 6;
-        $diffTime = $this->checkDiffTime($createTime,$hours);
+        $minutes = 360;
+        $diffTime = $this->checkDiffTime($createTime,$minutes);
 
         return response()->success([
             "time" => $diffTime
         ]);
     }
 
-    protected function checkDiffTime($createTime,$hours){
+    protected function certPasswordTimeCheck(Request $request){
+        $data = $request->json()->all();
+
+        $createTime = new Carbon(DB::table('password_resets')->where('email','=',$data['email'])->value('created_at'));
+
+        $minutes = 30;
+        $diffTime = $this->checkDiffTime($createTime,$minutes);
+
+        return response()->success([
+            "time" => $diffTime
+        ]);
+    }
+
+    protected function checkDiffTime($createTime,$minutes){
         $startTime = Carbon::now();
-        $endTime = $createTime->addhours($hours);
+        $endTime = $createTime->addMinutes($minutes);
 
         if($startTime > $endTime){
             return 0;
@@ -60,6 +74,25 @@ class CertificateController extends Controller
     protected function certSignupToken(Request $request){
         $data = CheckContoller::checkToken($request);
         $code = $request->only('code');
+        $user = User::find($data->id);
+
+        $validateToken = signup_allow::whereRaw("email = '".$user->email."' and token = '".$code['code']."'")->get();
+
+        if(!$validateToken->isempty()){
+            $this->activeUser($user);
+            $validateToken[0]->delete();
+
+            return response()->success([
+                "validity" => true
+            ]);
+        }
+        return response()->success([
+            "validity" => false
+        ]);
+    }
+
+    protected function certPasswordToken(Request $request){ // edit
+        $code = $request->only('email');
         $user = User::find($data->id);
 
         $validateToken = signup_allow::whereRaw("email = '".$user->email."' and token = '".$code['code']."'")->get();

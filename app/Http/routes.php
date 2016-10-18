@@ -31,12 +31,18 @@ Route::group(['prefix' => '/certs/'], function () {
         Route::get('time', 'CertificateController@certTokenTimeCheck');
         Route::post('code', 'CertificateController@certSignupToken');
     });
+
+
+    Route::group(['prefix' => 'password/'], function () {
+        Route::post('time', 'CertificateController@certPasswordTimeCheck');
+        //Route::get('code', '');
+    });
 });
 
 //just send mail
 Route::group(['prefix' => '/mail/'], function () {
     Route::put('signup','mailSendController@againSignupTokenSet');
-    Route::put('pwd','mailSendController@passwordResetTokenSend');
+    Route::put('pwd','Auth\PasswordController@postEmail');
 });
 
 //provide databases data

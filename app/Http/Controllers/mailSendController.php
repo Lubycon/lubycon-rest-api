@@ -61,12 +61,12 @@ class mailSendController extends Controller
 
         $data = $request->json()->all();
 
-        Event::fire(new PasswordMailSendEvent([
+        $sendMail = Event::fire(new PasswordMailSendEvent([
             'email'    =>  $data['email'],
             'subject'  => 'Your Password Reset Link',
             'token' => mailSendController::getSignupToken($data['email']),
         ]));
 
-        return 'sueccess';
+        return $sendMail;
     }
 }

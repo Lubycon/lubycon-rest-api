@@ -186,6 +186,10 @@ class AuthController extends Controller
     {
         $findUser = User::find($id);
         $userExist = CheckContoller::checkUserExistById($id);
+
+        $job = $findUser->jobs;
+        $country = $findUser->countries;
+
         if($userExist){
             return response()->success([
                 'userData' => (object)array(
@@ -193,8 +197,8 @@ class AuthController extends Controller
                     "email" => $findUser->email,
                     "name" => $findUser->name,
                     "profile" => $findUser->profile_img,
-                    "job" => $findUser->jobs->occupation,
-                    "country" => $findUser->countries->name,
+                    "job" => is_null($job) ? null : $findUser->jobs->occupation,
+                    "country" => is_null($country) ? null : $findUser->countries->name,
                     "city" => $findUser->city,
                     "mobile" => $findUser->telephone,
                     "fax" => $findUser->fax_number,

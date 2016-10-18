@@ -28,10 +28,9 @@ class PasswordMailSendEventListener implements ShouldQueue
         $email = ["email" => $getData['email']];
         $subject = $getData['subject'];
 
-        Password::sendResetLink($email, function (Message $message) use($subject) {
+        return Password::sendResetLink($email, function (Message $message) use($subject) {
             $message->subject($subject);
         });
 
-        Log::info('passowrd mail sended');
     }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Auth;
 
+use DB;
 use Validator;
 use App\Http\Controllers\mailSendController;
 use App\Http\Controllers\Controller;
@@ -42,22 +43,14 @@ class PasswordController extends Controller
 
         $response = mailSendController::passwordResetTokenSend($request);
 
-        switch ($response) {
-            case Password::RESET_LINK_SENT:
-                return response()->success();
-            case Password::INVALID_USER:
-                $status = (object)array(
-                    'code' => '0030'
-                );
-                return response()->error($status);
-        }
+        return response()->success();
     }
 
     public function postReset(Request $request)
     {
+        $data = $request->json()->all();
         $validator = Validator::make($request->all(), [
-            'token' => 'required',
-            'email' => 'required|email',
+            'code' => 'required',
             'password' => 'required|min:6'
         ]);
 
@@ -69,8 +62,11 @@ class PasswordController extends Controller
             return response()->error($status);
         }
 
-        $credentials = $request->only(
-            'email', 'password', 'password_confirmation', 'token'
+        $credentials = array(
+            "email" => DB::table('password_resets')->where('token','=',$data['code'])->value('email'),
+            "password" => $data['password'],
+            "password_confirmation" => $data['password'],
+            "token" => $data['code']
         );
 
         $response = Password::reset($credentials, function ($user, $password) {
