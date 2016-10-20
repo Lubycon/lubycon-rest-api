@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Auth;
 
+use Carbon\Carbon;
 use DB;
 use Auth;
 use Event;
@@ -231,8 +232,6 @@ class AuthController extends Controller
         $findUser = User::find($tokenData->id);
         $userExist = CheckContoller::checkUserExistById($tokenData->id);
 
-        //return $this->insertDataGroup($data['language'],$id);
-
         if($userExist && $id == $findUser->id){
                 $this->resetDataGroup($findUser);
 
@@ -248,12 +247,12 @@ class AuthController extends Controller
                 $findUser->description = $data['userData']['description'];
                 $findUser->is_opened = $this->isOpendRender($data);
                 DB::table('languages')->insert($this->insertDataGroup($data['language'],$id));
-                //DB::table('careers')->insert($this->insertDataGroup($data['history'],$id));
+                DB::table('careers')->insert($this->setCareerGroup($data['history'],$id));
             return response()->success($findUser);
         }else{
             $status = (object)array(
                 'code' => '0030',
-                "devMsg" => "user number " . $tokenData->id . " dose not exist"
+                "devMsg" => "dose not match user id"
             );
             return response()->error($status);
         }
@@ -269,6 +268,17 @@ class AuthController extends Controller
             $array[$key]['user_id'] = (int)$id;
         }
         return $array;
+    }
+    protected function setCareerGroup($array,$id){
+        $newGroup = array();
+
+        foreach($array as $key => $value){
+            $newGroup[$key]['user_id'] = (int)$id;
+            $newGroup[$key]['contents'] = $array[$key]['contents'];
+            $newGroup[$key]['date'] = Carbon::parse($array[$key]['date'])->toDateTimeString();
+            $newGroup[$key]['category'] = $array[$key]['category'];
+        }
+        return $newGroup;
     }
     protected function resetDataGroup($user){
         DB::table('languages')->where('user_id','=',$user->id)->delete();

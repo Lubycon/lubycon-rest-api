@@ -14,7 +14,7 @@ class CreateJobsTable extends Migration
     {
         Schema::create('jobs', function (Blueprint $table) {
             $table->increments('job_id');
-            $table->string('occupation',255);
+            $table->enum('occupation',['Artist','Designer','Developer','Student','Others']);
         });
     }
 
