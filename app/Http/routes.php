@@ -35,7 +35,7 @@ Route::group(['prefix' => '/certs/'], function () {
 
     Route::group(['prefix' => 'password/'], function () {
         Route::post('time', 'CertificateController@certPasswordTimeCheck');
-        //Route::get('code', '');
+        Route::post('code', 'CertificateController@certPasswordToken');
     });
 });
 

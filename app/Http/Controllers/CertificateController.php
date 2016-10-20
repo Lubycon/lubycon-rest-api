@@ -92,15 +92,12 @@ class CertificateController extends Controller
     }
 
     protected function certPasswordToken(Request $request){ // edit
-        $code = $request->only('email');
-        $user = User::find($data->id);
+        $code = $request->only('code');
+        $codeCheck = DB::table('password_resets')->where('token','=',$code['code'])->first();
 
-        $validateToken = signup_allow::whereRaw("email = '".$user->email."' and token = '".$code['code']."'")->get();
+        return var_dump($codeCheck);
 
-        if(!$validateToken->isempty()){
-            $this->activeUser($user);
-            $validateToken[0]->delete();
-
+        if(!is_null($codeCheck)){
             return response()->success([
                 "validity" => true
             ]);
