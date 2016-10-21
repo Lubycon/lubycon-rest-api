@@ -2,6 +2,7 @@
 
 namespace App\Exceptions;
 
+use Log;
 use Exception;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
@@ -46,19 +47,25 @@ class Handler extends ExceptionHandler
             $e = new NotFoundHttpException($e->getMessage(), $e);
         }
 
-        //return parent::render($request , $e); //for develop
-        return $this->response($request, $e); //for provide
+        log::error($e);
+
+        if(env('APP_DEBUG')){
+            return parent::render($request , $e); //for develop
+        }else{
+            return $this->response($request, $e); //for provide
+        }
     }
 
     public function response($request, Exception $e)
     {
-        $errorMsg = $e->getMessage();
-        if ($this->isHttpException($e)) {
-            $errorMsg .= 'errorCode is '.$e->getStatusCode();
-        }
+        $exception = array(
+            "code" => $e->getStatusCode(),
+            "msg" => $e->getMessage(),
+        );
+
         $status = (object)array(
             'code' => '9999',
-            'devMsg' => 'errorcode : '.$errorMsg
+            'devMsg' => $exception
         );
         return response()->error($status);
     }

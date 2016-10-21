@@ -57,7 +57,7 @@ class AuthController extends Controller
         if (Auth::user()->is_active == 'inactive'){
             $result = (object)array(
                 'token' => Auth::user()->remember_token,
-                'condition' => 'inactive',
+                'condition' => 'inactive'
             );
             return response()->success($result);
         }
@@ -274,7 +274,7 @@ class AuthController extends Controller
 
         foreach($array as $key => $value){
             $newGroup[$key]['user_id'] = (int)$id;
-            $newGroup[$key]['contents'] = $array[$key]['contents'];
+            $newGroup[$key]['contents'] = $array[$key]['content'];
             $newGroup[$key]['date'] = Carbon::parse($array[$key]['date'])->toDateTimeString();
             $newGroup[$key]['category'] = $array[$key]['category'];
         }
