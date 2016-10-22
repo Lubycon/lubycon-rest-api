@@ -210,10 +210,10 @@ class AuthController extends Controller
                 "language" => $findUser->languages,
                 "history" => $findUser->careers,
                 "publicOption" => (object)array(
-                    "email" => $findUser->is_opened[0],
-                    "mobile" => $findUser->is_opened[1],
-                    "fax" => $findUser->is_opened[2],
-                    "website" => $findUser->is_opened[3]
+                    "email" => $findUser->is_opened[0] == 1 ? true : false,
+                    "mobile" => $findUser->is_opened[1] == 1 ? true : false,
+                    "fax" => $findUser->is_opened[2] == 1 ? true : false,
+                    "website" => $findUser->is_opened[3] == 1 ? true : false
                 )
             ]);
         }else{
@@ -235,20 +235,19 @@ class AuthController extends Controller
         if($userExist && $id == $findUser->id){
                 $this->resetDataGroup($findUser);
 
-                $findUser->name = $data['userData']['name'];
-                $findUser->profile_img = $data['userData']['profile'];
-                $findUser->job = $this->jobDataEncode($data['userData']['job']);
-                $findUser->country = $this->countryDataEncode($data['userData']['country']);
-                $findUser->city = $data['userData']['city'];
-                $findUser->telephone = $data['userData']['mobile'];
-                $findUser->fax_number = $data['userData']['fax'];
-                $findUser->web_url = $data['userData']['website'];
-                $findUser->company = $data['userData']['position'];
-                $findUser->description = $data['userData']['description'];
+                //$findUser->profile_img = $data['userData']['profile'];
+                $findUser->job = $this->jobDataEncode($data['userData']->job);
+                $findUser->country = $this->countryDataEncode($data['userData']->country);
+                $findUser->city = $data['userData']->city;
+                $findUser->telephone = $data['userData']->mobile;
+                $findUser->fax_number = $data['userData']->fax;
+                $findUser->web_url = $data['userData']->website;
+                $findUser->company = $data['userData']->position;
+                $findUser->description = $data['userData']->description;
                 $findUser->is_opened = $this->isOpendRender($data);
                 DB::table('languages')->insert($this->insertDataGroup($data['language'],$id));
                 DB::table('careers')->insert($this->setCareerGroup($data['history'],$id));
-            return response()->success($findUser);
+            return response()->success($data);
         }else{
             $status = (object)array(
                 'code' => '0030',
@@ -287,9 +286,9 @@ class AuthController extends Controller
 
     protected function isOpendRender($data){
         $emailOption = '1';
-        $mobileOption = $data['publicOption']['mobile'] == 'public' ? '1' : '0';
-        $faxOption = $data['publicOption']['fax'] == 'public' ? '1' : '0';
-        $webOption = $data['publicOption']['website'] == 'public' ? '1' : '0';
+        $mobileOption = $data['publicOption']->mobile == 'public' ? '1' : '0';
+        $faxOption = $data['publicOption']->fax == 'public' ? '1' : '0';
+        $webOption = $data['publicOption']->website == 'public' ? '1' : '0';
 
         return $emailOption.$mobileOption.$faxOption.$webOption;
     }
