@@ -24,7 +24,7 @@ class User extends Model implements AuthenticatableContract,
         'email', 
         'password',
         'sns_code',
-        'country_code',
+        'country',
         'is_active',
         'is_accept_terms',
         'is_opened'
