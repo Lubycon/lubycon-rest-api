@@ -91,7 +91,6 @@ class AuthController extends Controller
             'is_active' => 'inactive',
             'is_accept_terms' => '111',
             //'is_accept_terms' => $data['newletter'].'11',
-            'is_opened' => '0101'
         ];
 
         $validator = $this->validator($createData);
@@ -201,19 +200,19 @@ class AuthController extends Controller
                     "job" => is_null($job) ? null : $findUser->jobs->name,
                     "country" => is_null($country) ? null : $findUser->countries->name,
                     "city" => $findUser->city,
-                    "mobile" => $findUser->telephone,
-                    "fax" => $findUser->fax_number,
-                    "website" => $findUser->web_url,
+                    "mobile" => $findUser->mobile,
+                    "fax" => $findUser->fax,
+                    "website" => $findUser->web,
                     "position" => $findUser->company,
                     "description" => $findUser->description
                 ),
                 "language" => $findUser->languages,
                 "history" => $findUser->careers,
                 "publicOption" => (object)array(
-                    "email" => $findUser->is_opened[0] == 1 ? 'public' : 'private',
-                    "mobile" => $findUser->is_opened[1] == 1 ? 'public' : 'private',
-                    "fax" => $findUser->is_opened[2] == 1 ? 'public' : 'private',
-                    "website" => $findUser->is_opened[3] == 1 ? 'public' : 'private'
+                    "email" => $findUser->email_public,
+                    "mobile" => $findUser->mobile_public,
+                    "fax" => $findUser->fax_public,
+                    "website" => $findUser->web_public
                 )
             ]);
         }else{
@@ -239,12 +238,14 @@ class AuthController extends Controller
                 $findUser->job = $this->jobDataEncode($data['userData']['job']);
                 $findUser->country = $this->countryDataEncode($data['userData']['country']);
                 $findUser->city = $data['userData']['city'];
-                $findUser->telephone = $data['userData']['mobile'];
-                $findUser->fax_number = $data['userData']['fax'];
-                $findUser->web_url = $data['userData']['website'];
+                $findUser->mobile = $data['userData']['mobile'];
+                $findUser->fax = $data['userData']['fax'];
+                $findUser->web = $data['userData']['website'];
                 $findUser->company = $data['userData']['position'];
                 $findUser->description = $data['userData']['description'];
-                $findUser->is_opened = $this->isOpendRender($data);
+                $findUser->mobile_public = $data['publicOption']['mobile'];
+                $findUser->fax_public = $data['publicOption']['fax'];
+                $findUser->web_public = $data['publicOption']['website'];
                 $findUser->save();
                 DB::table('languages')->insert($this->insertDataGroup($data['language'],$id));
                 DB::table('careers')->insert($this->setCareerGroup($data['history'],$id));
@@ -274,7 +275,7 @@ class AuthController extends Controller
 
         foreach($array as $key => $value){
             $newGroup[$key]['user_id'] = (int)$id;
-            $newGroup[$key]['contents'] = $array[$key]['content'];
+            $newGroup[$key]['content'] = $array[$key]['content'];
             $newGroup[$key]['date'] = Carbon::parse($array[$key]['date'])->toDateTimeString();
             $newGroup[$key]['category'] = $array[$key]['category'];
         }
@@ -283,15 +284,6 @@ class AuthController extends Controller
     protected function resetDataGroup($user){
         DB::table('languages')->where('user_id','=',$user->id)->delete();
         DB::table('careers')->where('user_id','=',$user->id)->delete();
-    }
-
-    protected function isOpendRender($data){
-        $emailOption = '1';
-        $mobileOption = $data['publicOption']['mobile'] == 'public' ? '1' : '0';
-        $faxOption = $data['publicOption']['fax'] == 'public' ? '1' : '0';
-        $webOption = $data['publicOption']['website'] == 'public' ? '1' : '0';
-
-        return $emailOption.$mobileOption.$faxOption.$webOption;
     }
 
     protected function checkMemberExist(Request $request)
