@@ -110,13 +110,16 @@ class CertificateController extends Controller
     protected function certPassword(Request $request){
         $data = $request->json()->all();
 
+        $dataToken = CheckContoller::checkToken($request);
+        $user = User::find($dataToken->id);
+
         $credentials = [
-            'email'    => $data['email'],
+            'email'    => $user->email,
             'password' => $data['password'],
             'remember_token' => $request->header('X-lubycon-token')
         ];
 
-        if (Auth::attempt($credentials)) {
+        if (Auth::once($credentials)) {
             $result = (object)array(
                 "validity" => true
             );
