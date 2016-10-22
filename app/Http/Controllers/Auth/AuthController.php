@@ -169,7 +169,7 @@ class AuthController extends Controller
                 "job" => is_null($job) ? null : $findUser->jobs->name,
                 "country" => $findUser->countries->name,
                 "city" => $findUser->city,
-                "position" => $findUser->position,
+                "position" => $findUser->company,
                 "description" => $findUser->description
             );
             return response()->success($result);
