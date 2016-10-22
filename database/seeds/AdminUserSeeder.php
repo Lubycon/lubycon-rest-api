@@ -16,7 +16,7 @@ class AdminUserSeeder extends Seeder
             array(
             	'email'=>'lubycon@gmail.com',
             	'name' => 'Admin',
-            	'password' => bcrypt('hmdwdhdhkr2015'),
+            	'password' => bcrypt('hmdwdhdgkr2015'),
             	'country' => 201,
             	'job' => 1,
             	'is_active' => 'active',
