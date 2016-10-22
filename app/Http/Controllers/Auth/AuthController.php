@@ -165,8 +165,8 @@ class AuthController extends Controller
                 "email" => $findUser->email,
                 "name" => $findUser->name,
                 "profile" => $findUser->profile,
-                "job" => $findUser->countries->name,
-                "country" => $findUser->country,
+                "job" => is_null($job) ? null : $findUser->jobs->name,
+                "country" => $findUser->countries->name,
                 "city" => $findUser->city,
                 "position" => $findUser->position,
                 "description" => $findUser->description
