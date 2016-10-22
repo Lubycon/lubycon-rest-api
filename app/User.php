@@ -62,4 +62,10 @@ class User extends Model implements AuthenticatableContract,
         return $this->hasMany('App\createOfTheMonth');
     }
 
+
+    //belong
+    public function post()
+    {
+        return $this->belongsTo('App\post');
+    }
 }

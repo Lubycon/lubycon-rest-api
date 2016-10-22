@@ -16,6 +16,7 @@ class DatabaseSeeder extends Seeder
 
         $this->call(CountryTableSeeder::class);
         $this->call(JobsTableSeeder::class);
+        $this->call(BoardsTableSeeder::class);
 
         Model::reguard();
     }
