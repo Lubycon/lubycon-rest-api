@@ -198,7 +198,7 @@ class AuthController extends Controller
                     "email" => $findUser->email,
                     "name" => $findUser->name,
                     "profile" => $findUser->profile_img,
-                    "job" => is_null($job) ? null : $findUser->jobs->occupation,
+                    "job" => is_null($job) ? null : $findUser->jobs->name,
                     "country" => is_null($country) ? null : $findUser->countries->name,
                     "city" => $findUser->city,
                     "mobile" => $findUser->telephone,
@@ -210,10 +210,10 @@ class AuthController extends Controller
                 "language" => $findUser->languages,
                 "history" => $findUser->careers,
                 "publicOption" => (object)array(
-                    "email" => $findUser->is_opened[0] == 1 ? true : false,
-                    "mobile" => $findUser->is_opened[1] == 1 ? true : false,
-                    "fax" => $findUser->is_opened[2] == 1 ? true : false,
-                    "website" => $findUser->is_opened[3] == 1 ? true : false
+                    "email" => $findUser->is_opened[0] == 1 ? 'public' : 'private',
+                    "mobile" => $findUser->is_opened[1] == 1 ? 'public' : 'private',
+                    "fax" => $findUser->is_opened[2] == 1 ? 'public' : 'private',
+                    "website" => $findUser->is_opened[3] == 1 ? 'public' : 'private'
                 )
             ]);
         }else{
@@ -236,15 +236,16 @@ class AuthController extends Controller
                 $this->resetDataGroup($findUser);
 
                 //$findUser->profile_img = $data['userData']['profile'];
-                $findUser->job = $this->jobDataEncode($data['userData']->job);
-                $findUser->country = $this->countryDataEncode($data['userData']->country);
-                $findUser->city = $data['userData']->city;
-                $findUser->telephone = $data['userData']->mobile;
-                $findUser->fax_number = $data['userData']->fax;
-                $findUser->web_url = $data['userData']->website;
-                $findUser->company = $data['userData']->position;
-                $findUser->description = $data['userData']->description;
+                $findUser->job = $this->jobDataEncode($data['userData']['job']);
+                $findUser->country = $this->countryDataEncode($data['userData']['country']);
+                $findUser->city = $data['userData']['city'];
+                $findUser->telephone = $data['userData']['mobile'];
+                $findUser->fax_number = $data['userData']['fax'];
+                $findUser->web_url = $data['userData']['website'];
+                $findUser->company = $data['userData']['position'];
+                $findUser->description = $data['userData']['description'];
                 $findUser->is_opened = $this->isOpendRender($data);
+                $findUser->save();
                 DB::table('languages')->insert($this->insertDataGroup($data['language'],$id));
                 DB::table('careers')->insert($this->setCareerGroup($data['history'],$id));
             return response()->success($data);
@@ -257,7 +258,7 @@ class AuthController extends Controller
         }
     }
     protected function jobDataEncode($string){
-        return DB::table('jobs')->where('occupation','=',$string)->value('job_id');
+        return DB::table('jobs')->where('name','=',$string)->value('job_id');
     }
     protected function countryDataEncode($string){
         return DB::table('countries')->where('name','=',$string)->value('country_id');
@@ -286,9 +287,9 @@ class AuthController extends Controller
 
     protected function isOpendRender($data){
         $emailOption = '1';
-        $mobileOption = $data['publicOption']->mobile == 'public' ? '1' : '0';
-        $faxOption = $data['publicOption']->fax == 'public' ? '1' : '0';
-        $webOption = $data['publicOption']->website == 'public' ? '1' : '0';
+        $mobileOption = $data['publicOption']['mobile'] == 'public' ? '1' : '0';
+        $faxOption = $data['publicOption']['fax'] == 'public' ? '1' : '0';
+        $webOption = $data['publicOption']['website'] == 'public' ? '1' : '0';
 
         return $emailOption.$mobileOption.$faxOption.$webOption;
     }

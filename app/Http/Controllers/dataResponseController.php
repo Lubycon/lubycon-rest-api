@@ -17,9 +17,7 @@ class dataResponseController extends Controller
         $data = $this->getDataFromDatabase($id);
 
         if( !is_null($data) ){
-            return response()->success([
-                "data" => $data
-            ]);
+            return response()->success($data);
         }else{
             return response()->error([
                 "code" => "0030"
