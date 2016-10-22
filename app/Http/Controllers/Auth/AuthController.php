@@ -158,7 +158,8 @@ class AuthController extends Controller
 
         $findUser = User::find($tokenData->id);
         $userExist = CheckContoller::checkUserExistById($tokenData->id);
-
+        $job = $findUser->jobs;
+        
         if($userExist){
             $result = (object)array(
                 "id" => $findUser->id,
@@ -186,7 +187,6 @@ class AuthController extends Controller
         $userExist = CheckContoller::checkUserExistById($id);
 
         $job = $findUser->jobs;
-        $country = $findUser->countries;
 
         if($userExist){
             return response()->success([
