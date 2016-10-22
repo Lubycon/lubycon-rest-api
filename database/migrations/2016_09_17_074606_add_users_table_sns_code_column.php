@@ -13,7 +13,7 @@ class AddUsersTableSnsCodeColumn extends Migration
     public function up()
     {
         Schema::table('users', function(Blueprint $table) {
-            $table->integer('sns_code');
+            $table->integer('sns_code')->nullable();
         });
     }
 
