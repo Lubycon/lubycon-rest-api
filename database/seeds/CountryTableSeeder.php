@@ -12,7 +12,7 @@ class CountryTableSeeder extends Seeder
      */
     public function run()
     {
-        DB::table('countries')->delete();
+        DB::table('countries')->truncate();
         $countries = array(
             array("country_id"=>"1","utc"=>"4","region"=>"South Asia","continent"=>"Asia","name"=>"Afghanistan"),
             array("country_id"=>"2","utc"=>"1","region"=>"South East Europe","continent"=>"Europe","name"=>"Albania"),

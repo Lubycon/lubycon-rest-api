@@ -11,7 +11,7 @@ class BoardsTableSeeder extends Seeder
      */
     public function run()
     {
-        DB::table('boards')->delete();
+        DB::table('boards')->truncate();
         $boards = array(
             array('board_id'=>1,'name'=>'3D'),
             array('board_id'=>2,'name'=>'Artwork'),

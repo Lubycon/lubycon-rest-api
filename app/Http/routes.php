@@ -49,3 +49,12 @@ Route::group(['prefix' => '/mail/'], function () {
 Route::group(['prefix' => '/data/'], function () {
     Route::get('{id}','dataResponseController@dataSimpleResponse');
 });
+
+//post
+Route::group(['prefix' => '/post/'],function(){
+    Route::get('{category}','boardController@listPost');
+    Route::get('{category}/{board_id}','boardController@viewPost');
+    Route::post('{category}','boardController@uploadPost');
+    Route::put('{category}/{board_id}','boardController@updatePost');
+    Route::delete('{category}/{board_id}','boardController@deletePost');
+});

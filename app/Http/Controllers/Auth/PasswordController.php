@@ -55,11 +55,10 @@ class PasswordController extends Controller
         ]);
 
         if ($validator->fails()) {
-            $status = (object)array(
+            return response()->error([
                 'code' => '0030',
                 "devMsg" => $validator->errors()
-            );
-            return response()->error($status);
+            ]);
         }
 
         $credentials = array(
@@ -77,10 +76,9 @@ class PasswordController extends Controller
             case Password::PASSWORD_RESET:
                 return response()->success();
             default:
-                $status = (object)array(
+                return response()->error([
                     'code' => '0030'
-                );
-                return response()->error($status);
+                ]);
         }
     }
 
