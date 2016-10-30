@@ -11,6 +11,8 @@ use App\comment;
 use App\view;
 use App\board;
 
+use Carbon\Carbon;
+
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Auth\CheckContoller;
@@ -33,7 +35,7 @@ class BoardController extends Controller
             "contents" => (object)array(
                 "id" => $post->id,
                 "title" => $post->title,
-                "date" => $post->created_at,
+                "date" => Carbon::instance($post->created_at)->toDateTimeString(),
                 "content" => $post->content,
                 "likeCount" => $post->like_count,
                 "viewCount" => $post->view_count,
