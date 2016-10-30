@@ -9,7 +9,7 @@ use Event;
 use App\User;
 use Validator;
 use Illuminate\Http\Request;
-use App\Http\Controllers\mailSendController;
+use App\Http\Controllers\MailSendController;
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\ThrottlesLogins;
 use Illuminate\Foundation\Auth\AuthenticatesAndRegistersUsers;
@@ -110,7 +110,7 @@ class AuthController extends Controller
                 $rememberToken = CheckContoller::insertRememberToken($id);
             }
 
-            mailSendController::signupTokenSet(Auth::user());
+            MailSendController::signupTokenSet(Auth::user());
 
             return response()->success([
                 "token" => $rememberToken
@@ -155,7 +155,7 @@ class AuthController extends Controller
         $findUser = User::find($tokenData->id);
         $userExist = CheckContoller::checkUserExistById($tokenData->id);
         $job = $findUser->jobs;
-        
+
         if($userExist){
             $result = (object)array(
                 "id" => $findUser->id,
@@ -295,4 +295,3 @@ class AuthController extends Controller
         }
     }
 }
-

@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use DB;
 use Validator;
-use App\Http\Controllers\mailSendController;
+use App\Http\Controllers\MailSendController;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Mail\Message;
@@ -41,7 +41,7 @@ class PasswordController extends Controller
     {
         $this->validate($request, ['email' => 'required|email']);
 
-        $response = mailSendController::passwordResetTokenSend($request);
+        $response = MailSendController::passwordResetTokenSend($request);
 
         return response()->success();
     }

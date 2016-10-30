@@ -41,20 +41,20 @@ Route::group(['prefix' => '/certs/'], function () {
 
 //just send mail
 Route::group(['prefix' => '/mail/'], function () {
-    Route::put('signup','mailSendController@againSignupTokenSet');
+    Route::put('signup','MailSendController@againSignupTokenSet');
     Route::put('pwd','Auth\PasswordController@postEmail');
 });
 
 //provide databases data
 Route::group(['prefix' => '/data/'], function () {
-    Route::get('{id}','dataResponseController@dataSimpleResponse');
+    Route::get('{id}','DataResponseController@dataSimpleResponse');
 });
 
 //post
 Route::group(['prefix' => '/post/'],function(){
-    Route::get('{category}','boardController@listPost');
-    Route::get('{category}/{board_id}','boardController@viewPost');
-    Route::post('{category}','boardController@uploadPost');
-    Route::put('{category}/{board_id}','boardController@updatePost');
-    Route::delete('{category}/{board_id}','boardController@deletePost');
+    Route::get('{category}','BoardController@listPost');
+    Route::get('{category}/{board_id}','BoardController@viewPost');
+    Route::post('{category}','BoardController@uploadPost');
+    Route::put('{category}/{board_id}','BoardController@updatePost');
+    Route::delete('{category}/{board_id}','BoardController@deletePost');
 });

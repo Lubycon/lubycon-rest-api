@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+// use App\Http\Controllers\Pager\PageController;
 
 use App\post;
 use App\User;
@@ -14,10 +15,9 @@ use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Auth\CheckContoller;
 
-class boardController extends Controller
+class BoardController extends Controller
 {
    public function listPost(){
-        return 'contents list';
    }
    public function viewPost($category,$board_id){
         $post = post::find($board_id);
@@ -31,16 +31,16 @@ class boardController extends Controller
 
         return response()->success([
             "contents" => (object)array(
-                "code" => $post->id,
+                "id" => $post->id,
                 "title" => $post->title,
                 "date" => $post->created_at,
                 "content" => $post->content,
-                "like_count" => $post->like_count,
-                "view_count" => $post->view_count,
+                "likeCount" => $post->like_count,
+                "viewCount" => $post->view_count,
                 "like" => false,
             ),
             "userData" => (object)array(
-                "code" => $post->user_id,
+                "id" => $post->user_id,
                 "name" => $post->users->name,
                 "profile" => $post->users->profile_img,
                 "job" => is_null($job) ? null : $job->name,
@@ -106,6 +106,6 @@ class boardController extends Controller
         }
         if($posts->delete()){
           return response()->success();
-        }                                        
+        }
    }
 }

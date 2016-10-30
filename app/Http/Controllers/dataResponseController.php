@@ -8,7 +8,7 @@ use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use DB;
 
-class dataResponseController extends Controller
+class DataResponseController extends Controller
 {
     protected $whiteList = ['jobs','countries','users'];
 
