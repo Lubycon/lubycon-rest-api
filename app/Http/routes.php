@@ -51,7 +51,7 @@ Route::group(['prefix' => '/data/'], function () {
 });
 
 //post
-Route::group(['prefix' => '/post/'],function(){
+Route::group(['prefix' => '/posts/'],function(){
     Route::get('{category}','BoardController@listPost');
     Route::get('{category}/{board_id}','BoardController@viewPost');
     Route::post('{category}','BoardController@uploadPost');
