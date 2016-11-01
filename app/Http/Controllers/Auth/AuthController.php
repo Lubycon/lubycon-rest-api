@@ -23,7 +23,6 @@ class AuthController extends Controller
     public function __construct()
     {
         $this->middleware('guest', ['except' => 'getLogout']);
-
     }
 
     protected function signin(Request $request)
@@ -63,6 +62,7 @@ class AuthController extends Controller
         return response()->success($result);
     }
 
+
     protected function signout()
     {
         // need somthing other logic
@@ -82,10 +82,8 @@ class AuthController extends Controller
             'is_accept_terms' => '111',
             //'is_accept_terms' => $data['newletter'].'11',
         ];
-
         $ResultOfValidation = $validator->auth($createData);
 
-        //$validator = $this->validator($createData);
         if ($ResultOfValidation->fails()) {
             $status = (object)array(
                 'code' => '0030',

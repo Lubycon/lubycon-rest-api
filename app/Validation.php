@@ -24,6 +24,4 @@ class Validation extends Model
       ];
       return $this->validate($data, $rules);
     }
-
-
 }
