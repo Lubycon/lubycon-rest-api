@@ -3,6 +3,7 @@
 //about members event
 Route::group(['prefix' => '/members/'], function () {
     //authenicates
+
     Route::post('signin', 'Auth\AuthController@signin');
     Route::put('signout', 'Auth\AuthController@signout');
     Route::post('signup', 'Auth\AuthController@signup');

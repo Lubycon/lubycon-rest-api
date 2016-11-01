@@ -7,6 +7,7 @@ use DB;
 use Auth;
 use Event;
 use App\User;
+use App\Validation;
 use Validator;
 use Illuminate\Http\Request;
 use App\Http\Controllers\mailSendController;
@@ -22,18 +23,9 @@ class AuthController extends Controller
     public function __construct()
     {
         $this->middleware('guest', ['except' => 'getLogout']);
+
     }
 
-    protected function validator(array $data)
-    {
-        $rules = [
-            'name' => 'required|max:255',
-            'email' => 'required|email|max:255|unique:users',
-            'password' => 'required|min:6',
-            //'password' => 'required|confirmed|min:6',
-        ];
-        return Validator::make($data, $rules);
-    }
     protected function signin(Request $request)
     {
         $data = $request->json()->all();
@@ -71,7 +63,6 @@ class AuthController extends Controller
         return response()->success($result);
     }
 
-
     protected function signout()
     {
         // need somthing other logic
@@ -79,6 +70,7 @@ class AuthController extends Controller
 
     protected function signup(Request $request)
     {
+        $validator = new Validation();
         $data = $request->json()->all();
         $createData = [
             'name' => $data['nickname'],
@@ -91,11 +83,13 @@ class AuthController extends Controller
             //'is_accept_terms' => $data['newletter'].'11',
         ];
 
-        $validator = $this->validator($createData);
-        if ($validator->fails()) {
+        $ResultOfValidation = $validator->auth($createData);
+
+        //$validator = $this->validator($createData);
+        if ($ResultOfValidation->fails()) {
             $status = (object)array(
                 'code' => '0030',
-                "devMsg" => $validator->errors()
+                "devMsg" => $ResultOfValidation->errors()
             );
             return response()->error($status);
         };
@@ -159,7 +153,7 @@ class AuthController extends Controller
         $findUser = User::find($tokenData->id);
         $userExist = CheckContoller::checkUserExistById($tokenData->id);
         $job = $findUser->jobs;
-        
+
         if($userExist){
             $result = (object)array(
                 "id" => $findUser->id,
@@ -302,4 +296,3 @@ class AuthController extends Controller
         }
     }
 }
-
