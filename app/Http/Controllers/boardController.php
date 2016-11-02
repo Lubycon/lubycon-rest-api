@@ -19,7 +19,44 @@ use App\Http\Controllers\Auth\CheckContoller;
 
 class BoardController extends Controller
 {
-   public function listPost(){
+   public function listPost(Request $request,$category){
+       $query = $request->query();
+       // target page number
+       $setPage = isset($query['$data']) && $query['page'] > $query['page'] ? : 1;
+       // target page number
+       // page per contents
+       $maxSize = 50;
+       $defaultSize = 20;
+       $pageSize = isset($query['pageSize']) && $query['pageSize'] <= $maxSize ? $query['pageSize'] : $defaultSize;
+       // page per contents
+
+       //page=1&sort=sorttt&searchFilter=filter&keyword=keywos&userId=14
+        //return $setPage;
+
+       $post = post::with('users');
+       $paginator = $post->paginate($pageSize, ['*'], 'page', $setPage);
+       $collection = $paginator->getCollection();
+       foreach($collection as $array){
+           $result[] = (object)array(
+               "contents" => (object)array(
+                    "id" => $array->id,
+                    "title" => $array->title,
+                    "comment" => $array->comment_count,
+                    "like" => $array->like_count,
+                    "view" => $array->view_count,
+                    "date" => Carbon::instance($array->created_at)->toDateTimeString(),
+               ),
+               "userData" => (object)array(
+                   "id" => $array->users->id,
+                   "name" => $array->users->name,
+                   "profile" => $array->users->profile_img
+               )
+           );
+       }
+
+
+    //    return $collection;
+       return  response()->success($result);
    }
    public function viewPost($category,$board_id){
         $post = post::find($board_id);
