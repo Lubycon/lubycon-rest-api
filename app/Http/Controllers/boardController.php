@@ -22,7 +22,7 @@ class BoardController extends Controller
    public function listPost(Request $request,$category){
        $query = $request->query();
        // target page number
-       $setPage = isset($query['$data']) && $query['page'] > $query['page'] ? : 1;
+       $setPage = isset($query['pageIndex']) ? $query['pageIndex'] : 0;
        // target page number
        // page per contents
        $maxSize = 50;
@@ -52,10 +52,7 @@ class BoardController extends Controller
                    "profile" => $array->users->profile_img
                )
            );
-       }
-
-
-    //    return $collection;
+       };
        return  response()->success($result);
    }
    public function viewPost($category,$board_id){
