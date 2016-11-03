@@ -21,17 +21,19 @@ class BoardController extends Controller
 {
    public function listPost(Request $request,$category){
        $query = $request->query();
-       // target page number
-       $setPage = isset($query['pageIndex']) ? $query['pageIndex'] : 0;
-       // target page number
-       // page per contents
+
+       //envirment default
+       $firstFageNumber = 0;
        $maxSize = 50;
        $defaultSize = 20;
-       $pageSize = isset($query['pageSize']) && $query['pageSize'] <= $maxSize ? $query['pageSize'] : $defaultSize;
+
+
+       // target page number
+       $setPage = isset($query['pageIndex']) ? $query['pageIndex'] : $firstFageNumber;
        // page per contents
+       $pageSize = isset($query['pageSize']) && $query['pageSize'] <= $maxSize ? $query['pageSize'] : $defaultSize;
 
        //page=1&sort=sorttt&searchFilter=filter&keyword=keywos&userId=14
-        //return $setPage;
 
        $post = post::with('users');
        $paginator = $post->paginate($pageSize, ['*'], 'page', $setPage);

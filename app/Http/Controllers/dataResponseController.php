@@ -6,30 +6,52 @@ use Illuminate\Http\Request;
 
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
-use DB;
+
+use App\User;
+use App\job;
+use App\country;
+
+use App\post;
+use App\PostSort;
+
+// use App\Content;
+use App\ContentSort;
+use App\ContentCategory;
 
 class DataResponseController extends Controller
 {
-    protected $whiteList = ['jobs','countries','users'];
+    private function getModelByWhitelist($query){
+        $whiteList = (object)array(
+            'user' => User::all(), //only test data
+            'job' => job::all(),
+            'country' => country::all(),
 
-    public function dataSimpleResponse($id){
+            'post' => post::all(), //only test data
+            'postSort' => PostSort::all(),
 
-        $data = $this->getDataFromDatabase($id);
-
-        if( !is_null($data) ){
-            return response()->success($data);
-        }else{
-            return response()->error([
-                "code" => "0030"
-            ]);
-        }
+            // 'content' => Content::all(), //not builded yet
+            'contentSort' => ContentSort::all(),
+            'contentCategory' => ContentCategory::all(),
+        );
+        foreach($query as $key){
+            $models[] = (object)array(
+                $key => $whiteList->$key
+            );
+        };
+        return $models;
     }
 
-    private function getDataFromDatabase($id){
-        $validate = in_array($id,$this->whiteList);
+    public function dataSimpleResponse(Request $request){
+        $query = $request->query();
+        $models = $this->getModelByWhitelist($query);
 
-        if($validate){
-            return DB::table($id)->get();
+        if( !is_null($models) ){
+            return response()->success($models);
+        }else{
+            return response()->error([
+                "code" => "0030",
+                "devMsg" => "Check WhiteList in Api document!"
+            ]);
         }
     }
 }

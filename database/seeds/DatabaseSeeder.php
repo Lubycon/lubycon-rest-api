@@ -18,6 +18,9 @@ class DatabaseSeeder extends Seeder
         $this->call(JobsTableSeeder::class);
         $this->call(BoardsTableSeeder::class);
         $this->call(DummyPostSeeder::class);
+        $this->call(PostSortTableSeeder::class);
+        $this->call(ContentSortTableSeeder::class);
+        $this->call(ContentCategoryTableSeeder::class);
 
         Model::reguard();
     }
