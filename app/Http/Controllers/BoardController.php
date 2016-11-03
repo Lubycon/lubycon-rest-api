@@ -38,6 +38,7 @@ class BoardController extends Controller
        $post = post::with('users');
        $paginator = $post->paginate($pageSize, ['*'], 'page', $setPage);
        $collection = $paginator->getCollection();
+
        foreach($collection as $array){
            $result[] = (object)array(
                "contents" => (object)array(
@@ -55,7 +56,15 @@ class BoardController extends Controller
                )
            );
        };
-       return  response()->success($result);
+
+       if(isset($result)){
+           return response()->success($result);
+       }else{
+           return response()->error([
+               "code" => "0062",
+               "devMsg" => "Model not found error"
+           ]);
+       }
    }
    public function viewPost($category,$board_id){
         $post = post::find($board_id);
