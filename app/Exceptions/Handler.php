@@ -43,11 +43,10 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $e)
     {
+        log::error($e);
         if ($e instanceof ModelNotFoundException) {
             $e = new NotFoundHttpException($e->getMessage(), $e);
         }
-
-        log::error($e);
 
         if(env('APP_DEBUG')){
             return parent::render($request , $e); //for develop
