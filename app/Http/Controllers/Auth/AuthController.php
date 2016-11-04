@@ -7,6 +7,7 @@ use DB;
 use Auth;
 use Event;
 use App\User;
+use App\Credentials;
 use App\Validation;
 use Validator;
 use Illuminate\Http\Request;
@@ -28,10 +29,9 @@ class AuthController extends Controller
     protected function signin(Request $request)
     {
         $data = $request->json()->all();
-        $credentials = [
-            'email'    => $data['email'],
-            'password' => $data['password']
-        ];
+
+        # property
+        $credentials = Credentials::signin($data);
 
         if ( !Auth::once($credentials)) {
             $status = (object)array(
@@ -70,21 +70,11 @@ class AuthController extends Controller
 
     protected function signup(Request $request)
     {
-        $validator = new Validation();
         $data = $request->json()->all();
-        $createData = [
-            'name' => $data['nickname'],
-            'email' => $data['email'],
-            'password' => bcrypt($data['password']),
-            'sns_code' => 0,
-            'country' => $this->countryDataEncode($data['country']),
-            'is_active' => 'inactive',
-            'is_accept_terms' => '111',
-            //'is_accept_terms' => $data['newletter'].'11',
-        ];
-        $ResultOfValidation = $validator->auth($createData);
+        $credentials = Credentials::signup($data);
+        $ResultOfValidation = Validation::auth($credentials);
 
-        if ($ResultOfValidation->fails()) {
+        if ($ResultOfValidation->fails()){
             $status = (object)array(
                 'code' => '0030',
                 "devMsg" => $ResultOfValidation->errors()
