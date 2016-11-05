@@ -49,8 +49,8 @@ class PageController extends Controller
             default : $this->categoryParse = board::select('group')->where('name','=',$category)->firstOrFail(); break;
         }
         switch($this->categoryParse->group){
-            case 'post' : $this->model = new post;
-            case 'comment' : $this->model = new comment;
+            case 'post' : $this->model = new post; break;
+            case 'comment' : $this->model = new comment; break;
             // case 'content' : $this->model = new content;
             default : break; //error point
         }
