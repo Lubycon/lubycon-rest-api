@@ -3,8 +3,10 @@
 namespace App\Http\Controllers\Auth;
 
 use Illuminate\Http\Request;
+
 use App\User;
-use App\signup_allow;
+use App\SignupAllow;
+
 use Illuminate\Support\Str;
 
 use App\Http\Requests;
@@ -13,7 +15,7 @@ use App\Http\Controllers\Controller;
 class CheckContoller extends Controller
 {
     public static function insertRememberToken($id){
-        $user = User::findorfail($id);
+        $user = User::findOrFail($id);
 
         $userId = $user->id;
         $device = 'w';
@@ -27,14 +29,14 @@ class CheckContoller extends Controller
     }
 
     public static function insertSignupToken($id){
-        $user = User::findorfail($id);
+        $user = User::findOrFail($id);
 
-        $recoded = signup_allow::where('email', $user->email);
+        $recoded = SignupAllow::where('email', $user->email);
 
         if(!is_null($recoded)){
             $recoded->delete();
         }
-        $signup = new signup_allow;
+        $signup = new SignupAllow;
         $signup->id = $user->id;
         $signup->email = $user->email;
         $signup->token = Str::random(50);
@@ -52,7 +54,7 @@ class CheckContoller extends Controller
     }
 
     public static function checkUserExistById($id){
-        $user=User::find($id);
+        $user = User::find($id);
         if (!is_null($user)) {
             return true;
         }

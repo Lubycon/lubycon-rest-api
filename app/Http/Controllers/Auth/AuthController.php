@@ -6,9 +6,11 @@ use Carbon\Carbon;
 use DB;
 use Auth;
 use Event;
+
 use App\User;
-use App\Credentials;
+use App\Credential;
 use App\Validation;
+
 use Validator;
 use Illuminate\Http\Request;
 use App\Http\Controllers\MailSendController;
@@ -31,7 +33,7 @@ class AuthController extends Controller
         $data = $request->json()->all();
 
         # property
-        $credentials = Credentials::signin($data);
+        $credentials = Credential::signIn($data);
 
         if ( !Auth::once($credentials)) {
             return response()->error([

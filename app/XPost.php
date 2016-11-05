@@ -5,7 +5,7 @@ namespace App;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Model;
 
-class post extends Model
+class Post extends Model
 {
     use SoftDeletes;
     protected $dates = ['deleted_at'];
@@ -13,16 +13,16 @@ class post extends Model
     // 1 : 1
     public function board()
     {
-        return $this->hasOne('App\board','board_id','id');
+        return $this->hasOne('App\Board','board_id','id');
     }
 
-    public function users()
+    public function user()
     {
         return $this->hasOne('App\User','id','user_id');
     }
 
-    public function views()
+    public function view()
     {
-        return $this->hasMany('App\view','post_id','id');
+        return $this->hasMany('App\View','post_id','id');
     }
 }

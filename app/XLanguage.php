@@ -4,7 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class language extends Model
+class Language extends Model
 {
     public function user()
     {

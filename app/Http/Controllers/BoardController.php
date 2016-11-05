@@ -4,12 +4,11 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-use App\post;
+use App\Post;
 use App\User;
-use App\comment;
-use App\view;
-use App\board;
-use App\boards;
+use App\Comment;
+use App\View;
+use App\Board;
 
 use Carbon\Carbon;
 
@@ -54,7 +53,7 @@ class BoardController extends Controller
        }
    }
    public function viewPost($category,$board_id){
-        $post = post::findOrFail($board_id);
+        $post = Post::findOrFail($board_id);
         $job = $post->users->jobs;
 
         return response()->success([
@@ -83,7 +82,7 @@ class BoardController extends Controller
         $tokenData = CheckContoller::checkToken($request);
         $findUser = User::findOrFail($tokenData->id);
 
-        $posts = new post;
+        $posts = new Post;
 
         $posts->board = 1;
         $posts->user_id = $findUser->id;
@@ -102,7 +101,7 @@ class BoardController extends Controller
 
         $tokenData = CheckContoller::checkToken($request);
         $findUser = User::findOrFail($tokenData->id);
-        $posts = post::findOrFail($board_id);
+        $posts = Post::findOrFail($board_id);
 
         if($findUser->id != $posts->user_id){
             return response()->error([
@@ -123,7 +122,7 @@ class BoardController extends Controller
    public function deletePost(Request $request,$category,$board_id){
         $tokenData = CheckContoller::checkToken($request);
         $findUser = User::findOrFail($tokenData->id);
-        $posts = post::findOrFail($board_id);
+        $posts = Post::findOrFail($board_id);
 
         if($findUser->id != $posts->user_id){
             return response()->error([

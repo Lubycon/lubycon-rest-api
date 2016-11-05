@@ -20,8 +20,8 @@ class User extends Model implements AuthenticatableContract,
     protected $table = 'users';
 
     protected $fillable = [
-        'name', 
-        'email', 
+        'name',
+        'email',
         'password',
         'sns_code',
         'country',
@@ -35,61 +35,61 @@ class User extends Model implements AuthenticatableContract,
     protected $dates = ['deleted_at'];
 
     // get reference data
-    public function jobs()
+    public function job()
     {
-        return $this->hasOne('App\job','job_id','job');
+        return $this->hasOne('App\Job','job_id','job');
     }
-    public function countries()
+    public function country()
     {
-        return $this->hasOne('App\country','country_id','country');
+        return $this->hasOne('App\Country','country_id','country');
     }
     // get reference data
 
     // users children table
-    public function logs()
+    public function log()
     {
-        return $this->hasMany('App\log');
+        return $this->hasMany('App\Log');
     }
-    public function careers()
+    public function career()
     {
-        return $this->hasMany('App\career');
+        return $this->hasMany('App\Career');
     }
-    public function languages()
+    public function language()
     {
-        return $this->hasMany('App\language');
+        return $this->hasMany('App\Language');
     }
-    public function createOfTheMonths()
+    public function createOfTheMonth()
     {
-        return $this->hasMany('App\createOfTheMonth');
+        return $this->hasMany('App\CreateOfTheMonth');
     }
     // users children table
 
 
     //post
-    public function posts()
+    public function post()
     {
-        return $this->belongsTo('App\post');
+        return $this->belongsTo('App\Post');
     }
     //post
 
 
     // action
-    public function giveViews()
+    public function giveView()
     {
-        return $this->hasMany('App\view','give_user_id','id');
+        return $this->hasMany('App\View','give_user_id','id');
     }
-    public function takeViews()
+    public function takeView()
     {
-        return $this->hasMany('App\view','take_user_id','id');
+        return $this->hasMany('App\View','take_user_id','id');
     }
 
-    public function takeComments()
+    public function takeComment()
     {
-        return $this->hasMany('App\comment','take_user_id','id');
+        return $this->hasMany('App\Comment','take_user_id','id');
     }
-    public function giveComments()
+    public function giveComment()
     {
-        return $this->hasMany('App\comment','give_user_id','id');
+        return $this->hasMany('App\Comment','give_user_id','id');
     }
     // action
 }
