@@ -16,15 +16,12 @@ class DatabaseSeeder extends Seeder
 
         $this->call(CountryTableSeeder::class);
         $this->call(JobsTableSeeder::class);
-<<<<<<< HEAD
         $this->call(AdminUserSeeder::class);
-=======
         $this->call(BoardsTableSeeder::class);
         $this->call(DummyPostSeeder::class);
         $this->call(PostSortTableSeeder::class);
         $this->call(ContentSortTableSeeder::class);
         $this->call(ContentCategoryTableSeeder::class);
->>>>>>> createPost
 
         Model::reguard();
     }
