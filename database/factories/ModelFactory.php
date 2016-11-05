@@ -30,6 +30,10 @@ $factory->define(App\post::class, function (Faker\Generator $faker) {
         'user_id' => mt_rand(1,100),
         'title' => $faker->name,
         'content' => str_random(10),
-        'directory' => 'path'
+        'directory' => 'path',
+        "comment_count" => mt_rand(0,100),
+        "like_count" => mt_rand(0,100),
+        "view_count" => mt_rand(0,100),
+        "created_at" => date("Y-m-d H:i:s",rand(1262055681,1478304000)),
     ];
 });

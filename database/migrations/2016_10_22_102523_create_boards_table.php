@@ -15,7 +15,8 @@ class CreateBoardsTable extends Migration
         Schema::create('boards', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('board_id');
-            $table->string('name',255);
+            $table->string('name',45);
+            $table->string('group',45);
         });
     }
 

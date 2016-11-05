@@ -3,42 +3,28 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-// use App\Http\Controllers\Pager\PageController;
 
 use App\post;
 use App\User;
 use App\comment;
 use App\view;
 use App\board;
+use App\boards;
 
 use Carbon\Carbon;
 
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Auth\CheckContoller;
+use App\Http\Controllers\pager\PageController;
 
 class BoardController extends Controller
 {
+
    public function listPost(Request $request,$category){
        $query = $request->query();
-
-       //envirment default
-       $firstFageNumber = 0;
-       $maxSize = 50;
-       $defaultSize = 20;
-
-
-       // target page number
-       $setPage = isset($query['pageIndex']) ? $query['pageIndex'] : $firstFageNumber;
-       // page per contents
-       $pageSize = isset($query['pageSize']) && $query['pageSize'] <= $maxSize ? $query['pageSize'] : $defaultSize;
-
-       //sort
-       //userid
-
-       $post = post::with('users');
-       $paginator = $post->paginate($pageSize, ['*'], 'page', $setPage);
-       $collection = $paginator->getCollection();
+       $controller = new PageController($category,$query);
+       $collection = $controller->getCollection();
 
        foreach($collection as $array){
            $result[] = (object)array(

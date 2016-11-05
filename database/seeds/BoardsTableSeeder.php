@@ -13,12 +13,12 @@ class BoardsTableSeeder extends Seeder
     {
         DB::table('boards')->truncate();
         $boards = array(
-            array('board_id'=>1,'name'=>'3D'),
-            array('board_id'=>2,'name'=>'Artwork'),
-            array('board_id'=>3,'name'=>'Vector'),
-            array('board_id'=>11,'name'=>'Forum'),
-            array('board_id'=>12,'name'=>'Tutorial'),
-            array('board_id'=>13,'name'=>'Q&A')
+            array('board_id'=>1,'name'=>'3D','group'=>'content'),
+            array('board_id'=>2,'name'=>'Artwork','group'=>'content'),
+            array('board_id'=>3,'name'=>'Vector','group'=>'content'),
+            array('board_id'=>11,'name'=>'Forum','group'=>'post'),
+            array('board_id'=>12,'name'=>'Tutorial','group'=>'post'),
+            array('board_id'=>13,'name'=>'Q&A','group'=>'post')
         );
 
         DB::table('boards')->insert($boards);
