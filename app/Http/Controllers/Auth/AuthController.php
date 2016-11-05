@@ -10,6 +10,8 @@ use Event;
 use App\User;
 use App\Credential;
 use App\Validation;
+use App\Job;
+use App\Country;
 
 use Validator;
 use Illuminate\Http\Request;
@@ -113,26 +115,27 @@ class AuthController extends Controller
         };
     }
 
-    protected function signrestore($id){
-        $user = User::onlyTrashed()->find($id);
-        $userExist = CheckContoller::checkUserExistByIdOnlyTrashed($id);
-
-        if($userExist){
-            $user->restore();
-            return response()->success();
-        }else{
-            return response()->error([
-                'code' => '0030'
-            ]);
-        };
-    }
+    // protected function signrestore($id){
+    //     $user = User::onlyTrashed()->find($id);
+    //     $userExist = CheckContoller::checkUserExistByIdOnlyTrashed($id);
+    //
+    //     if($userExist){
+    //         $user->restore();
+    //         return response()->success();
+    //     }else{
+    //         return response()->error([
+    //             'code' => '0030'
+    //         ]);
+    //     };
+    // }
 
     protected function simpleRetrieve(Request $request){
         $tokenData = CheckContoller::checkToken($request);
 
         $findUser = User::find($tokenData->id);
         $userExist = CheckContoller::checkUserExistById($tokenData->id);
-        $job = $findUser->job;
+        $jobExists = $findUser->job;
+        $counTryExists = $findUser->country;
 
         if($userExist){
             $result = (object)array(
@@ -140,8 +143,8 @@ class AuthController extends Controller
                 "email" => $findUser->email,
                 "name" => $findUser->name,
                 "profile" => $findUser->profile,
-                "job" => is_null($job) ? null : $findUser->job->name,
-                "country" => $findUser->country->name,
+                "job" => is_null($jobExists) ? null : $findUser->job->name,
+                "country" => is_null($counTryExists) ? null : $findUser->country->name,
                 "city" => $findUser->city,
                 "position" => $findUser->company,
                 "description" => $findUser->description
@@ -156,10 +159,11 @@ class AuthController extends Controller
 
     protected function getRetrieve($id)
     {
-        $findUser = User::find($id);
+        $findUser = User::findOrFail($id);
         $userExist = CheckContoller::checkUserExistById($id);
 
-        $job = $findUser->job;
+        $jobExists = $findUser->job;
+        $counTryExists = $findUser->country;
 
         if($userExist){
             return response()->success([
@@ -168,8 +172,8 @@ class AuthController extends Controller
                     "email" => $findUser->email,
                     "name" => $findUser->name,
                     "profile" => $findUser->profile_img,
-                    "job" => is_null($job) ? null : $findUser->job->name,
-                    "country" => $findUser->country->name,
+                    "job" => is_null($jobExists) ? null : $findUser->job->name,
+                    "country" => is_null($counTryExists) ? null : $findUser->country->name,
                     "city" => $findUser->city,
                     "mobile" => $findUser->mobile,
                     "fax" => $findUser->fax,
@@ -193,7 +197,7 @@ class AuthController extends Controller
             ]);
         }
     }
-    protected function postRetrieve(Request $request,$id)
+    public function postRetrieve(Request $request,$id)
     {
         $data = $request->json()->all();
         $tokenData = CheckContoller::checkToken($request);
@@ -205,8 +209,8 @@ class AuthController extends Controller
                 $this->resetDataGroup($findUser);
 
                 //$findUser->profile_img = $data['userData']['profile'];
-                $findUser->job = $this->jobDataEncode($data['userData']['job']);
-                $findUser->country = $this->countryDataEncode($data['userData']['country']);
+                $findUser->job_id = Job::where('name','=',$data['userData']['job'])->value('id');
+                $findUser->country_id = Country::where('name','=',$data['userData']['country'])->value('id');
                 $findUser->city = $data['userData']['city'];
                 $findUser->mobile = $data['userData']['mobile'];
                 $findUser->fax = $data['userData']['fax'];
@@ -226,12 +230,6 @@ class AuthController extends Controller
                 "devMsg" => "dose not match user id"
             ]);
         }
-    }
-    protected function jobDataEncode($string){
-        return DB::table('jobs')->where('name','=',$string)->value('job_id');
-    }
-    protected function countryDataEncode($string){
-        return DB::table('countries')->where('name','=',$string)->value('country_id');
     }
     protected function insertDataGroup($array,$id){
         foreach($array as $key => $value){
