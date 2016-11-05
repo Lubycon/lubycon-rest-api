@@ -16,7 +16,7 @@ class CreateCommentsTable extends Migration
             $table->increments('id');
             $table->integer('give_user_id')->unsigned();
             $table->integer('take_user_id')->unsigned;
-            $table->integer('board')->unsigned();
+            $table->integer('board_id')->unsigned();
             $table->integer('post_id')->unsigned();
             $table->longtext('content');
             $table->integer('like_count')->default(0)->unsigned()->nullable();

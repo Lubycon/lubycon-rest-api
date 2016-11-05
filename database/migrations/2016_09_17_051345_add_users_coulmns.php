@@ -14,8 +14,8 @@ class AddUsersCoulmns extends Migration
     {
         Schema::table('users', function(Blueprint $table) {
             $table->timestamp('last_login_time')->nullable();
-            $table->integer('job')->unsigned()->nullable();
-            $table->integer('country')->unsigned();
+            $table->integer('job_id')->unsigned()->nullable();
+            $table->integer('country_id')->unsigned();
             $table->enum('is_active', ['active','inactive','drop']);
             $table->string('is_accept_terms',255);
             $table->string('token',100)->nullable();

@@ -13,7 +13,7 @@ class CreateCountriesTable extends Migration
     public function up()
     {
         Schema::create('countries', function (Blueprint $table) {
-            $table->integer('country_id')->unsigned()->index();
+            $table->integer('id')->unsigned()->index();
             $table->tinyInteger('utc');
             $table->enum('region',[
                 'East Asia',

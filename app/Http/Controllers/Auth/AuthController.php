@@ -33,7 +33,7 @@ class AuthController extends Controller
         $data = $request->json()->all();
 
         # property
-        $credentials = Credential::signIn($data);
+        $credentials = Credential::signin($data);
 
         if ( !Auth::once($credentials)) {
             return response()->error([
@@ -139,7 +139,7 @@ class AuthController extends Controller
 
         $findUser = User::find($tokenData->id);
         $userExist = CheckContoller::checkUserExistById($tokenData->id);
-        $job = $findUser->jobs;
+        $job = $findUser->job;
 
         if($userExist){
             $result = (object)array(
@@ -147,8 +147,8 @@ class AuthController extends Controller
                 "email" => $findUser->email,
                 "name" => $findUser->name,
                 "profile" => $findUser->profile,
-                "job" => is_null($job) ? null : $findUser->jobs->name,
-                "country" => $findUser->countries->name,
+                "job" => is_null($job) ? null : $findUser->job->name,
+                "country" => $findUser->country->name,
                 "city" => $findUser->city,
                 "position" => $findUser->company,
                 "description" => $findUser->description
@@ -166,7 +166,7 @@ class AuthController extends Controller
         $findUser = User::find($id);
         $userExist = CheckContoller::checkUserExistById($id);
 
-        $job = $findUser->jobs;
+        $job = $findUser->job;
 
         if($userExist){
             return response()->success([
@@ -175,8 +175,8 @@ class AuthController extends Controller
                     "email" => $findUser->email,
                     "name" => $findUser->name,
                     "profile" => $findUser->profile_img,
-                    "job" => is_null($job) ? null : $findUser->jobs->name,
-                    "country" => $findUser->countries->name,
+                    "job" => is_null($job) ? null : $findUser->job->name,
+                    "country" => $findUser->country->name,
                     "city" => $findUser->city,
                     "mobile" => $findUser->mobile,
                     "fax" => $findUser->fax,
@@ -184,8 +184,8 @@ class AuthController extends Controller
                     "position" => $findUser->company,
                     "description" => $findUser->description
                 ),
-                "language" => $findUser->languages,
-                "history" => $findUser->careers,
+                "language" => $findUser->language,
+                "history" => $findUser->career,
                 "publicOption" => (object)array(
                     "email" => $findUser->email_public,
                     "mobile" => $findUser->mobile_public,

@@ -37,30 +37,30 @@ class User extends Model implements AuthenticatableContract,
     // get reference data
     public function job()
     {
-        return $this->hasOne('App\Job','job_id','job');
+        return $this->hasOne('App\Job','id','job_id');
     }
     public function country()
     {
-        return $this->hasOne('App\Country','country_id','country');
+        return $this->hasOne('App\Country','id','country_id');
     }
     // get reference data
 
     // users children table
     public function log()
     {
-        return $this->hasMany('App\Log');
+        return $this->hasMany('App\Log','id','id');
     }
     public function career()
     {
-        return $this->hasMany('App\Career');
+        return $this->hasMany('App\Career','id','id');
     }
     public function language()
     {
-        return $this->hasMany('App\Language');
+        return $this->hasMany('App\Language','id','id');
     }
     public function createOfTheMonth()
     {
-        return $this->hasMany('App\CreateOfTheMonth');
+        return $this->hasMany('App\CreateOfTheMonth','id','id');
     }
     // users children table
 
@@ -68,7 +68,7 @@ class User extends Model implements AuthenticatableContract,
     //post
     public function post()
     {
-        return $this->belongsTo('App\Post');
+        return $this->belongsTo('App\Post','user_id','id');
     }
     //post
 

@@ -68,11 +68,11 @@ class BoardController extends Controller
             ),
             "userData" => (object)array(
                 "id" => $post->user_id,
-                "name" => $post->users->name,
-                "profile" => $post->users->profile_img,
+                "name" => $post->user->name,
+                "profile" => $post->user->profile_img,
                 "job" => is_null($job) ? null : $job->name,
-                "country" => $post->users->countries->name,
-                "city" => $post->users->city
+                "country" => $post->user->country->name,
+                "city" => $post->user->city
             )
         ]);
    }
