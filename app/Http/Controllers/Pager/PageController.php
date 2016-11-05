@@ -44,13 +44,15 @@ class PageController extends Controller
         $this->bindData();
     }
     public function getModel($category){
-        $this->categoryParse = board::select('group')->where('name','=',$category)->firstOrFail();
+        switch($category){
+            case 'comment' : $this->categoryParse = (object)array('group'=>'comment'); break;
+            default : $this->categoryParse = board::select('group')->where('name','=',$category)->firstOrFail(); break;
+        }
         switch($this->categoryParse->group){
             case 'post' : $this->model = new post;
+            case 'comment' : $this->model = new comment;
             // case 'content' : $this->model = new content;
-            default :
-            return 'error';
-            break; //error point
+            default : break; //error point
         }
     }
 

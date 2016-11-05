@@ -14,6 +14,10 @@ class comment extends Model
     {
         return $this->hasOne('App\User','id','give_user_id');
     }
+    public function users() //give users
+    {
+        return $this->hasOne('App\User','id','give_user_id');
+    }
 
     public function takeUsers()
     {

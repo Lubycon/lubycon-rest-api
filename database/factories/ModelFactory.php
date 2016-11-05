@@ -37,3 +37,14 @@ $factory->define(App\post::class, function (Faker\Generator $faker) {
         "created_at" => date("Y-m-d H:i:s",rand(1262055681,1478304000)),
     ];
 });
+
+$factory->define(App\comment::class, function (Faker\Generator $faker) {
+    return [
+        'give_user_id' => mt_rand(1,100),
+        'take_user_id' => mt_rand(1,100),
+        'board' => mt_rand(0,1) ? 1 : 11,
+        'post_id' => mt_rand(0,100),
+        "content" => str_random(10),
+        "created_at" => date("Y-m-d H:i:s",rand(1262055681,1478304000)),
+    ];
+});
