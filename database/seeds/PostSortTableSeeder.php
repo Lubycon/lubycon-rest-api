@@ -13,7 +13,7 @@ class PostSortTableSeeder extends Seeder
     {
         DB::table('post_sorts')->truncate();
         $PostSorts = array(
-            array('id'=>1,'name'=>'Resent'),
+            array('id'=>1,'name'=>'Recent'),
             array('id'=>2,'name'=>'Most View'),
             array('id'=>3,'name'=>'Most Comment'),
         );

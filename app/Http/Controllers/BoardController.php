@@ -33,7 +33,8 @@ class BoardController extends Controller
        // page per contents
        $pageSize = isset($query['pageSize']) && $query['pageSize'] <= $maxSize ? $query['pageSize'] : $defaultSize;
 
-       //page=1&sort=sorttt&searchFilter=filter&keyword=keywos&userId=14
+       //sort
+       //userid
 
        $post = post::with('users');
        $paginator = $post->paginate($pageSize, ['*'], 'page', $setPage);
@@ -115,7 +116,6 @@ class BoardController extends Controller
 
         $tokenData = CheckContoller::checkToken($request);
         $findUser = User::findOrFail($tokenData->id);
-
         $posts = post::findOrFail($board_id);
 
         if($findUser->id != $posts->user_id){
@@ -137,7 +137,6 @@ class BoardController extends Controller
    public function deletePost(Request $request,$category,$board_id){
         $tokenData = CheckContoller::checkToken($request);
         $findUser = User::findOrFail($tokenData->id);
-
         $posts = post::findOrFail($board_id);
 
         if($findUser->id != $posts->user_id){
