@@ -16,7 +16,7 @@ use Carbon\Carbon;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Auth\CheckContoller;
-use App\Http\Controllers\pager\PageController;
+use App\Http\Controllers\Pager\PageController;
 
 class BoardController extends Controller
 {
