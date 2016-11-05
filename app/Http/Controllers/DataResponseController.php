@@ -33,10 +33,14 @@ class DataResponseController extends Controller
             'contentSort' => ContentSort::all(),
             'contentCategory' => ContentCategory::all(),
         );
-        foreach($query as $key){
-            $models[] = (object)array(
-                $key => $whiteList->$key
-            );
+
+        $models = (object)array();
+        foreach($query as $key => $value){
+            if(isset($whiteList->$value)){
+                $models->$key = $whiteList->$value;
+            }else{
+                return null;
+            }
         };
         return $models;
     }
