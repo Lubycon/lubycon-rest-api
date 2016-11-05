@@ -62,9 +62,9 @@ class PageController extends Controller
         /////// page per contents
         $this->pageSize = isset($this->query['pageSize']) && $this->query['pageSize'] <= $this->maxSize ? $this->query['pageSize'] : $this->defaultSize;
         //////// find target users post
-        $this->searchUser = $this->query['userId'] ? $this->query['userId'] : $this->searchAllUser;
+        $this->searchUser = isset($this->query['userId']) ? $this->query['userId'] : $this->searchAllUser;
         //////// sort option set
-        $this->sortOption = $this->query['sort'] ? $this->query['sort'] : $this->sortDefault;
+        $this->sortOption = isset($this->query['sort']) ? $this->query['sort'] : $this->sortDefault;
         //////// set sort property
         switch($this->sortOption){
             case 1 : $this->sort->option = 'created_at' ; $this->sort->direction = 'desc'; break; //recent
@@ -82,7 +82,7 @@ class PageController extends Controller
     }
 
     public function bindData(){
-        $this->postWithUser = $this->model->with('users');
+        $this->postWithUser = $this->model->with('user');
         $this->paginator = $this->postWithUser->orderBy($this->sort->option,$this->sort->direction)->paginate($this->pageSize, ['*'], 'page', $this->setPage);
         $this->collection = $this->paginator->getCollection();
     }

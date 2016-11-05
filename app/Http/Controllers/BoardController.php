@@ -36,9 +36,9 @@ class BoardController extends Controller
                     "date" => Carbon::instance($array->created_at)->toDateTimeString(),
                ),
                "userData" => (object)array(
-                   "id" => $array->users->id,
-                   "name" => $array->users->name,
-                   "profile" => $array->users->profile_img
+                   "id" => $array->user->id,
+                   "name" => $array->user->name,
+                   "profile" => $array->user->profile_img
                )
            );
        };
@@ -54,7 +54,7 @@ class BoardController extends Controller
    }
    public function viewPost($category,$board_id){
         $post = Post::findOrFail($board_id);
-        $job = $post->users->jobs;
+        $job = $post->user->job;
 
         return response()->success([
             "contents" => (object)array(
