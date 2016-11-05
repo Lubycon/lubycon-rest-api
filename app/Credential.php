@@ -4,7 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Credentials extends Model
+class Credential extends Model
 {
     protected function signIn($data){
 
