@@ -25,15 +25,13 @@ class CertificateController extends Controller
         $this->user = User::where('remember_token','=',$token)->get();
 
         if(!$this->user->isempty()){
-            $result = (object)array(
+            return response()->success([
                 "validity" => true
-            );
-            return response()->success($result);
+            ]);
         }else{
-            $result = (object)array(
+            return response()->error([
                 "validity" => false
-            );
-            return response()->success($result);
+            ]);            
         }
     }
     protected function certTokenTimeCheck(Request $request){
@@ -120,15 +118,13 @@ class CertificateController extends Controller
         ];
 
         if (Auth::once($credentials)) {
-            $result = (object)array(
+            return response()->success([
                 "validity" => true
-            );
-            return response()->success($result);
+            ]);
         }
-        $result = (object)array(
+        return response()->success([
             "validity" => false
-        );
-        return response()->success($result);
+        ]);
     }
 
     protected function activeUser($user){

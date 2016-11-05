@@ -17,7 +17,7 @@ use Illuminate\Mail\Message;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 
-class mailSendController extends Controller
+class MailSendController extends Controller
 {
     public static function getSignupToken($email){
         return DB::table('signup_allows')->where('email','=',$email)->value('token');
@@ -29,10 +29,10 @@ class mailSendController extends Controller
             "email" => $user->email,
             "type" => 'signup',
             "subject" => 'account success to Lubycon!',
-            'token' => mailSendController::getSignupToken($user->email),
+            'token' => MailSendController::getSignupToken($user->email),
             "user" => $user
         );
-        mailSendController::normalMailSend($data);
+        MailSendController::normalMailSend($data);
     }
 
     public static function againSignupTokenSet(Request $request){
@@ -45,11 +45,11 @@ class mailSendController extends Controller
             "email" => $user->email,
             "type" => 'signup',
             "subject" => 'resend account mail from Lubycon!',
-            'token' => mailSendController::getSignupToken($user->email),
+            'token' => MailSendController::getSignupToken($user->email),
             "user" => $user
         );
         checkContoller::insertSignupToken($user->id);
-        mailSendController::normalMailSend($data);
+        MailSendController::normalMailSend($data);
     }
 
     protected static function normalMailSend($data){
@@ -64,7 +64,7 @@ class mailSendController extends Controller
         $sendMail = Event::fire(new PasswordMailSendEvent([
             'email'    =>  $data['email'],
             'subject'  => 'Your Password Reset Link',
-            'token' => mailSendController::getSignupToken($data['email']),
+            'token' => MailSendController::getSignupToken($data['email']),
         ]));
 
         return $sendMail;

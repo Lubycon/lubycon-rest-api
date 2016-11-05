@@ -41,32 +41,42 @@ class Handler extends ExceptionHandler
      * @param  \Exception  $e
      * @return \Illuminate\Http\Response
      */
-    public function render($request, Exception $e)
-    {
-        if ($e instanceof ModelNotFoundException) {
-            $e = new NotFoundHttpException($e->getMessage(), $e);
-        }
+     public function render($request, Exception $e)
+     {
+         log::error($e);
 
-        log::error($e);
+         if(env('APP_DEBUG')){
+             return parent::render($request , $e); //for develop
+         }else{
+             if ($e instanceof ModelNotFoundException) {
+                 return response()->error([
+                     "code" => "0062"
+                 ]);
+             }
+             return $this->response($request, $e); //for provide
+         }
+     }
 
-        if(env('APP_DEBUG')){
-            return parent::render($request , $e); //for develop
-        }else{
-            return $this->response($request, $e); //for provide
-        }
-    }
+     public function response($request, Exception $e)
+     {
+         $exception = array(
+             "httpStatusCode" => $this->getExceptionHTTPStatusCode($e),
+             "msg" => $this->getJsonMessage($e),
+         );
 
-    public function response($request, Exception $e)
-    {
-        $exception = array(
-            "code" => $e->getStatusCode(),
-            "msg" => $e->getMessage(),
-        );
+         $status = [
+             'code' => '9999',
+             'devMsg' => $exception
+         ];
+         return response()->error($status);
+     }
 
-        $status = (object)array(
-            'code' => '9999',
-            'devMsg' => $exception
-        );
-        return response()->error($status);
-    }
-}
+     protected function getJsonMessage($e){
+         return $e->getMessage();
+     }
+
+     protected function getExceptionHTTPStatusCode($e){
+         return method_exists($e, 'getStatusCode') ? $e->getStatusCode() : 500;
+     }
+
+ }

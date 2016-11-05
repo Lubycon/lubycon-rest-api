@@ -11,13 +11,13 @@ class JobsTableSeeder extends Seeder
      */
     public function run()
     {
-        DB::table('jobs')->delete();
+        DB::table('jobs')->truncate();
         $jobs = array(
-            array('name'=>'Artist'),
-            array('name'=>'Designer'),
-            array('name'=>'Developer'),
-            array('name'=>'Student'),
-            array('name'=>'Others'),
+            array('job_id'=>1,'name'=>'Artist'),
+            array('job_id'=>2,'name'=>'Designer'),
+            array('job_id'=>3,'name'=>'Developer'),
+            array('job_id'=>4,'name'=>'Student'),
+            array('job_id'=>5,'name'=>'Others'),
         );
 
         DB::table('jobs')->insert($jobs);

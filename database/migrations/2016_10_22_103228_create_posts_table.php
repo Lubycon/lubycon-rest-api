@@ -18,10 +18,10 @@ class CreatePostsTable extends Migration
             $table->integer('user_id')->unsigned();
             $table->string('title',45);
             $table->longText('content');
-            $table->longText('directory');
-            $table->integer('view_count')->unsigned();
-            $table->integer('like_count')->unsigned();
-            $table->integer('comment_count')->unsigned();
+            $table->longText('directory')->nullable();
+            $table->integer('view_count')->unsigned()->default(0);
+            $table->integer('like_count')->unsigned()->default(0);
+            $table->integer('comment_count')->unsigned()->default(0);
             $table->timestamps();
             $table->softDeletes();
         });

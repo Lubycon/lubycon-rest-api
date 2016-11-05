@@ -11,7 +11,7 @@ use App\Credentials;
 use App\Validation;
 use Validator;
 use Illuminate\Http\Request;
-use App\Http\Controllers\mailSendController;
+use App\Http\Controllers\MailSendController;
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\ThrottlesLogins;
 use Illuminate\Foundation\Auth\AuthenticatesAndRegistersUsers;
@@ -34,10 +34,9 @@ class AuthController extends Controller
         $credentials = Credentials::signin($data);
 
         if ( !Auth::once($credentials)) {
-            $status = (object)array(
+            return response()->error([
                 'code' => '0010'
-            );
-            return response()->error($status);
+            ]);
         }
 
         if(Auth::user()->is_active == 'active'){
@@ -94,7 +93,7 @@ class AuthController extends Controller
                 $rememberToken = CheckContoller::insertRememberToken($id);
             }
 
-            mailSendController::signupTokenSet(Auth::user());
+            MailSendController::signupTokenSet(Auth::user());
 
             return response()->success([
                 "token" => $rememberToken
@@ -113,10 +112,9 @@ class AuthController extends Controller
             $user->delete();
             return response()->success();
         }else{
-            $status = (object)array(
+            return response()->error([
                 'code' => '0030'
-            );
-            return response()->error($status);
+            ]);
         };
     }
 
@@ -128,10 +126,9 @@ class AuthController extends Controller
             $user->restore();
             return response()->success();
         }else{
-            $status = (object)array(
+            return response()->error([
                 'code' => '0030'
-            );
-            return response()->error($status);
+            ]);
         };
     }
 
@@ -156,10 +153,9 @@ class AuthController extends Controller
             );
             return response()->success($result);
         }else{
-            $status = (object)array(
+            return response()->error([
                 'code' => '0030'
-            );
-            return response()->error($status);
+            ]);
         }
     }
 
@@ -196,11 +192,10 @@ class AuthController extends Controller
                 )
             ]);
         }else{
-            $status = (object)array(
+            return response()->error([
                 'code' => '0030',
                 "devMsg" => "user number " . $id . " dose not exist"
-            );
-            return response()->error($status);
+            ]);
         }
     }
     protected function postRetrieve(Request $request,$id)
@@ -231,11 +226,10 @@ class AuthController extends Controller
                 DB::table('careers')->insert($this->setCareerGroup($data['history'],$id));
             return response()->success($data);
         }else{
-            $status = (object)array(
+            return response()->error([
                 'code' => '0030',
                 "devMsg" => "dose not match user id"
-            );
-            return response()->error($status);
+            ]);
         }
     }
     protected function jobDataEncode($string){

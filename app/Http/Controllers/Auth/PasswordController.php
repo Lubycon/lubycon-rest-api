@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use DB;
 use Validator;
-use App\Http\Controllers\mailSendController;
+use App\Http\Controllers\MailSendController;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Mail\Message;
@@ -41,7 +41,7 @@ class PasswordController extends Controller
     {
         $this->validate($request, ['email' => 'required|email']);
 
-        $response = mailSendController::passwordResetTokenSend($request);
+        $response = MailSendController::passwordResetTokenSend($request);
 
         return response()->success();
     }
@@ -55,11 +55,10 @@ class PasswordController extends Controller
         ]);
 
         if ($validator->fails()) {
-            $status = (object)array(
+            return response()->error([
                 'code' => '0030',
                 "devMsg" => $validator->errors()
-            );
-            return response()->error($status);
+            ]);
         }
 
         $credentials = array(
@@ -77,10 +76,9 @@ class PasswordController extends Controller
             case Password::PASSWORD_RESET:
                 return response()->success();
             default:
-                $status = (object)array(
+                return response()->error([
                     'code' => '0030'
-                );
-                return response()->error($status);
+                ]);
         }
     }
 

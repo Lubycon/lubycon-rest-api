@@ -34,7 +34,7 @@ class User extends Model implements AuthenticatableContract,
 
     protected $dates = ['deleted_at'];
 
-    // 1 : 1
+    // get reference data
     public function jobs()
     {
         return $this->hasOne('App\job','job_id','job');
@@ -43,8 +43,9 @@ class User extends Model implements AuthenticatableContract,
     {
         return $this->hasOne('App\country','country_id','country');
     }
+    // get reference data
 
-    // 1: n
+    // users children table
     public function logs()
     {
         return $this->hasMany('App\log');
@@ -61,5 +62,34 @@ class User extends Model implements AuthenticatableContract,
     {
         return $this->hasMany('App\createOfTheMonth');
     }
+    // users children table
 
+
+    //post
+    public function posts()
+    {
+        return $this->belongsTo('App\post');
+    }
+    //post
+
+
+    // action
+    public function giveViews()
+    {
+        return $this->hasMany('App\view','give_user_id','id');
+    }
+    public function takeViews()
+    {
+        return $this->hasMany('App\view','take_user_id','id');
+    }
+
+    public function takeComments()
+    {
+        return $this->hasMany('App\comment','take_user_id','id');
+    }
+    public function giveComments()
+    {
+        return $this->hasMany('App\comment','give_user_id','id');
+    }
+    // action
 }

@@ -63,9 +63,9 @@ class ResponseMacroServiceProvider extends ServiceProvider
 
             return response()->json([
                 'status' => (object)array(
-                    'code' => $data->code,
-                    'msg' => $errors[$data->code],
-                    "devMsg" => isset($data->devMsg) ? $data->devMsg : ''
+                    'code' => $data['code'],
+                    'msg' => $errors[$data['code']],
+                    "devMsg" => isset($data['devMsg']) ? $data['devMsg'] : ''
                 ),
                 'result' => null
             ]);
