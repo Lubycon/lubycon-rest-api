@@ -42,8 +42,8 @@ class AddUsersCoulmns extends Migration
     {
         Schema::table('users', function(Blueprint $table) {
             $table->dropColumn('last_login_time');
-            $table->dropColumn('job');
-            $table->dropColumn('country');
+            $table->dropColumn('job_id');
+            $table->dropColumn('country_id');
             $table->dropColumn('is_active');
             $table->dropColumn('is_accept_terms');
             $table->dropColumn('token');
