@@ -5,32 +5,32 @@ namespace App;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Model;
 
-class comment extends Model
+class Comment extends Model
 {
     use SoftDeletes;
     protected $dates = ['deleted_at'];
 
-    public function giveUsers()
+    public function giveUser()
     {
         return $this->hasOne('App\User','id','give_user_id');
     }
-    public function users() //give users
+    public function user() //give users
     {
         return $this->hasOne('App\User','id','give_user_id');
     }
 
-    public function takeUsers()
+    public function takeUser()
     {
         return $this->hasOne('App\User','id','take_user_id');
     }
 
-    public function boards()
+    public function board()
     {
-        return $this->hasOne('App\board','board_id','board');
+        return $this->hasOne('App\Board','board_id','board');
     }
 
-    public function posts()
+    public function post()
     {
-        return $this->hasOne('App\post','id','post_id');
+        return $this->hasOne('App\Post','id','post_id');
     }
 }

@@ -4,9 +4,9 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Credentials extends Model
+class Credential extends Model
 {
-    protected function signin($data){
+    protected function signIn($data){
 
       $credentials = [
           'email'    => $data['email'],
@@ -16,7 +16,7 @@ class Credentials extends Model
       return $credentials;
     }
 
-    protected function signup($data){
+    protected function signUp($data){
 
       $credentials = [
           'name' => $data['nickname'],

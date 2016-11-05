@@ -7,11 +7,11 @@ use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 
-use App\post;
+use App\Post;
 use App\User;
-use App\comment;
-use App\view;
-use App\board;
+use App\Comment;
+use App\View;
+use App\Board;
 
 class PageController extends Controller
 {
@@ -46,11 +46,11 @@ class PageController extends Controller
     public function getModel($category){
         switch($category){
             case 'comment' : $this->categoryParse = (object)array('group'=>'comment'); break;
-            default : $this->categoryParse = board::select('group')->where('name','=',$category)->firstOrFail(); break;
+            default : $this->categoryParse = Board::select('group')->where('name','=',$category)->firstOrFail(); break;
         }
         switch($this->categoryParse->group){
-            case 'post' : $this->model = new post; break;
-            case 'comment' : $this->model = new comment; break;
+            case 'post' : $this->model = new Post; break;
+            case 'comment' : $this->model = new Comment; break;
             // case 'content' : $this->model = new content;
             default : break; //error point
         }

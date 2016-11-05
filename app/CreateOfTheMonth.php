@@ -4,7 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class createOfTheMonth extends Model
+class CreateOfTheMonth extends Model
 {
     public function user()
     {

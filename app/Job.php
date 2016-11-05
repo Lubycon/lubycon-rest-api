@@ -4,10 +4,11 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class career extends Model
+class Job extends Model
 {
     public function user()
     {
-        return $this->belongsTo('App\User','id','career_group_id');
+        return $this->belongsTo('App\User');
     }
+    protected $guarded = array('*');
 }

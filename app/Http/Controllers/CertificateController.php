@@ -6,7 +6,9 @@ use DB;
 use App\Http\Controllers\Auth\CheckContoller;
 use Auth;
 use Carbon\Carbon;
+
 use App\User;
+
 use App\signup_allow;
 use Validator;
 use Illuminate\Http\Request;
@@ -31,7 +33,7 @@ class CertificateController extends Controller
         }else{
             return response()->error([
                 "validity" => false
-            ]);            
+            ]);
         }
     }
     protected function certTokenTimeCheck(Request $request){

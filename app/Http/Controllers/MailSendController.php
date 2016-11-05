@@ -7,7 +7,8 @@ use App\Http\Controllers\Auth\CheckContoller;
 use Illuminate\Http\Request;
 
 use App\User;
-use App\signup_allow;
+use App\SignupAllow;
+
 use Mail;
 use Event;
 use DB;
