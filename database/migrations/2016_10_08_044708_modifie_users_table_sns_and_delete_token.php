@@ -14,8 +14,8 @@ class ModifieUsersTableSnsAndDeleteToken extends Migration
     {
         Schema::table('users', function(Blueprint $table) {
             $table->softDeletes();
-            $table->integer('sns_id');
-            $table->enum('is_sns_user', ['0100','0101','0102']);
+            $table->integer('sns_id')->nullable();
+            $table->enum('is_sns_user', ['0100','0101','0102'])->nullable();
             $table->dropColumn('token');
         });
     }
