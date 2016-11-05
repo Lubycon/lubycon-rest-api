@@ -8,10 +8,10 @@ use App\Http\Requests;
 use App\Http\Controllers\Controller;
 
 use App\User;
-use App\job;
-use App\country;
+use App\Job;
+use App\Country;
 
-use App\post;
+use App\Post;
 use App\PostSort;
 
 // use App\Content;
@@ -23,10 +23,10 @@ class DataResponseController extends Controller
     private function getModelByWhitelist($query){
         $whiteList = (object)array(
             'user' => User::all(), //only test data
-            'job' => job::all(),
-            'country' => country::all(),
+            'job' => Job::all(),
+            'country' => Country::all(),
 
-            'post' => post::all(), //only test data
+            'post' => Post::all(), //only test data
             'postSort' => PostSort::all(),
 
             // 'content' => Content::all(), //not builded yet
