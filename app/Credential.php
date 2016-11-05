@@ -3,33 +3,35 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Country;
+use App\Job;
 
 class Credential extends Model
 {
-    protected function signIn($data){
+    protected static function signIn($data){
 
-      $credentials = [
+      $credential = [
           'email'    => $data['email'],
           'password' => $data['password']
       ];
 
-      return $credentials;
+      return $credential;
     }
 
-    protected function signUp($data){
+    protected static function signUp($data){
 
-      $credentials = [
+      $credential = [
           'name' => $data['nickname'],
           'email' => $data['email'],
           'password' => bcrypt($data['password']),
           'sns_code' => 0,
-          'country' => $this->countryDataEncode($data['country']),
+          'country_id' => Country::where('name','=',$data['country'])->value('id'),
           'is_active' => 'inactive',
           'is_accept_terms' => '111',
           //'is_accept_terms' => $data['newletter'].'11',
       ];
 
-      return $credentials;
+      return $credential;
 
     }
 }

@@ -72,31 +72,24 @@ class AuthController extends Controller
     protected function signup(Request $request)
     {
         $data = $request->json()->all();
-        $credentials = Credential::signup($data);
-        $ResultOfValidation = Validation::auth($credentials);
+        $credentialSignup = Credential::signup($data);
+        $credentialSignin = Credential::signin($data);
+        $ResultOfValidation = Validation::auth($credentialSignup);
 
         if ($ResultOfValidation->fails()){
-            $status = (object)array(
-                'code' => '0030',
+            return response()->error([
+                "code" => "0030",
                 "devMsg" => $ResultOfValidation->errors()
-            );
-            return response()->error($status);
+            ]);
         };
 
-        if(User::create($createData)){
-            $credentials = [
-                'email'    => $data['email'],
-                'password' => $data['password']
-            ];
-
-            if(Auth::once($credentials)){
+        if(User::create($credentialSignup)){
+            if(Auth::once($credentialSignin)){
                 $id = Auth::user()->getAuthIdentifier();
                 CheckContoller::insertSignupToken($id);
                 $rememberToken = CheckContoller::insertRememberToken($id);
             }
-
             MailSendController::signupTokenSet(Auth::user());
-
             return response()->success([
                 "token" => $rememberToken
             ]);
