@@ -72,7 +72,7 @@ class AuthController extends Controller
     protected function signup(Request $request)
     {
         $data = $request->json()->all();
-        $credentials = Credentials::signup($data);
+        $credentials = Credential::signup($data);
         $ResultOfValidation = Validation::auth($credentials);
 
         if ($ResultOfValidation->fails()){
