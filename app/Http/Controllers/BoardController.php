@@ -67,13 +67,7 @@ class BoardController extends Controller
        }
    }
    public function viewPost($category,$board_id){
-        $post = post::find($board_id);
-
-        if(is_null($post)){
-            return response()->error([
-                "code" => "0062"
-            ]);
-        }
+        $post = post::findOrFail($board_id);
         $job = $post->users->jobs;
 
         return response()->success([
@@ -100,7 +94,7 @@ class BoardController extends Controller
         $data = $request->json()->all();
 
         $tokenData = CheckContoller::checkToken($request);
-        $findUser = User::find($tokenData->id);
+        $findUser = User::findOrFail($tokenData->id);
 
         $posts = new post;
 
@@ -120,9 +114,9 @@ class BoardController extends Controller
         $data = $request->json()->all();
 
         $tokenData = CheckContoller::checkToken($request);
-        $findUser = User::find($tokenData->id);
+        $findUser = User::findOrFail($tokenData->id);
 
-        $posts = post::find($board_id);
+        $posts = post::findOrFail($board_id);
 
         if($findUser->id != $posts->user_id){
             return response()->error([
@@ -142,9 +136,9 @@ class BoardController extends Controller
    }
    public function deletePost(Request $request,$category,$board_id){
         $tokenData = CheckContoller::checkToken($request);
-        $findUser = User::find($tokenData->id);
+        $findUser = User::findOrFail($tokenData->id);
 
-        $posts = post::find($board_id);
+        $posts = post::findOrFail($board_id);
 
         if($findUser->id != $posts->user_id){
             return response()->error([
