@@ -84,7 +84,7 @@ class BoardController extends Controller
 
         $posts = new Post;
 
-        $posts->board = 1;
+        $posts->board_id = 1;
         $posts->user_id = $findUser->id;
         $posts->title = $data['title'];
         $posts->content = $data['content'];

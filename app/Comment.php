@@ -26,7 +26,7 @@ class Comment extends Model
 
     public function board()
     {
-        return $this->hasOne('App\Board','board_id','board');
+        return $this->hasOne('App\Board','id','board_id');
     }
 
     public function post()

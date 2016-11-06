@@ -6,7 +6,7 @@ Route::group(['prefix' => '/members/'], function () {
     Route::post('signin', 'Auth\AuthController@signin');
     Route::put('signout', 'Auth\AuthController@signout');
     Route::post('signup', 'Auth\AuthController@signup');
-    Route::put('signdrop', 'Auth\AuthController@signdrop');
+    Route::delete('signdrop', 'Auth\AuthController@signdrop');
     Route::put('signrestore/{id}', 'Auth\AuthController@signrestore');
 
     //member data check and get
@@ -32,7 +32,6 @@ Route::group(['prefix' => '/certs/'], function () {
         Route::post('code', 'CertificateController@certSignupToken');
     });
 
-
     Route::group(['prefix' => 'password/'], function () {
         Route::post('time', 'CertificateController@certPasswordTimeCheck');
         Route::post('code', 'CertificateController@certPasswordToken');
@@ -55,4 +54,11 @@ Route::group(['prefix' => '/posts/'],function(){
     Route::post('{category}','BoardController@uploadPost');
     Route::put('{category}/{board_id}','BoardController@updatePost');
     Route::delete('{category}/{board_id}','BoardController@deletePost');
+});
+
+Route::group(['prefix' => '/comments/'],function(){
+    Route::post('/{category}/{board_id}','CommentController@store');
+    Route::get('/{category}/{board_id?}','CommentController@getList');
+    Route::put('/{category}/{board_id}/{comment_id}','CommentController@update');
+    Route::delete('/{category}/{board_id}/{comment_id}','CommentController@delete');
 });
