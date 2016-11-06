@@ -11,7 +11,7 @@ class AdminUserSeeder extends Seeder
      */
     public function run()
     {
-        DB::table('users')->delete();
+        DB::table('users')->truncate();
         $admin = array(
             array(
             	'email'=>'lubycon@gmail.com',
