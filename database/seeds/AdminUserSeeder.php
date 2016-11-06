@@ -17,6 +17,7 @@ class AdminUserSeeder extends Seeder
             	'email'=>'lubycon@gmail.com',
             	'name' => 'Admin',
             	'password' => bcrypt('hmdwdgdhkr2015'),
+                'rememeber_token' => 'wmLRmEIui4DtFz5ikU5mZ6Cm2gKCIOW1',
             	'country_id' => 201,
             	'job_id' => 1,
             	'is_active' => 'active',
