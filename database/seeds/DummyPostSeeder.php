@@ -11,7 +11,7 @@ class DummyPostSeeder extends Seeder
      */
     public function run()
     {
-        DB::table('users')->truncate();
+        //DB::table('users')->truncate();
         factory(App\User::class, 100)->create();
 
         DB::table('posts')->truncate();
