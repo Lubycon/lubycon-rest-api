@@ -51,7 +51,7 @@ class PasswordController extends Controller
         $data = $request->json()->all();
         $validator = Validator::make($request->all(), [
             'code' => 'required',
-            'password' => 'required|min:6'
+            'newPassword' => 'required|min:6'
         ]);
 
         if ($validator->fails()) {
@@ -63,8 +63,8 @@ class PasswordController extends Controller
 
         $credentials = array(
             "email" => DB::table('password_resets')->where('token','=',$data['code'])->value('email'),
-            "password" => $data['password'],
-            "password_confirmation" => $data['password'],
+            "password" => $data['newPassword'],
+            "password_confirmation" => $data['newPassword'],
             "token" => $data['code']
         );
 
@@ -94,7 +94,5 @@ class PasswordController extends Controller
         $user->password = bcrypt($password);
 
         $user->save();
-
-        Auth::login($user);
     }
 }

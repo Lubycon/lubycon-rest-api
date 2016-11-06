@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use App\User;
 use App\SignupAllow;
 
+use Log;
 use Mail;
 use Event;
 use DB;
@@ -65,8 +66,10 @@ class MailSendController extends Controller
         $sendMail = Event::fire(new PasswordMailSendEvent([
             'email'    =>  $data['email'],
             'subject'  => 'Your Password Reset Link',
-            'token' => MailSendController::getSignupToken($data['email']),
+            'token' => str_random(40),
         ]));
+
+        log::info('event start');
 
         return $sendMail;
     }

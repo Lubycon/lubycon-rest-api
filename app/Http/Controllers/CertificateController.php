@@ -9,7 +9,7 @@ use Carbon\Carbon;
 
 use App\User;
 
-use App\signup_allow;
+use App\SignupAllow;
 use Validator;
 use Illuminate\Http\Request;
 use App\Http\Requests;
@@ -32,6 +32,7 @@ class CertificateController extends Controller
             ]);
         }else{
             return response()->error([
+                "code" => "0062",
                 "validity" => false
             ]);
         }
@@ -39,7 +40,8 @@ class CertificateController extends Controller
     protected function certTokenTimeCheck(Request $request){
         $data = CheckContoller::checkToken($request);
 
-        $createTime = signup_allow::find($data->id)->created_at;
+
+        $createTime = SignupAllow::find($data->id)->created_at;
         $minutes = 360;
         $diffTime = $this->checkDiffTime($createTime,$minutes);
 
@@ -62,13 +64,13 @@ class CertificateController extends Controller
     }
 
     protected function checkDiffTime($createTime,$minutes){
-        $startTime = Carbon::now();
-        $endTime = $createTime->addMinutes($minutes);
+        $nowTime = Carbon::now();
+        $createTimeParse = $createTime->addMinutes($minutes);
 
-        if($startTime > $endTime){
+        if($nowTime < $createTimeParse){
             return 0;
         }
-        return $startTime->diffInSeconds($endTime);
+        return $nowTime->diffInSeconds($createTimeParse);
     }
 
     protected function certSignupToken(Request $request){
@@ -76,7 +78,7 @@ class CertificateController extends Controller
         $code = $request->only('code');
         $user = User::find($data->id);
 
-        $validateToken = signup_allow::whereRaw("email = '".$user->email."' and token = '".$code['code']."'")->get();
+        $validateToken = SignupAllow::whereRaw("email = '".$user->email."' and token = '".$code['code']."'")->get();
 
         if(!$validateToken->isempty()){
             $this->activeUser($user);
