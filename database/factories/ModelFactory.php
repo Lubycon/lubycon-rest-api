@@ -38,6 +38,25 @@ $factory->define(App\Post::class, function (Faker\Generator $faker) {
     ];
 });
 
+$factory->define(App\Content::class, function (Faker\Generator $faker) {
+    return [
+        'board_id' => 1,
+        'user_id' => mt_rand(1,100),
+        'license_id' => mt_rand(1,4),
+        'title' => $faker->name,
+        'description' => str_random(10),
+        'content' => str_random(10),
+        'directory' => 'path',
+        'is_download' => mt_rand(0,1) ? true : false,
+        "download_count" => mt_rand(0,100),
+        "bookmark_count" => mt_rand(0,100),
+        "comment_count" => mt_rand(0,100),
+        "like_count" => mt_rand(0,100),
+        "view_count" => mt_rand(0,100),
+        "created_at" => date("Y-m-d H:i:s",rand(1262055681,1478304000)),
+    ];
+});
+
 $factory->define(App\Comment::class, function (Faker\Generator $faker) {
     return [
         'give_user_id' => mt_rand(1,100),

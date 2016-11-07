@@ -18,10 +18,11 @@ class DatabaseSeeder extends Seeder
         $this->call(JobsTableSeeder::class);
         $this->call(AdminUserSeeder::class);
         $this->call(BoardsTableSeeder::class);
-        $this->call(DummyPostSeeder::class);
+        $this->call(DummyDataSeeder::class);
         $this->call(PostSortTableSeeder::class);
         $this->call(ContentSortTableSeeder::class);
         $this->call(ContentCategoryTableSeeder::class);
+        $this->call(LicenseTableSeeder::class);
 
         Model::reguard();
     }

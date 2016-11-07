@@ -2,7 +2,7 @@
 
 use Illuminate\Database\Seeder;
 
-class DummyPostSeeder extends Seeder
+class DummyDataSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -11,7 +11,7 @@ class DummyPostSeeder extends Seeder
      */
     public function run()
     {
-        //DB::table('users')->truncate();
+        //DB::table('users')->truncate(); run this code in admin seeder
         factory(App\User::class, 100)->create();
 
         DB::table('posts')->truncate();

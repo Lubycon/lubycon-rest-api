@@ -5,7 +5,7 @@ namespace App;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Model;
 
-class Post extends Model
+class Content extends Model
 {
     use SoftDeletes;
     protected $dates = ['deleted_at'];
@@ -15,20 +15,24 @@ class Post extends Model
     {
         return $this->hasOne('App\Board','id','board_id');
     }
+    public function category()
+    {
+        return $this->hasMany('App\View','id','category_id');
+    }
     public function user()
     {
         return $this->hasOne('App\User','id','user_id');
     }
-    public function lisence()
+    public function license()
     {
-        return $this->hasOne('App\License','id','user_id');
-    }
-    public function category()
-    {
-        return $this->hasOne('App\ContentsCategory','id','user_id');
+        return $this->hasOne('App\License','id','license_id');
     }
 
     // 1 : n
+    public function download()
+    {
+        return $this->hasMany('App\View','post_id','id');
+    }
     public function view()
     {
         return $this->hasMany('App\View','post_id','id');
@@ -37,4 +41,8 @@ class Post extends Model
     {
         return $this->hasMany('App\Comment','post_id','id');
     }
+    // public function bookmark()
+    // {
+    //     return $this->hasMany('App\Bookmark','post_id','id');
+    // }
 }
