@@ -15,10 +15,6 @@ class Content extends Model
     {
         return $this->hasOne('App\Board','id','board_id');
     }
-    public function category()
-    {
-        return $this->hasMany('App\View','id','category_id');
-    }
     public function user()
     {
         return $this->hasOne('App\User','id','user_id');
@@ -29,9 +25,14 @@ class Content extends Model
     }
 
     // 1 : n
+    public function category()
+    {
+        return $this->hasManyThrough('App\ContentCategory','App\ContentCategoryKernel','post_id','id');
+        // return $this->hasManyThrough('App\Post', 'App\User', 'country_id', 'user_id');
+    }
     public function download()
     {
-        return $this->hasMany('App\View','post_id','id');
+        return $this->hasMany('App\Download','post_id','id');
     }
     public function view()
     {
