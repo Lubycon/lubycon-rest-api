@@ -26,7 +26,7 @@ $factory->define(App\User::class, function (Faker\Generator $faker) {
 
 $factory->define(App\Post::class, function (Faker\Generator $faker) {
     return [
-        'board_id' => 1,
+        'board_id' => 11,
         'user_id' => mt_rand(1,100),
         'title' => $faker->name,
         'content' => str_random(10),
