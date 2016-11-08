@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateLicensesTable extends Migration
+class CreateContentTagsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -12,12 +12,10 @@ class CreateLicensesTable extends Migration
      */
     public function up()
     {
-        Schema::create('licenses', function (Blueprint $table) {
+        Schema::create('content_tags', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('code',10);
-            $table->string('url',45);
-            $table->string('icon',45);
-            $table->string('description',255);
+            $table->integer('post_id')->unsigned();
+            $table->timestamps();
         });
     }
 
@@ -28,6 +26,6 @@ class CreateLicensesTable extends Migration
      */
     public function down()
     {
-        Schema::drop('licenses');
+        Schema::drop('content_tags');
     }
 }

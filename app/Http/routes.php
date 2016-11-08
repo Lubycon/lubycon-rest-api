@@ -62,3 +62,11 @@ Route::group(['prefix' => '/comments/'],function(){
     Route::put('/{category}/{board_id}/{comment_id}','CommentController@update');
     Route::delete('/{category}/{board_id}/{comment_id}','CommentController@delete');
 });
+
+Route::group(['prefix' => '/contents/'],function(){
+    Route::get('{category}','ContentController@viewPost');
+    Route::get('{category}/{board_id}','ContentController@getList');
+    Route::post('{category}','ContentController@store');
+    Route::put('{category}/{board_id}','ContentController@update');
+    Route::delete('{category}/{board_id}','ContentController@delete');
+});

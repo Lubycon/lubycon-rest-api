@@ -28,7 +28,6 @@ class Content extends Model
     public function category()
     {
         return $this->hasManyThrough('App\ContentCategory','App\ContentCategoryKernel','post_id','id');
-        // return $this->hasManyThrough('App\Post', 'App\User', 'country_id', 'user_id');
     }
     public function download()
     {
@@ -41,6 +40,9 @@ class Content extends Model
     public function comment()
     {
         return $this->hasMany('App\Comment','post_id','id');
+    }
+    public function tag(){
+        return $this->hasMany('App\Tags','post_id','id');
     }
     // public function bookmark()
     // {
