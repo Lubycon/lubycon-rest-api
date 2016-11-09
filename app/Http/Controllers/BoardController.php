@@ -25,8 +25,13 @@ class BoardController extends Controller
        $controller = new PageController($category,$query);
        $collection = $controller->getCollection();
 
+       $result = (object)array(
+           "totalCount" => $controller->totalCount,
+           "currentPage" => $controller->currentPage,
+           "contents" => []
+       );
        foreach($collection as $array){
-           $result[] = (object)array(
+           $result->contents[] = (object)array(
                "contents" => (object)array(
                     "id" => $array->id,
                     "title" => $array->title,
@@ -43,7 +48,7 @@ class BoardController extends Controller
            );
        };
 
-       if(isset($result)){
+       if(!is_null($result->contents)){
            return response()->success($result);
        }else{
            return response()->error([
