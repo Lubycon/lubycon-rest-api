@@ -39,7 +39,9 @@ class PageController extends Controller
 
     private $userModelFunctionName = 'user';
     private $withUserModel;
-    private $paginator;
+    public $paginator;
+    public $totalCount;
+    public $currentPage;
     public $collection;
 
 
@@ -146,6 +148,8 @@ class PageController extends Controller
             orderBy($this->sort->option,$this->sort->direction)->
             paginate($this->pageSize, ['*'], 'page', $this->setPage);
             //Log::debug('pagnator', [DB::getQueryLog()]);
+        $this->totalCount = $this->paginator->total();
+        $this->currentPage = $this->paginator->currentPage();
         $this->collection = $this->paginator->getCollection();
     }
 

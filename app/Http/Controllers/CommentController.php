@@ -43,8 +43,13 @@ class CommentController extends Controller
         $controller = new PageController('comment',$query);
         $collection = $controller->getCollection();
 
+        $result = (object)array(
+            "totalCount" => $controller->totalCount,
+            "currentPage" => $controller->currentPage,
+            "comments" => []
+        );
         foreach($collection as $array){
-            $result[] = (object)array(
+            $result->comments[] = (object)array(
                 "comments" => (object)array(
                      "id" => $array->id,
                      "board_id" => $array->post_id,
@@ -59,7 +64,7 @@ class CommentController extends Controller
             );
         };
 
-        if(isset($result)){
+        if(!is_null($result->comments)){
             return response()->success($result);
         }else{
             return response()->error([
