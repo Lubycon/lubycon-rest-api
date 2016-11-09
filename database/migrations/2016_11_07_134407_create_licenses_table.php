@@ -14,7 +14,7 @@ class CreateLicensesTable extends Migration
     {
         Schema::create('licenses', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('code',10);
+            $table->integer('code');
             $table->string('url',45);
             $table->string('icon',45);
             $table->string('description',255);

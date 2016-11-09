@@ -25,14 +25,27 @@ class ContentController extends Controller
         $findUser = User::findOrFail($tokenData->id);
         $contents = new Content;
 
+        // $attachedFiles = $data['attachedFiles'];
+        // $attachedImg = $data['attachedImg'];
+        // $userContent = $data['content'];
+        // $contentType = $data['content']['type'] == '0' ? '2d' : '3d';
+        // $content2dData = $data['content']['data'];
+        // $map = $data['content']['data']['map'];
+        // $model = $data['content']['data']['map'];
+        // $lights = $data['content']['data']['map'];
+
         $contents->board_id = Board::where('name','=',$category)->value('id');
         $contents->user_id = $findUser->id;
-        $contents->license_id = $data['setting']['cc'];
+        $cc = $data['setting']['cc'];
+        $contents->license_id = $cc['by'].$cc['nc'].$cc['nd'].$cc['sa'];
         $contents->title = $data['setting']['title'];
         $contents->content = $data['setting']['content'];
         $contents->description = $data['setting']['description'];
         $contents->directory = ''; //needs s3
-        $contents->is_download = false; //follow attatch files exists
+        $contents->is_download = isset($attachedFiles); //follow attatch files exists
+
+        // $contents->category = $data['setting']['category'];
+        // $contents->tag = $data['setting']['tag'];
 
         if($contents->save()){
           return response()->success();

@@ -21,7 +21,7 @@ class Content extends Model
     }
     public function license()
     {
-        return $this->hasOne('App\License','id','license_id');
+        return $this->hasOne('App\License','code','license_id');
     }
 
     // 1 : n
