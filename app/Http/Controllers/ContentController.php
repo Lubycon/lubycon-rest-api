@@ -58,7 +58,7 @@ class ContentController extends Controller
 
         $category = $this->convertContentCategoryData($data['setting']['category']);
         $categoryRender = $this->InsertContentCategoryId($category);
-        $contents->addCategory()->saveMany($categoryRender); //thrid, categorys save relationship
+        $contents->categoryKernel()->saveMany($categoryRender); //thrid, categorys save relationship
 
         if($contents->save()){ //check right access
           return response()->success();
@@ -115,35 +115,29 @@ class ContentController extends Controller
                  "downloadCount" => $content->view_count,
                  "filePath" => $content->filePath,
                  "CC" => $content->license,
-                //  "tags" =>
+                 "tags" => $content->tag
              ),
              "userData" => (object)array(
                  "id" => $content->user_id,
                  "name" => $content->user->name,
                  "profile" => $content->user->profile_img,
-                 "job" => is_null($content->user->job) ? null : $job->name,
+                 "job" => is_null($content->user->job) ? null : $content->user->name,
                  "country" => is_null($content->user->country) ? null : $content->user->country->name,
                  "city" => $content->user->city
              )
          ]);
     }
-    public function update(Request $request,$category,$board_id,$comment_id){
+    public function update(Request $request,$category,$board_id){
         $data = $request->json()->all();
 
         $tokenData = CheckContoller::checkToken($request);
         $findUser = User::findOrFail($tokenData->id);
-        $contents = Content::findOrFail($comment_id);
+        $contents = Content::findOrFail($board_id);
 
         if($this->isSameBoard($contents,$category)){
             return response()->error([
                 "code" => "0012",
                 "devMsg" => "sector id is unmatched"
-            ]);
-        }
-        if($this->isSamePost($contents,$board_id)){
-            return response()->error([
-                "code" => "0012",
-                "devMsg" => "post id is unmatched"
             ]);
         }
         if($this->isSameUser($findUser,$contents)){
@@ -152,9 +146,21 @@ class ContentController extends Controller
                 "devMsg" => "user id is unmatched"
             ]);
         }
-        $this->resetDataGroup($contents);
 
-        $contents->content = $data['content'];
+
+        // $contents->content = $data['content'];
+        // $contents->save(); //first, contents save
+
+
+        $tagRender = $this->InsertContentTagName($data['setting']['tags']);
+        $contents->tag()->delete();
+        $contents->tag()->saveMany($tagRender); //second, tags save relationship
+
+        $category = $this->convertContentCategoryData($data['setting']['category']);
+        $categoryRender = $this->InsertContentCategoryId($category);
+        $contents->categoryKernel()->delete();
+        $contents->categoryKernel()->saveMany($categoryRender); //thrid, categorys save relationship
+
         if($contents->save()){
           return response()->success();
         };
@@ -163,21 +169,15 @@ class ContentController extends Controller
             "code" => "0030"
         ]);
     }
-    public function delete(Request $request,$category,$board_id,$content_id){
+    public function delete(Request $request,$category,$board_id){
         $tokenData = CheckContoller::checkToken($request);
         $findUser = User::findOrFail($tokenData->id);
-        $contents = Content::findOrFail($comment_id);
+        $contents = Content::findOrFail($board_id);
 
         if($this->isSameBoard($contents,$category)){
             return response()->error([
                 "code" => "0012",
                 "devMsg" => "sector id is unmatched"
-            ]);
-        }
-        if($this->isSamePost($contents,$board_id)){
-            return response()->error([
-                "code" => "0012",
-                "devMsg" => "post id is unmatched"
             ]);
         }
         if($this->isSameUser($findUser,$contents)){
@@ -186,21 +186,17 @@ class ContentController extends Controller
                 "devMsg" => "user id is unmatched"
             ]);
         }
+        $contents->categoryKernel()->delete();
+        $contents->tag()->delete();
         if($contents->delete()){
           return response()->success();
         }
     }
 
     private function isSameUser($findUser,$contents){
-        return $findUser->id != $contents->give_user_id;
-    }
-    private function isSamePost($contents,$board_id){
-        return $contents->post_id != $board_id;
+        return $findUser->id != $contents->user_id;
     }
     private function isSameBoard($contents,$category){
         return $contents->board_id != Board::where('name','=',$category)->value('id');
-    }
-    protected function resetDataGroup($content){
-        $content->tag->delete();
     }
 }

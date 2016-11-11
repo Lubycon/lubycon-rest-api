@@ -64,8 +64,8 @@ Route::group(['prefix' => '/comments/'],function(){
 });
 
 Route::group(['prefix' => '/contents/'],function(){
-    Route::get('{category}','ContentController@viewPost');
-    Route::get('{category}/{board_id}','ContentController@getList');
+    Route::get('{category}','ContentController@getList');
+    Route::get('{category}/{board_id}','ContentController@viewPost');
     Route::post('{category}','ContentController@store');
     Route::put('{category}/{board_id}','ContentController@update');
     Route::delete('{category}/{board_id}','ContentController@delete');

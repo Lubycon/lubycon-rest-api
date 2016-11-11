@@ -6,5 +6,5 @@ use Illuminate\Database\Eloquent\Model;
 
 class ContentSort extends Model
 {
-    protected $guarded = array('*');
+    protected $guarded = array('name');
 }

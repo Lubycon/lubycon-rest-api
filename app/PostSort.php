@@ -6,5 +6,5 @@ use Illuminate\Database\Eloquent\Model;
 
 class PostSort extends Model
 {
-    protected $guarded = array('*');
+    protected $guarded = array('name');
 }

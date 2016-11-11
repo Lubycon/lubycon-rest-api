@@ -6,5 +6,5 @@ use Illuminate\Database\Eloquent\Model;
 
 class ContentCategory extends Model
 {
-    protected $guarded = array('*');
+    protected $guarded = array('id','name');
 }

@@ -25,9 +25,9 @@ class Content extends Model
     }
 
     // 1 : n
-    public function addCategory() //just create content's option of category
+    public function categoryKernel() //just create content's option of category
     {
-        return $this->hasMany('App\ContentCategory','post_id','id');
+        return $this->hasMany('App\ContentCategoryKernel','post_id','id');
     }
     public function category() //just get category reference table
     {
