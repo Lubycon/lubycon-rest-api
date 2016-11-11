@@ -67,18 +67,29 @@ class ContentController extends Controller
             "code" => "0030"
         ]);
     }
-    public function getList(Request $request,$board_id=false){
+    public function getList(Request $request,$category){
         $query = $request->query();
-        $board_id = $board_id ? $query['boardId'] = $board_id : null ;
-        $controller = new PageController('comment',$query);
+        $controller = new PageController($category,$query);
         $collection = $controller->getCollection();
 
+        $result = (object)array(
+            "totalCount" => $controller->totalCount,
+            "currentPage" => $controller->currentPage,
+            "contents" => []
+        );
         foreach($collection as $array){
-            $result[] = (object)array(
-                "contents" => (object)array(
+            $result->contents[] = (object)array(
+                "contentsData" => (object)array(
                      "id" => $array->id,
-                     "board_id" => $array->post_id,
-                     "view" => $array->content,
+                     "title" => $array->title,
+                     "category" => Board::find($array->board_id)->name,
+                     "image" => $array->directory, //need edit
+                     "license" => $array->license,
+                     "bookmark" => false,
+                     "like" => $array->like_count,
+                     "view" => $array->view_count,
+                     "comment" => $array->comment_count,
+                     "download" => $array->download_count,
                      "date" => Carbon::instance($array->created_at)->toDateTimeString(),
                 ),
                 "userData" => (object)array(
@@ -88,7 +99,8 @@ class ContentController extends Controller
                 )
             );
         };
-        if(isset($result)){
+
+        if(!is_null($result->contents)){
             return response()->success($result);
         }else{
             return response()->error([

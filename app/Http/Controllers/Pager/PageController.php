@@ -7,9 +7,10 @@ use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 
+use App\Content;
 use App\Post;
-use App\User;
 use App\Comment;
+use App\User;
 use App\View;
 use App\Board;
 
@@ -72,9 +73,9 @@ class PageController extends Controller
 
     private function setModel($section){
         switch($this->categoryName){
+            case 'content' : $this->model = new Content; $this->initContent(); break;
             case 'post' : $this->model = new Post; $this->initPost(); break;
             case 'comment' : $this->model = new Comment; $this->initComment(); break;
-            // case 'content' : $this->model = new Content;
             default : break; //error point
         }
     }
@@ -101,6 +102,14 @@ class PageController extends Controller
     }
     private function initPost(){
         if( isset($this->query['sort']) && $this->query['sort'] > 3 ){
+            $this->query['sort'] = 1;
+        }
+        $this->searchUserName = 'user_id';
+        return;
+    }
+
+    private function initContent(){
+        if( isset($this->query['sort']) && $this->query['sort'] > 4 ){
             $this->query['sort'] = 1;
         }
         $this->searchUserName = 'user_id';

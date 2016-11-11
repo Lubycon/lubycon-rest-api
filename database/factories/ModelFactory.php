@@ -67,3 +67,17 @@ $factory->define(App\Comment::class, function (Faker\Generator $faker) {
         "created_at" => date("Y-m-d H:i:s",rand(1262055681,1478304000)),
     ];
 });
+
+$factory->define(App\ContentCategoryKernal::class, function (Faker\Generator $faker) {
+    return [
+        'post_id' => mt_rand(0,100),
+        "category_id" => 1,
+    ];
+});
+
+$factory->define(App\ContentTag::class, function (Faker\Generator $faker) {
+    return [
+        'post_id' => mt_rand(0,100),
+        "name" => $faker->name,
+    ];
+});

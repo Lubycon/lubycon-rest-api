@@ -24,6 +24,7 @@ class CreateContentsTable extends Migration
             $table->boolean('is_download');
             $table->integer('download_count')->unsigned()->default(0);
             $table->integer('view_count')->unsigned()->default(0);
+            $table->integer('like_count')->unsigned()->default(0);
             $table->integer('bookmark_count')->unsigned()->default(0);
             $table->integer('comment_count')->unsigned()->default(0);
             $table->softDeletes();
