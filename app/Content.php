@@ -25,7 +25,11 @@ class Content extends Model
     }
 
     // 1 : n
-    public function category()
+    public function addCategory() //just create content's option of category
+    {
+        return $this->hasMany('App\ContentCategory','post_id','id');
+    }
+    public function category() //just get category reference table
     {
         return $this->hasManyThrough('App\ContentCategory','App\ContentCategoryKernel','post_id','id');
     }
@@ -42,7 +46,7 @@ class Content extends Model
         return $this->hasMany('App\Comment','post_id','id');
     }
     public function tag(){
-        return $this->hasMany('App\Tags','post_id','id');
+        return $this->hasMany('App\ContentTag','post_id','id');
     }
     // public function bookmark()
     // {

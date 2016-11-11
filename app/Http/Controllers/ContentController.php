@@ -8,6 +8,10 @@ use App\Content;
 use App\Comment;
 use App\Board;
 use App\User;
+use App\ContentTag;
+
+use App\Traits\InsertArrayToColumn;
+use App\Traits\GetUserModelTrait;
 
 use Carbon\Carbon;
 
@@ -18,13 +22,16 @@ use App\Http\Controllers\Pager\PageController;
 
 class ContentController extends Controller
 {
+    use InsertArrayToColumn,
+        GetUserModelTrait;
+
     public function store(Request $request,$category){
         $data = $request->json()->all();
 
-        $tokenData = CheckContoller::checkToken($request);
-        $findUser = User::findOrFail($tokenData->id);
+        $findUser = $this->getUserByToken($request);
         $contents = new Content;
 
+        // for upload data... take code SSARU!
         // $attachedFiles = $data['attachedFiles'];
         // $attachedImg = $data['attachedImg'];
         // $userContent = $data['content'];
@@ -41,13 +48,19 @@ class ContentController extends Controller
         $contents->title = $data['setting']['title'];
         $contents->content = $data['setting']['content'];
         $contents->description = $data['setting']['description'];
-        $contents->directory = ''; //needs s3
-        $contents->is_download = isset($attachedFiles); //follow attatch files exists
+        $contents->directory = ''; //needs s3! go SSARUSSARU
+        $contents->is_download = isset($attachedFiles) ? true : false ;
 
-        // $contents->category = $data['setting']['category'];
-        // $contents->tag = $data['setting']['tag'];
+        $contents->save(); //first, contents save
 
-        if($contents->save()){
+        $tagRender = $this->InsertContentTagName($data['setting']['tags']);
+        $contents->tag()->saveMany($tagRender); //second, tags save relationship
+
+        $category = $this->convertContentCategoryData($data['setting']['category']);
+        $categoryRender = $this->InsertContentCategoryId($category);
+        $contents->addCategory()->saveMany($categoryRender); //thrid, categorys save relationship
+
+        if($contents->save()){ //check right access
           return response()->success();
         };
         return response()->error([
@@ -75,13 +88,12 @@ class ContentController extends Controller
                 )
             );
         };
-
         if(isset($result)){
             return response()->success($result);
         }else{
             return response()->error([
                 "code" => "0062",
-                "devMsg" => "Model not found error"
+                "devMsg" => "Nothing search Contents"
             ]);
         }
     }

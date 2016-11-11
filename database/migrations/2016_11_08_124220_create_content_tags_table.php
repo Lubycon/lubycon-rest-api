@@ -14,7 +14,8 @@ class CreateContentTagsTable extends Migration
     {
         Schema::create('content_tags', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('post_id')->unsigned();
+            $table->integer('post_id')->unsigned()->nullable();
+            $table->string('name',45);
             $table->timestamps();
         });
     }
