@@ -43,7 +43,7 @@ $factory->define(App\Content::class, function (Faker\Generator $faker) {
     return [
         'board_id' => 1,
         'user_id' => mt_rand(1,100),
-        'license_id' => mt_rand(1,4),
+        'license_id' => mt_rand(1,6),
         'title' => $faker->name,
         'description' => str_random(10),
         'content' => str_random(10),
