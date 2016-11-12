@@ -19,6 +19,7 @@ $factory->define(App\User::class, function (Faker\Generator $faker) {
         'remember_token' => str_random(10),
         'job_id' => mt_rand(1,5),
         'country_id' => mt_rand(1,250),
+        'profile_img' => "http://lorempixel.com/640/640/",
         'is_active' => 'active',
         'is_accept_terms' => '111',
     ];

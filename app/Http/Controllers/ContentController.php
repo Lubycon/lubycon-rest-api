@@ -83,7 +83,7 @@ class ContentController extends Controller
                      "id" => $array->id,
                      "title" => $array->title,
                      "category" => Board::find($array->board_id)->name,
-                     "image" => $array->directory, //need edit
+                     "image" => "http://lorempixel.com/640/480/", //need edit
                      "license" => $array->license,
                      "bookmark" => false,
                      "like" => $array->like_count,
