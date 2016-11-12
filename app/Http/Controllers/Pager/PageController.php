@@ -118,7 +118,7 @@ class PageController extends Controller
 
 
     private function setPageRange(){
-        $this->setPage = isset($this->query['pageIndex']) ? $this->query['pageIndex']+1 : $this->firstFageNumber;
+        $this->setPage = isset($this->query['pageIndex']) ? $this->query['pageIndex'] : $this->firstFageNumber;
         $this->pageSize = isset($this->query['pageSize']) && $this->query['pageSize'] <= $this->maxSize ? $this->query['pageSize'] : $this->defaultSize;
         $this->searchPost = isset($this->query['boardId']) ? $this->query['boardId'] : $this->searchAllPost;
         $this->searchUser = isset($this->query['userId']) ? $this->query['userId'] : $this->searchAllUser;

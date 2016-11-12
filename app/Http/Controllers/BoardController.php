@@ -32,7 +32,7 @@ class BoardController extends Controller
        );
        foreach($collection as $array){
            $result->contents[] = (object)array(
-               "contents" => (object)array(
+               "postData" => (object)array(
                     "id" => $array->id,
                     "title" => $array->title,
                     "comment" => $array->comment_count,

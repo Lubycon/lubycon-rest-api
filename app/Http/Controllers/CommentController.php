@@ -50,7 +50,7 @@ class CommentController extends Controller
         );
         foreach($collection as $array){
             $result->comments[] = (object)array(
-                "comments" => (object)array(
+                "commentData" => (object)array(
                      "id" => $array->id,
                      "board_id" => $array->post_id,
                      "view" => $array->content,

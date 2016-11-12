@@ -79,7 +79,7 @@ class ContentController extends Controller
         );
         foreach($collection as $array){
             $result->contents[] = (object)array(
-                "contentsData" => (object)array(
+                "contentData" => (object)array(
                      "id" => $array->id,
                      "title" => $array->title,
                      "category" => Board::find($array->board_id)->name,
