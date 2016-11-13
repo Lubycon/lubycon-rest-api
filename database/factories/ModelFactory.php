@@ -47,7 +47,7 @@ $factory->define(App\Content::class, function (Faker\Generator $faker) {
         'title' => $faker->name,
         'description' => str_random(10),
         'content' => str_random(10),
-        'directory' => 'path',
+        'directory' => public_path().'/datas/1/json/map.json',
         'is_download' => mt_rand(0,1) ? true : false,
         "download_count" => mt_rand(0,100),
         "bookmark_count" => mt_rand(0,100),

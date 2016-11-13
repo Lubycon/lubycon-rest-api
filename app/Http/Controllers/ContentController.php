@@ -38,9 +38,12 @@ class ContentController extends Controller
         // $userContent = $data['content'];
         // $contentType = $data['content']['type'] == '0' ? '2d' : '3d';
         // $content2dData = $data['content']['data'];
-        // $map = $data['content']['data']['map'];
-        // $model = $data['content']['data']['map'];
-        // $lights = $data['content']['data']['map'];
+        $rand_string = str_random(10);
+        mkdir(public_path().'/datas/'.$rand_string,0777);
+        mkdir(public_path().'/datas/'.$rand_string.'/json',0777);
+        $map = File::put(public_path().'/datas/'.$rand_string.'/json/map.json',$data['content']['data']['map']);
+        $model = File::put(public_path().'/datas/'.$rand_string.'/json/model.json',$data['content']['data']['model']);
+        $lights = File::put(public_path().'/datas/'.$rand_string.'/json/lights.json',$data['content']['data']['lights']);
 
         $contents->board_id = Board::where('name','=',$category)->value('id');
         $contents->user_id = $findUser->id;
@@ -49,7 +52,7 @@ class ContentController extends Controller
         $contents->title = $data['setting']['title'];
         $contents->content = $data['setting']['content'];
         $contents->description = $data['setting']['description'];
-        $contents->directory = ''; //needs s3! go SSARUSSARU
+        $contents->directory = public_path().'/datas/'.$rand_string; //needs s3! go SSARUSSARU
         $contents->is_download = isset($attachedFiles) ? true : false ;
 
         $contents->save(); //first, contents save
@@ -119,9 +122,9 @@ class ContentController extends Controller
                  "title" => $content->title,
                  "subCategory" => $content->categoryKernel->lists('category_id')->toArray(),
                  "content" => (object)array(
-                     "map" => json_decode(File::get(public_path().'/datas/1/json/map.json')),
-                     "model" => json_decode(File::get(public_path().'/datas/1/json/model.json')),
-                     "lights" => json_decode(File::get(public_path().'/datas/1/json/lights.json')),
+                     "map" => json_decode(File::get($content->directory.'/json/map.json')),
+                     "model" => json_decode(File::get($content->directory.'/json/model.json')),
+                     "lights" => json_decode(File::get($content->directory.'/json/lights.json')),
                  ),
                  "description" => $content->description,
                  "date" => Carbon::instance($content->created_at)->toDateTimeString(),
