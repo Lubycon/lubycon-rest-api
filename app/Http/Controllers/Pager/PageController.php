@@ -156,7 +156,7 @@ class PageController extends Controller
         $this->paginator = $this->withUserModel->
             orderBy($this->sort->option,$this->sort->direction)->
             paginate($this->pageSize, ['*'], 'page', $this->setPage);
-            //Log::debug('pagnator', [DB::getQueryLog()]);
+            Log::debug('pagnator', [DB::getQueryLog()]);
         $this->totalCount = $this->paginator->total();
         $this->currentPage = $this->paginator->currentPage();
         $this->collection = $this->paginator->getCollection();

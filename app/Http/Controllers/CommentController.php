@@ -37,7 +37,7 @@ class CommentController extends Controller
             "code" => "0030"
         ]);
     }
-    public function getList(Request $request,$board_id=false){
+    public function getList(Request $request,$category,$board_id=false){
         $query = $request->query();
         $board_id = $board_id ? $query['boardId'] = $board_id : null ;
         $controller = new PageController('comment',$query);
