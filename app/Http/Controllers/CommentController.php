@@ -53,7 +53,7 @@ class CommentController extends Controller
                 "commentData" => (object)array(
                      "id" => $array->id,
                      "board_id" => $array->post_id,
-                     "view" => $array->content,
+                     "content" => $array->content,
                      "date" => Carbon::instance($array->created_at)->toDateTimeString(),
                 ),
                 "userData" => (object)array(

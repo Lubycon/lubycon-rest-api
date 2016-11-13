@@ -27,12 +27,12 @@ class Content extends Model
     // 1 : n
     public function categoryKernel() //just create content's option of category
     {
-        return $this->hasMany('App\ContentCategoryKernel','post_id','id');
+        return $this->hasMany('App\ContentCategoryKernel','post_id','id')->select('category_id');
     }
-    public function category() //just get category reference table
-    {
-        return $this->hasManyThrough('App\ContentCategory','App\ContentCategoryKernel','post_id','id');
-    }
+    // public function category() //just get category reference table
+    // {
+    //     return $this->hasManyThrough('App\ContentCategory','App\ContentCategoryKernel','post_id','id');
+    // }
     public function download()
     {
         return $this->hasMany('App\Download','post_id','id');
@@ -46,7 +46,7 @@ class Content extends Model
         return $this->hasMany('App\Comment','post_id','id');
     }
     public function tag(){
-        return $this->hasMany('App\ContentTag','post_id','id');
+        return $this->hasMany('App\ContentTag','post_id','id')->select('name');
     }
     // public function bookmark()
     // {

@@ -21,12 +21,12 @@ class DummyDataSeeder extends Seeder
         factory(App\Comment::class, 300)->create();
 
         DB::table('contents')->truncate();
-        factory(App\Content::class, 100)->create();
+        factory(App\Content::class, 1000)->create();
 
         DB::table('content_category_kernels')->truncate();
-        factory(App\Comment::class, 500)->create();
+        factory(App\ContentCategoryKernel::class, 500)->create();
 
         DB::table('content_tags')->truncate();
-        factory(App\Comment::class, 500)->create();
+        factory(App\ContentTag::class, 500)->create();
     }
 }

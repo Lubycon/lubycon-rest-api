@@ -9,6 +9,7 @@ use App\Comment;
 use App\Board;
 use App\User;
 use App\ContentTag;
+use File;
 
 use App\Traits\InsertArrayToColumn;
 use App\Traits\GetUserModelTrait;
@@ -43,8 +44,8 @@ class ContentController extends Controller
 
         $contents->board_id = Board::where('name','=',$category)->value('id');
         $contents->user_id = $findUser->id;
-        $cc = $data['setting']['cc'];
-        $contents->license_id = $cc['by'].$cc['nc'].$cc['nd'].$cc['sa'];
+        $license = $data['setting']['license'];
+        $contents->license_id = $license['by'].$license['nc'].$license['nd'].$license['sa'];
         $contents->title = $data['setting']['title'];
         $contents->content = $data['setting']['content'];
         $contents->description = $data['setting']['description'];
@@ -114,10 +115,14 @@ class ContentController extends Controller
 
          return response()->success([
              "contents" => (object)array(
-                 "id" => $content->id,
+                 "id" => $content->id.$content->id.'/json/map.json',
                  "title" => $content->title,
-                 "subCategory" => $content->category,
-                 "content" => $content->content,
+                 "subCategory" => $content->categoryKernel->lists('category_id')->toArray(),
+                 "content" => (object)array(
+                     "map" => File::get(public_path().'/data/1/json/map.json'),
+                     "model" => File::get(public_path().'/data/1/json/model.json'),
+                     "lights" => File::get(public_path().'/data/1/json/lights.json'),
+                 ),
                  "description" => $content->description,
                  "date" => Carbon::instance($content->created_at)->toDateTimeString(),
                  "bookmark" => false,
@@ -126,8 +131,8 @@ class ContentController extends Controller
                  "viewCount" => $content->view_count,
                  "downloadCount" => $content->view_count,
                  "filePath" => $content->filePath,
-                 "CC" => $content->license,
-                 "tags" => $content->tag
+                 "license" => $content->license,
+                 "tags" => $content->tag->lists('name')->toArray()
              ),
              "userData" => (object)array(
                  "id" => $content->user_id,
