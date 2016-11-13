@@ -120,7 +120,7 @@ class ContentController extends Controller
              "contents" => (object)array(
                  "id" => $content->id,
                  "title" => $content->title,
-                 "subCategory" => $content->categoryKernel->lists('category_id')->toArray(),
+                 "subCategory" => $this->convertContentCategoryIdToName($content->categoryKernel),
                  "content" => (object)array(
                      "map" => json_decode(File::get($content->directory.'/json/map.json')),
                      "model" => json_decode(File::get($content->directory.'/json/model.json')),

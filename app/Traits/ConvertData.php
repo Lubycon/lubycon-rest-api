@@ -7,10 +7,10 @@ use App\ContentCategoryKernel;
 use App\License;
 
 trait ConvertData{
-    function convertContentCategoryData($array){
+    function convertContentCategoryIdToName($array){
         $newArray=[];
         foreach($array as $key => $value){
-            $newArray[$key] = ContentCategory::where('name','=',$value)->value('id');
+            $newArray[] = ContentCategory::where('id','=',$value->category_id)->value('name');
         }
         return $newArray;
     }
