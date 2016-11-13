@@ -59,9 +59,8 @@ class ContentController extends Controller
         $tagRender = $this->InsertContentTagName($data['setting']['tags']);
         $contents->tag()->saveMany($tagRender); //second, tags save relationship
 
-        $category = $this->convertContentCategoryData($data['setting']['category']);
-        $categoryRender = $this->InsertContentCategoryId($category);
-        $contents->categoryKernel()->saveMany($categoryRender); //thrid, categorys save relationship
+        $category = $this->InsertContentCategoryId($data['setting']['category']);
+        $contents->categoryKernel()->saveMany($category); //thrid, categorys save relationship
 
         if($contents->save()){ //check right access
           return response()->success();
