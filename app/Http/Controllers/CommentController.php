@@ -24,7 +24,7 @@ class CommentController extends Controller
         $findUser = User::findOrFail($tokenData->id);
         $comments = new Comment;
 
-        $comments->give_user_id = $data['giveUserId'];
+        $comments->give_user_id = $findUser->id;
         $comments->take_user_id = $data['getUserId'];
         $comments->board_id = Board::where('name','=',$category)->value('id');
         $comments->post_id = $board_id;
