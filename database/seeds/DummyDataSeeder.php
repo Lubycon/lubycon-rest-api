@@ -18,10 +18,10 @@ class DummyDataSeeder extends Seeder
         factory(App\Post::class, 100)->create();
 
         DB::table('comments')->truncate();
-        factory(App\Comment::class, 300)->create();
+        factory(App\Comment::class, 1000)->create();
 
         DB::table('contents')->truncate();
-        factory(App\Content::class, 1000)->create();
+        factory(App\Content::class, 100)->create();
 
         DB::table('content_category_kernels')->truncate();
         factory(App\ContentCategoryKernel::class, 500)->create();

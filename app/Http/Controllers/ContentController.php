@@ -115,13 +115,13 @@ class ContentController extends Controller
 
          return response()->success([
              "contents" => (object)array(
-                 "id" => $content->id.$content->id.'/json/map.json',
+                 "id" => $content->id,
                  "title" => $content->title,
                  "subCategory" => $content->categoryKernel->lists('category_id')->toArray(),
                  "content" => (object)array(
-                     "map" => json_decode(File::get(public_path().'/datas/1/json/map.json')),
-                     "model" => json_decode(File::get(public_path().'/datas/1/json/model.json')),
-                     "lights" => json_decode(File::get(public_path().'/datas/1/json/lights.json')),
+                    //  "map" => json_decode(File::get(public_path().'/datas/1/json/map.json')),
+                    //  "model" => json_decode(File::get(public_path().'/datas/1/json/model.json')),
+                    //  "lights" => json_decode(File::get(public_path().'/datas/1/json/lights.json')),
                  ),
                  "description" => $content->description,
                  "date" => Carbon::instance($content->created_at)->toDateTimeString(),
