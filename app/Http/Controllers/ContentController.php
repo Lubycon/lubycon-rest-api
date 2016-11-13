@@ -41,9 +41,9 @@ class ContentController extends Controller
         $rand_string = str_random(10);
         mkdir(public_path().'/datas/'.$rand_string,0777);
         mkdir(public_path().'/datas/'.$rand_string.'/json',0777);
-        $map = File::put(public_path().'/datas/'.$rand_string.'/json/map.json',$data['content']['data']['map']);
-        $model = File::put(public_path().'/datas/'.$rand_string.'/json/model.json',$data['content']['data']['model']);
-        $lights = File::put(public_path().'/datas/'.$rand_string.'/json/lights.json',$data['content']['data']['lights']);
+        $map = File::put(public_path().'/datas/'.$rand_string.'/json/map.json',json_encode($data['content']['data']['map']));
+        $model = File::put(public_path().'/datas/'.$rand_string.'/json/model.json',json_encode($data['content']['data']['model']));
+        $lights = File::put(public_path().'/datas/'.$rand_string.'/json/lights.json',json_encode($data['content']['data']['lights']));
 
         $contents->board_id = Board::where('name','=',$category)->value('id');
         $contents->user_id = $findUser->id;
