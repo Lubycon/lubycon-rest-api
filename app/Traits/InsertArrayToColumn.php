@@ -21,12 +21,5 @@ trait InsertArrayToColumn{
         }
         return $newArray;
     }
-    function convertContentCategoryData($array){
-        $newArray=[];
-        foreach($array as $key => $value){
-            $newArray[$key] = ContentCategory::where('name','=',$value)->value('id');
-        }
-        return $newArray;
-    }
 }
  ?>

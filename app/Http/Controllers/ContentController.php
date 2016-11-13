@@ -13,6 +13,7 @@ use File;
 
 use App\Traits\InsertArrayToColumn;
 use App\Traits\GetUserModelTrait;
+use App\Traits\ConvertData;
 
 use Carbon\Carbon;
 
@@ -24,7 +25,8 @@ use App\Http\Controllers\Pager\PageController;
 class ContentController extends Controller
 {
     use InsertArrayToColumn,
-        GetUserModelTrait;
+        GetUserModelTrait,
+        ConvertData;
 
     public function store(Request $request,$category){
         $data = $request->json()->all();
@@ -47,8 +49,8 @@ class ContentController extends Controller
 
         $contents->board_id = Board::where('name','=',$category)->value('id');
         $contents->user_id = $findUser->id;
-        $license = $data['setting']['license'];
-        $contents->license_id = $license['by'].$license['nc'].$license['nd'].$license['sa'];
+        $contents->license_id = $this->convertLicenseCodeToId($data['setting']['license']);
+
         $contents->title = $data['setting']['title'];
         $contents->description = $data['setting']['description'];
         $contents->directory = public_path().'/datas/'.$rand_string; //needs s3! go SSARUSSARU
