@@ -50,7 +50,6 @@ class ContentController extends Controller
         $license = $data['setting']['license'];
         $contents->license_id = $license['by'].$license['nc'].$license['nd'].$license['sa'];
         $contents->title = $data['setting']['title'];
-        $contents->content = $data['setting']['content'];
         $contents->description = $data['setting']['description'];
         $contents->directory = public_path().'/datas/'.$rand_string; //needs s3! go SSARUSSARU
         $contents->is_download = isset($attachedFiles) ? true : false ;
