@@ -113,6 +113,22 @@ class ContentController extends Controller
             ]);
         }
     }
+    public function viewData($category,$board_id){
+        $content = Content::findOrFail($board_id);
+
+        return response()->success([
+            "contents" => (object)array(
+                "2d" => (object)array(
+                    "content" => $content->content
+                ),
+                "3d" => (object)array(
+                    "map" => json_decode(File::get($content->directory.'/json/map.json')),
+                    "model" => json_decode(File::get($content->directory.'/json/model.json')),
+                    "lights" => json_decode(File::get($content->directory.'/json/lights.json')),
+                )
+            )
+        ]);
+    }
     public function viewPost($category,$board_id){
          $content = Content::findOrFail($board_id);
 
@@ -121,11 +137,6 @@ class ContentController extends Controller
                  "id" => $content->id,
                  "title" => $content->title,
                  "subCategory" => $this->convertContentCategoryIdToName($content->categoryKernel),
-                 "content" => (object)array(
-                     "map" => json_decode(File::get($content->directory.'/json/map.json')),
-                     "model" => json_decode(File::get($content->directory.'/json/model.json')),
-                     "lights" => json_decode(File::get($content->directory.'/json/lights.json')),
-                 ),
                  "description" => $content->description,
                  "date" => Carbon::instance($content->created_at)->toDateTimeString(),
                  "bookmark" => false,
