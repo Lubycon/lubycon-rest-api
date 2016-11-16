@@ -11,9 +11,13 @@ use App\User;
 use App\ContentTag;
 use File;
 
+use Event;
+use App\Events\UserActionRecodeEvent;
+
 use App\Traits\InsertArrayToColumn;
 use App\Traits\GetUserModelTrait;
 use App\Traits\ConvertData;
+use App\Traits\UserActionTrait;
 
 use Carbon\Carbon;
 
@@ -26,7 +30,8 @@ class ContentController extends Controller
 {
     use InsertArrayToColumn,
         GetUserModelTrait,
-        ConvertData;
+        ConvertData,
+        UserActionTrait;
 
     public function store(Request $request,$category){
         $data = $request->json()->all();
@@ -115,7 +120,6 @@ class ContentController extends Controller
     }
     public function viewData($category,$board_id){
         $content = Content::findOrFail($board_id);
-
         return response()->success([
             "contents" => (object)array(
                 "2d" => (object)array(
@@ -129,9 +133,9 @@ class ContentController extends Controller
             )
         ]);
     }
-    public function viewPost($category,$board_id){
+    public function viewPost(Request $request,$category,$board_id){
          $content = Content::findOrFail($board_id);
-
+         Event::fire(new UserActionRecodeEvent('view',$content,$request));
          return response()->success([
              "contents" => (object)array(
                  "id" => $content->id,

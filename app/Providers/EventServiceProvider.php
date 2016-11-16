@@ -19,6 +19,9 @@ class EventServiceProvider extends ServiceProvider
         'App\Events\PasswordMailSendEvent' => [
             'App\Listeners\PasswordMailSendEventListener',
         ],
+        'App\Events\UserActionRecodeEvent' => [
+            'App\Listeners\UserActionRecodeEventListener',
+        ],
     ];
 
     /**
