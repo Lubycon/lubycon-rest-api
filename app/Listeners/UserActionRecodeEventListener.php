@@ -8,11 +8,10 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Log;
 
 
-class UserActionRecodeEventListener// implements ShouldQueue
+class UserActionRecodeEventListener //implements ShouldQueue
 {
     public function __construct()
     {
-        Log::info('UserAction Event Listener Construct');
     }
 
     /**
@@ -23,6 +22,8 @@ class UserActionRecodeEventListener// implements ShouldQueue
      */
     public function handle(UserActionRecodeEvent $event)
     {
-        // Log::info($event->getGiveUserId());
+        $model = $event->getRecodeModelForSave();
+        $model->save();
+        Log::info('User Action event listen seccess');
     }
 }

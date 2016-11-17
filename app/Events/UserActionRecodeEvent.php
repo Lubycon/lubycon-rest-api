@@ -2,7 +2,6 @@
 
 namespace App\Events;
 
-use Log;
 use App\Events\Event;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
@@ -38,11 +37,15 @@ class UserActionRecodeEvent extends Event
     protected $takeUserId;
     protected $willCheck;
 
+    // get data model
     protected $recodeModel;
     protected $postModel;
+    protected $post;
+    protected $insertData;
 
     public function __construct($type,$data,$request)
     {
+        // setting variable
         $this->type = $type;
         $this->data = $data;
         $this->request = $request;
@@ -55,22 +58,21 @@ class UserActionRecodeEvent extends Event
         $this->takeUserId = $this->data->user_id;
         $this->willCheck; //for bookmark like comment_like
 
-
+        // setting model
         $this->recodeModel = $this->setRecodeModel($this->type);
         $this->postModel = $this->setPostModel($this->sectorGroup);
-        // $this->recodeModel->give_user_id = 1;
-        // $this->recodeModel->take_user_id = 1;
-        // $this->recodeModel->board_id = 1;
-        // $this->recodeModel->post_id = 1;
-        // $this->recodeModel->save();
-        Log::info($this->recodeModel);
-
+        $this->post= $this->setPost($this->postModel,$this->postId);
     }
+
+    // setting model
     private function setRecodeModel($type){
         return $this->getRecodeModel($type);
     }
     private function setPostModel($sector){
         return $this->getPostModel($sector);
+    }
+    private function setPost($model,$postId){
+        return $this->getPost($model,$postId);
     }
 
     // get data functions
@@ -104,7 +106,9 @@ class UserActionRecodeEvent extends Event
     public function getWillCheck(){
         return $this->willCheck;
     }
-    // get data functions
+    public function getRecodeModelForSave(){
+        return $this->recodeModel;
+    }
 
     public function broadcastOn()
     {
