@@ -21,6 +21,7 @@ class AdminUserSeeder extends Seeder
             	'country_id' => 201,
             	'job_id' => 1,
             	'is_active' => 'active',
+            	'grade' => 'admin',
             	'is_accept_terms' => 111,
             	'profile_img' => null,
             	'company' => 'Lubycon co.',

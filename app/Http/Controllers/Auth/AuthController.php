@@ -60,6 +60,7 @@ class AuthController extends Controller
         $result = (object)array(
             'token' => Auth::user()->remember_token,
             'condition' => 'active',
+            'grade' => Auth::user()->grade,
          );
 
         return response()->success($result);
