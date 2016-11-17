@@ -39,6 +39,7 @@ class UserActionRecodeEvent extends Event
     protected $willCheck;
 
     protected $recodeModel;
+    protected $postModel;
 
     public function __construct($type,$data,$request)
     {
@@ -56,19 +57,20 @@ class UserActionRecodeEvent extends Event
 
 
         $this->recodeModel = $this->setRecodeModel($this->type);
-        $this->recodeModel->give_user_id = 1;
-        $this->recodeModel->take_user_id = 1;
-        $this->recodeModel->board_id = 1;
-        $this->recodeModel->post_id = 1;
-        $this->recodeModel->save();
+        $this->postModel = $this->setPostModel($this->sectorGroup);
+        // $this->recodeModel->give_user_id = 1;
+        // $this->recodeModel->take_user_id = 1;
+        // $this->recodeModel->board_id = 1;
+        // $this->recodeModel->post_id = 1;
+        // $this->recodeModel->save();
         Log::info($this->recodeModel);
 
     }
     private function setRecodeModel($type){
         return $this->getRecodeModel($type);
     }
-    private function setPostModel(){
-
+    private function setPostModel($sector){
+        return $this->getPostModel($sector);
     }
 
     // get data functions
