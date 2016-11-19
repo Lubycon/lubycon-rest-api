@@ -22,11 +22,42 @@ class UserActionRecodeEventListener //implements ShouldQueue
      */
     public function handle(UserActionRecodeEvent $event)
     {
-        if( $event->getOverlapCheck() == null ){
-            $model = $event->getRecodeModelForSave();
-            $model->save();
-            Log::info('User Action event listen seccess');
-            return;
+        $countType = $event->getCountType();
+        $countModel = $event->getPostCountModel();
+        $countColumn = $event->getPostCountColumn();
+        $recodeModel = $event->getRecodeModelForSave();
+        $overlapCheck = $event->getOverlapCheck();
+
+        Log::info(var_dump($overlapCheck));
+
+        if( $countType == 'simplex' ){
+            if($overlapCheck == null){
+                //count up
+                $countModel->$countColumn++;
+                $countModel->save();
+
+                //recode write
+                $recodeModel->save();
+                Log::info('User Action event listen seccess');
+                return;
+            }
+        }
+        if($countType == 'toggle'){
+            if($overlapCheck == null){
+                //count up
+                $countModel->$countColumn++;
+                $countModel->save();
+
+                //recode write
+                $recodeModel->save();
+                Log::info('User Action event listen seccess');
+                return;
+            }else{
+                //count down
+                $countModel->$countColumn--;
+                $countModel->save();
+                // delete recode column
+            }
         }
         Log::info('User Action event listen seccess / not recode cuz overlap');
         return;

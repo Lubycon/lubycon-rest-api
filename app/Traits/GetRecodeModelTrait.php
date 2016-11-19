@@ -19,19 +19,45 @@ trait GetRecodeModelTrait{
     private $limitHours = -5;
 
 
-    function getRecodeModel($type){
-        $getClass = $this->findRecodeModel($type);
+    function defineModel($type){
+        $getClass = $this->findModel($type);
         return $getClass;
     }
-    function findRecodeModel($type){
+    function findModel($type){
         switch($type){
-            case 'view' :  $class = new View; $this->setViewData($class); break;
-            case 'download' :  $class = new Download; $this->setDownloadData($class); break;
-            case 'like' :  $class = new Like; $this->setLikeData($class); break;
+            case 'view' :
+            $class = (object)array(
+                'model' => new View,
+                'type' => 'simplex',
+                'column' => 'view_count'
+            ); $this->setViewData($class->model); break;
+            case 'download' :
+            $class = (object)array(
+                'model' => new Download,
+                'type' => 'simplex',
+                'column' => 'download_count'
+            ); $this->setDownloadData($class->model); break;
+            case 'like' :
+            $class = (object)array(
+                'model' => new Like,
+                'type' => 'toggle',
+                'column' => 'like_count'
+            ); $this->setLikeData($class->model); break;
             default : $class = null ; break;
         }
         return $class;
     }
+
+    function getCountColumn($type){
+        switch($type){
+            case 'view' :  $columnName = 'view_count'; break;
+            case 'download' :  $columnName = 'download_count'; break;
+            case 'like' :  $columnName = 'like_count'; break;
+            default : $columnName = null ; break;
+        }
+        return $columnName;
+    }
+
     function getPostModel($sector){
         switch($sector){
             case 'content' :  $class = new Content ; break;
@@ -46,30 +72,25 @@ trait GetRecodeModelTrait{
         return $post;
     }
 
-    function isOverlapCheck($model,$postId){
-        $giveUserIdentity = $this->getIdentity();
-        $limitTime = Carbon::now($this->limitHours)->toDateTimeString();
-        $whereModel = $model->where($giveUserIdentity->column,'=',$giveUserIdentity->value)
-                            ->where('created_at','>',$limitTime)
-                            ->first();
-        return $whereModel !== null ? true : false ;
-    }
 
-    function getIdentity(){
+    function isOverlapCheck($model,$postId){
         $ipColumnName = 'ipv4';
         $idColumnName = 'give_user_id';
         $userId = $this->getGiveUserId();
         $userIp = $this->getGiveUserIp();
-        $result = (object)array();
+        $limitTime = Carbon::now($this->limitHours)->toDateTimeString();
 
-        if(is_null($userIp)){
-            $result->column = $idColumnName;
-            $result->value = $userId;
-        }else{
-            $result->column = $ipColumnName;
-            $result->value = $userIp;
+        if($this->countType == 'simplex' ){
+            $whereModel = $model->where($ipColumnName,'=',$userIp)
+                                ->where('created_at','>',$limitTime)
+                                ->first();
+            return $whereModel !== null ? true : false ;
         }
-        return $result;
+        if($this->countType == 'toggle' ){
+            $whereModel = $model->where($idColumnName,'=',$userId)
+                                ->first();
+            return $whereModel !== null ? true : false ;
+        }
     }
 
     function setViewData($class){

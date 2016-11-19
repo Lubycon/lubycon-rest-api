@@ -57,21 +57,27 @@ class UserActionRecodeEvent extends Event
         $this->willCheck; //for bookmark like comment_like
 
         // setting model
-        $this->recodeModel = $this->setRecodeModel($this->type);
+        $modelInfo = $this->setModel($this->type);
+        $this->recodeModel = $modelInfo->model;
+        $this->countType = $modelInfo->type;
+        $this->postColumn = $modelInfo->column;
         $this->postModel = $this->setPostModel($this->sectorGroup);
         $this->post = $this->setPost($this->postModel,$this->postId);
         $this->overlap = $this->overlapCheck($this->recodeModel,$this->postId);
     }
 
     // setting model
-    private function setRecodeModel($type){
-        return $this->getRecodeModel($type);
+    private function setModel($type){
+        return $this->defineModel($type);
     }
     private function setPostModel($sector){
         return $this->getPostModel($sector);
     }
     private function setPost($model,$postId){
         return $this->getPost($model,$postId);
+    }
+    private function setCountColumn($type){
+        return $this->getCountColumn($type);
     }
     private function overlapCheck($model,$postId){
         return $this->isOverlapCheck($model,$postId);
@@ -113,6 +119,15 @@ class UserActionRecodeEvent extends Event
     }
     public function getOverlapCheck(){
         return $this->overlap;
+    }
+    public function getPostCountModel(){
+        return $this->post;
+    }
+    public function getPostCountColumn(){
+        return $this->postColumn;
+    }
+    public function getCountType(){
+        return $this->countType;
     }
 
     public function broadcastOn()
