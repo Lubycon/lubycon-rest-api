@@ -2,10 +2,14 @@
 namespace App\Traits;
 
 use App\User;
+use Log;
 
 trait GetUserModelTrait{
-    function getUserByToken($request){
-        $token = $this->getTokenByRequest($request);
+    function getUserToken($request){
+        return $request->header('X-lubycon-token');
+    }
+
+    function getUserByToken($token){
         $userId = $this->findUserIdByToken($token);
         $user = $this->getUserModel($userId);
 
@@ -23,9 +27,6 @@ trait GetUserModelTrait{
     function getUserModel($userId){
         $user = User::findOrFail($userId);
         return $user;
-    }
-    function getTokenByRequest($request){
-        return $request->header('X-lubycon-token');
     }
 }
 ?>

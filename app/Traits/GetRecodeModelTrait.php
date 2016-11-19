@@ -16,9 +16,6 @@ use Log;
 
 trait GetRecodeModelTrait{
 
-    private $limitHours = -5;
-
-
     function defineModel($type){
         $getClass = $this->findModel($type);
         return $getClass;
@@ -78,7 +75,8 @@ trait GetRecodeModelTrait{
         $idColumnName = 'give_user_id';
         $userId = $this->getGiveUserId();
         $userIp = $this->getGiveUserIp();
-        $limitTime = Carbon::now($this->limitHours)->toDateTimeString();
+        $limitHours = -5;
+        $limitTime = Carbon::now($limitHours)->toDateTimeString();
 
         if($this->countType == 'simplex' ){
             $whereModel = $model->where($ipColumnName,'=',$userIp)

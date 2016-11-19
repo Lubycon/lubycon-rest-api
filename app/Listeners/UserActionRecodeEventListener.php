@@ -8,7 +8,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Log;
 
 
-class UserActionRecodeEventListener //implements ShouldQueue
+class UserActionRecodeEventListener implements ShouldQueue
 {
     public function __construct()
     {
@@ -27,8 +27,6 @@ class UserActionRecodeEventListener //implements ShouldQueue
         $countColumn = $event->getPostCountColumn();
         $recodeModel = $event->getRecodeModelForSave();
         $overlapCheck = $event->getOverlapCheck();
-
-        Log::info(var_dump($overlapCheck));
 
         if( $countType == 'simplex' ){
             if($overlapCheck == null){

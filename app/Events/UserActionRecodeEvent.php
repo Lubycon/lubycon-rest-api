@@ -2,6 +2,8 @@
 
 namespace App\Events;
 
+use Illuminate\Http\Request;
+
 use App\Events\Event;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
@@ -41,17 +43,18 @@ class UserActionRecodeEvent extends Event
     //get overlap check
     protected $overlap;
 
-    public function __construct($type,$data,$request)
+    public function __construct(Request $request,$type,$data)
     {
         // setting variable
+        $this->request = $request->all();
+        $this->token = $request->header('X-lubycon-token');
         $this->type = $type;
         $this->data = $data;
-        $this->request = $request;
         $this->sectorGroup = Board::find($this->data->board_id)->value('group');
         $this->boardId = $this->data->board_id;
         $this->postId = $this->data->id;
-        $this->giveUser = $this->getUserByToken($this->request);
-        $this->giveUserIp = $_SERVER['REMOTE_ADDR'];
+        $this->giveUser = $this->getUserByToken($this->token);
+        $this->giveUserIp = $request->ip();
         $this->giveUserId = $this->giveUser->id;
         $this->takeUserId = $this->data->user_id;
         $this->willCheck; //for bookmark like comment_like

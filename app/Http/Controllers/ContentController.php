@@ -34,7 +34,8 @@ class ContentController extends Controller
     public function store(Request $request,$category){
         $data = $request->json()->all();
 
-        $findUser = $this->getUserByToken($request);
+        $getToken = $this->getUserToken($request);
+        $findUser = $this->getUserByToken($getToken);
         $contents = new Content;
 
         // for upload data... take code SSARU!
@@ -133,7 +134,7 @@ class ContentController extends Controller
     }
     public function viewPost(Request $request,$category,$board_id){
          $content = Content::findOrFail($board_id);
-         Event::fire(new UserActionRecodeEvent('view',$content,$request));
+         Event::fire(new UserActionRecodeEvent($request,'view',$content));
          return response()->success([
              "contents" => (object)array(
                  "id" => $content->id,
