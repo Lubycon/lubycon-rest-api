@@ -81,12 +81,12 @@ trait GetRecodeModelTrait{
         if($this->countType == 'simplex' ){
             $whereModel = $model->where($ipColumnName,'=',$userIp)
                                 ->where('created_at','>',$limitTime)
-                                ->first();
-            return $whereModel !== null ? true : false ;
+                                ->exists();
+            return $whereModel ? false : true ;
         }
         if($this->countType == 'toggle' ){
             $whereModel = $model->where($idColumnName,'=',$userId)
-                                ->first();
+                                ->exists();
             return $whereModel !== null ? true : false ;
         }
     }

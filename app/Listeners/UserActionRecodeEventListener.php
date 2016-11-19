@@ -29,7 +29,7 @@ class UserActionRecodeEventListener implements ShouldQueue
         $overlapCheck = $event->getOverlapCheck();
 
         if( $countType == 'simplex' ){
-            if($overlapCheck == null){
+            if($overlapCheck){
                 //count up
                 $countModel->$countColumn++;
                 $countModel->save();
@@ -41,7 +41,7 @@ class UserActionRecodeEventListener implements ShouldQueue
             }
         }
         if($countType == 'toggle'){
-            if($overlapCheck == null){
+            if($overlapCheck){
                 //count up
                 $countModel->$countColumn++;
                 $countModel->save();
