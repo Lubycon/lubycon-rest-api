@@ -7,16 +7,11 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 
 use App\Board;
-use App\Content;
-use App\Post;
-use App\Comment;
-use App\View;
-use App\Download;
-use App\Like;
-// use App\Bookmark; not model making yet
 
 use App\Traits\GetUserModelTrait;
 use App\Traits\GetRecodeModelTrait;
+
+use Log;
 
 class UserActionRecodeEvent extends Event
 {
@@ -43,6 +38,9 @@ class UserActionRecodeEvent extends Event
     protected $post;
     protected $insertData;
 
+    //get overlap check
+    protected $overlap;
+
     public function __construct($type,$data,$request)
     {
         // setting variable
@@ -61,7 +59,8 @@ class UserActionRecodeEvent extends Event
         // setting model
         $this->recodeModel = $this->setRecodeModel($this->type);
         $this->postModel = $this->setPostModel($this->sectorGroup);
-        $this->post= $this->setPost($this->postModel,$this->postId);
+        $this->post = $this->setPost($this->postModel,$this->postId);
+        $this->overlap = $this->overlapCheck($this->recodeModel,$this->postId);
     }
 
     // setting model
@@ -73,6 +72,9 @@ class UserActionRecodeEvent extends Event
     }
     private function setPost($model,$postId){
         return $this->getPost($model,$postId);
+    }
+    private function overlapCheck($model,$postId){
+        return $this->isOverlapCheck($model,$postId);
     }
 
     // get data functions
@@ -108,6 +110,9 @@ class UserActionRecodeEvent extends Event
     }
     public function getRecodeModelForSave(){
         return $this->recodeModel;
+    }
+    public function getOverlapCheck(){
+        return $this->overlap;
     }
 
     public function broadcastOn()

@@ -10,7 +10,15 @@ use App\Content;
 use App\Post;
 use App\Comment;
 
+use Carbon\Carbon;
+
+use Log;
+
 trait GetRecodeModelTrait{
+
+    private $limitHours = -5;
+
+
     function getRecodeModel($type){
         $getClass = $this->findRecodeModel($type);
         return $getClass;
@@ -36,6 +44,32 @@ trait GetRecodeModelTrait{
     function getPost($model,$postId){
         $post = $model->find($postId);
         return $post;
+    }
+
+    function isOverlapCheck($model,$postId){
+        $giveUserIdentity = $this->getIdentity();
+        $limitTime = Carbon::now($this->limitHours)->toDateTimeString();
+        $whereModel = $model->where($giveUserIdentity->column,'=',$giveUserIdentity->value)
+                            ->where('created_at','>',$limitTime)
+                            ->first();
+        return $whereModel !== null ? true : false ;
+    }
+
+    function getIdentity(){
+        $ipColumnName = 'ipv4';
+        $idColumnName = 'give_user_id';
+        $userId = $this->getGiveUserId();
+        $userIp = $this->getGiveUserIp();
+        $result = (object)array();
+
+        if(is_null($userIp)){
+            $result->column = $idColumnName;
+            $result->value = $userId;
+        }else{
+            $result->column = $ipColumnName;
+            $result->value = $userIp;
+        }
+        return $result;
     }
 
     function setViewData($class){

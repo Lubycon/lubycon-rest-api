@@ -22,8 +22,13 @@ class UserActionRecodeEventListener //implements ShouldQueue
      */
     public function handle(UserActionRecodeEvent $event)
     {
-        $model = $event->getRecodeModelForSave();
-        $model->save();
-        Log::info('User Action event listen seccess');
+        if( $event->getOverlapCheck() == null ){
+            $model = $event->getRecodeModelForSave();
+            $model->save();
+            Log::info('User Action event listen seccess');
+            return;
+        }
+        Log::info('User Action event listen seccess / not recode cuz overlap');
+        return;
     }
 }

@@ -17,7 +17,6 @@ use App\Events\UserActionRecodeEvent;
 use App\Traits\InsertArrayToColumn;
 use App\Traits\GetUserModelTrait;
 use App\Traits\ConvertData;
-use App\Traits\UserActionTrait;
 
 use Carbon\Carbon;
 
@@ -30,8 +29,7 @@ class ContentController extends Controller
 {
     use InsertArrayToColumn,
         GetUserModelTrait,
-        ConvertData,
-        UserActionTrait;
+        ConvertData;
 
     public function store(Request $request,$category){
         $data = $request->json()->all();
