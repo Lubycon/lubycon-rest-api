@@ -8,7 +8,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Log;
 
 
-class UserActionRecodeEventListener implements ShouldQueue
+class UserActionRecodeEventListener //implements ShouldQueue
 {
     public function __construct()
     {
