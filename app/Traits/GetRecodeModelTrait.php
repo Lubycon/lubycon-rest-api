@@ -77,15 +77,22 @@ trait GetRecodeModelTrait{
         $userIp = $this->getGiveUserIp();
         $limitHours = -5;
         $limitTime = Carbon::now($limitHours)->toDateTimeString();
+        $boardId = $this->getBoardId();
+        $postId = $this->getPostId();
 
         if($this->countType == 'simplex' ){
             $whereModel = $model->where($ipColumnName,'=',$userIp)
                                 ->where('created_at','>',$limitTime)
+                                ->where('board_id','>',$boardId)
+                                ->where('post_id','>',$postId)
                                 ->exists();
             return $whereModel ? false : true ;
         }
         if($this->countType == 'toggle' ){
             $whereModel = $model->where($idColumnName,'=',$userId)
+                                ->where('created_at','>',$limitTime)
+                                ->where('board_id','>',$boardId)
+                                ->where('post_id','>',$postId)
                                 ->exists();
             return $whereModel !== null ? true : false ;
         }
