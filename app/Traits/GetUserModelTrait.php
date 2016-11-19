@@ -15,6 +15,14 @@ trait GetUserModelTrait{
 
         return $user;
     }
+
+    function getUserByTokenOrFail($token){
+        $userId = $this->findUserIdByToken($token);
+        $user = $this->getUserModelOrFail($userId);
+
+        return $user;
+    }
+
     function findUserIdByToken($token){
         $tokenData = (object)array(
             "device" => substr($token, 0, 1),
@@ -25,6 +33,11 @@ trait GetUserModelTrait{
         return $tokenData->id;
     }
     function getUserModel($userId){
+        $user = User::find($userId);
+        return $user;
+    }
+
+    function getUserModelOrFail($userId){
         $user = User::findOrFail($userId);
         return $user;
     }

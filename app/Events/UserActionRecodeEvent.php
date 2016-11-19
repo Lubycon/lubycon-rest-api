@@ -55,10 +55,9 @@ class UserActionRecodeEvent extends Event
         $this->postId = $this->data->id;
         $this->giveUser = $this->getUserByToken($this->token);
         $this->giveUserIp = $request->ip();
-        $this->giveUserId = $this->giveUser->id;
+        $this->giveUserId = is_null($this->giveUser) ? null : $this->giveUser->id ;
         $this->takeUserId = $this->data->user_id;
         $this->willCheck; //for bookmark like comment_like
-
         // setting model
         $modelInfo = $this->setModel($this->type);
         $this->recodeModel = $modelInfo->model;

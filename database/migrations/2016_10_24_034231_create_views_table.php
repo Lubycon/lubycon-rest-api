@@ -14,7 +14,7 @@ class CreateViewsTable extends Migration
     {
         Schema::create('views', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('give_user_id')->unsigned();
+            $table->integer('give_user_id')->unsigned()->nullable();
             $table->integer('take_user_id')->unsigned();
             $table->string('ipv4',15);
             $table->integer('board_id')->unsigned();
