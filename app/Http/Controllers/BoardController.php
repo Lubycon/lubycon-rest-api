@@ -62,7 +62,7 @@ class BoardController extends Controller
    }
    public function viewPost(Request $request,$category,$board_id){
         $post = Post::findOrFail($board_id);
-        Event::fire(new UserActionRecodeEvent($request,'view',$content));
+        Event::fire(new UserActionRecodeEvent($request,'view',$post));
         $job = $post->user->job;
 
         return response()->success([
