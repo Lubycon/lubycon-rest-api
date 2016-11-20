@@ -48,19 +48,19 @@ class User extends Model implements AuthenticatableContract,
     // users children table
     public function log()
     {
-        return $this->hasMany('App\Log','id','id');
+        return $this->hasMany('App\Log','user_id','id');
     }
     public function career()
     {
-        return $this->hasMany('App\Career','id','id');
+        return $this->hasMany('App\Career','user_id','id');
     }
     public function language()
     {
-        return $this->hasMany('App\Language','id','id');
+        return $this->hasMany('App\Language','user_id','id');
     }
     public function createOfTheMonth()
     {
-        return $this->hasMany('App\CreateOfTheMonth','id','id');
+        return $this->hasMany('App\CreateOfTheMonth','user_id','id');
     }
     // users children table
 
