@@ -19,7 +19,7 @@ class AdminUserSeeder extends Seeder
             	'password' => bcrypt('qwerqwer'),
                 'remember_token' => 'wmLRmEIui4DtFz5ikU5mZ6Cm2gKCIOW1',
             	'country_id' => 201,
-            	'job_id' => 1,
+            	'occupation_id' => 1,
             	'status' => 'active',
             	'grade' => 'admin',
             	'newsletter' => true,
