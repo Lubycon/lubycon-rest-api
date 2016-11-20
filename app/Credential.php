@@ -4,7 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use App\Country;
-use App\Job;
+use App\Occupation;
 
 use Log;
 

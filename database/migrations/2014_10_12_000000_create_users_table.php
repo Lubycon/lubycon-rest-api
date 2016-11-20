@@ -25,7 +25,7 @@ class CreateUsersTable extends Migration
             $table->boolean('terms_of_service')->default(true);
             $table->boolean('private_policy')->default(true);
 
-            $table->integer('job_id')->unsigned()->nullable();
+            $table->integer('occupation_id')->unsigned()->nullable();
             $table->integer('country_id')->unsigned();
 
             $table->string('profile_img')->nullable();

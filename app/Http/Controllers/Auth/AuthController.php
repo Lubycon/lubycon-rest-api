@@ -10,7 +10,7 @@ use Event;
 use App\User;
 use App\Credential;
 use App\Validation;
-use App\Job;
+use App\Occupation;
 use App\Country;
 
 use Validator;
@@ -218,7 +218,7 @@ class AuthController extends Controller
                 $this->resetDataGroup($findUser);
 
                 //$findUser->profile_img = $data['userData']['profile'];
-                $findUser->job_id = Job::where('name','=',$data['userData']['job'])->value('id');
+                $findUser->job_id = Occupation::where('name','=',$data['userData']['job'])->value('id');
                 $findUser->country_id = Country::where('name','=',$data['userData']['country'])->value('id');
                 $findUser->city = $data['userData']['city'];
                 $findUser->mobile = $data['userData']['mobile'];

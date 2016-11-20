@@ -2,7 +2,7 @@
 
 use Illuminate\Database\Seeder;
 
-class JobsTableSeeder extends Seeder
+class OccupationsTableSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -11,8 +11,8 @@ class JobsTableSeeder extends Seeder
      */
     public function run()
     {
-        DB::table('jobs')->truncate();
-        $jobs = array(
+        DB::table('occupations')->truncate();
+        $occupations = array(
             array('id'=>1,'name'=>'Artist'),
             array('id'=>2,'name'=>'Designer'),
             array('id'=>3,'name'=>'Developer'),
@@ -20,6 +20,6 @@ class JobsTableSeeder extends Seeder
             array('id'=>5,'name'=>'Others'),
         );
 
-        DB::table('jobs')->insert($jobs);
+        DB::table('occupations')->insert($occupations);
     }
 }
