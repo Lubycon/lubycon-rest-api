@@ -20,6 +20,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\ThrottlesLogins;
 use Illuminate\Foundation\Auth\AuthenticatesAndRegistersUsers;
 
+use Log;
 
 class AuthController extends Controller
 {
@@ -43,12 +44,12 @@ class AuthController extends Controller
             ]);
         }
 
-        if(Auth::user()->is_active == 'active'){
+        if(Auth::user()->status == 'active'){
             $id = Auth::user()->getAuthIdentifier();
             CheckContoller::insertRememberToken($id);
         }
 
-        if (Auth::user()->is_active == 'inactive'){
+        if (Auth::user()->status == 'inactive'){
             $result = (object)array(
                 'token' => Auth::user()->remember_token,
                 'condition' => 'inactive'
@@ -74,6 +75,12 @@ class AuthController extends Controller
 
     protected function signup(Request $request)
     {
+
+            DB::connection()->enableQueryLog();
+
+
+
+
         $data = $request->json()->all();
         $credentialSignup = Credential::signup($data);
         $credentialSignin = Credential::signin($data);
@@ -88,6 +95,7 @@ class AuthController extends Controller
 
         if(User::create($credentialSignup)){
             if(Auth::once($credentialSignin)){
+            Log::debug('signup', [DB::getQueryLog()]);
                 $id = Auth::user()->getAuthIdentifier();
                 CheckContoller::insertSignupToken($id);
                 $rememberToken = CheckContoller::insertRememberToken($id);

@@ -132,7 +132,7 @@ class CertificateController extends Controller
     }
 
     protected function activeUser($user){
-        $user->is_active = 'active';
+        $user->status = 'active';
         $user->save();
     }
 }

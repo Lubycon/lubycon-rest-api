@@ -17,7 +17,7 @@ class Validation extends Model
     # for app/Http/Controller/Auth/AuthController.php file
     public static function auth($data){
       $rules = [
-          'name' => 'required|max:255',
+          'name' => 'required|max:255|unique:users',
           'email' => 'required|email|max:255|unique:users',
           'password' => 'required|min:6',
       ];

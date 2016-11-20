@@ -6,9 +6,11 @@ use Illuminate\Database\Eloquent\Model;
 use App\Country;
 use App\Job;
 
+use Log;
+
 class Credential extends Model
 {
-    protected static function signIn($data){
+    protected static function signin($data){
 
       $credential = [
           'email'    => $data['email'],
@@ -18,19 +20,17 @@ class Credential extends Model
       return $credential;
     }
 
-    protected static function signUp($data){
+    protected static function signup($data){
 
       $credential = [
           'name' => $data['nickname'],
           'email' => $data['email'],
           'password' => bcrypt($data['password']),
-          'sns_code' => 0,
+          'sns_code' => $data['snsCode'],
           'country_id' => Country::where('name','=',$data['country'])->value('id'),
-          'is_active' => 'inactive',
-          'is_accept_terms' => '111',
-          //'is_accept_terms' => $data['newletter'].'11',
+          'status' => 'inactive',
+          'newsletter' => $data['newsletter']
       ];
-
       return $credential;
 
     }
