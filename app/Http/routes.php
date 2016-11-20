@@ -1,5 +1,9 @@
 <?php
 
+Route::get('/', function ()    {
+    return view('emails.signup');
+});
+
 //about members event
 Route::group(['prefix' => '/members/'], function () {
     //authenicates
