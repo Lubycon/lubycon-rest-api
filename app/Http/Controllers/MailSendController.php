@@ -40,9 +40,8 @@ class MailSendController extends Controller
     public static function againSignupTokenSet(Request $request){
 
         $tokenData = CheckContoller::checkToken($request);
-
         $user = User::findOrFail($tokenData->id);
-
+        CheckContoller::insertSignupToken($user->id);
         $data = (object)array(
             "email" => $user->email,
             "type" => 'signup',
@@ -50,7 +49,6 @@ class MailSendController extends Controller
             'token' => MailSendController::getSignupToken($user->email),
             "user" => $user
         );
-        checkContoller::insertSignupToken($user->id);
         MailSendController::normalMailSend($data);
     }
 
@@ -60,16 +58,12 @@ class MailSendController extends Controller
 
 
     public static function passwordResetTokenSend(Request $request){
-
         $data = $request->json()->all();
-
         $sendMail = Event::fire(new PasswordMailSendEvent([
             'email'    =>  $data['email'],
             'subject'  => 'Your Password Reset Link',
             'token' => str_random(40),
         ]));
-
-        log::info('event start');
 
         return $sendMail;
     }
