@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
@@ -8,6 +8,6 @@ class Career extends Model
 {
     public function user()
     {
-        return $this->belongsTo('App\User','id','id');
+        return $this->belongsTo('App\Models\User','id','id');
     }
 }

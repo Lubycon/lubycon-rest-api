@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
@@ -10,6 +10,6 @@ class Board extends Model
 
     public function post()
     {
-        return $this->belongsTo('App\Post','board_id','board');
+        return $this->belongsTo('App\Models\Post','board_id','board');
     }
 }

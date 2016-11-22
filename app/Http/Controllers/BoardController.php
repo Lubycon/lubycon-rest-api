@@ -4,11 +4,11 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-use App\Post;
-use App\User;
-use App\Comment;
-use App\View;
-use App\Board;
+use App\Models\Post;
+use App\Models\User;
+use App\Models\Comment;
+use App\Models\View;
+use App\Models\Board;
 
 use Event;
 use App\Events\UserActionRecodeEvent;

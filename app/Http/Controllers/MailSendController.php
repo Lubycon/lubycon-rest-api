@@ -6,8 +6,8 @@ use App\Events\PasswordMailSendEvent;
 use App\Http\Controllers\Auth\CheckContoller;
 use Illuminate\Http\Request;
 
-use App\User;
-use App\SignupAllow;
+use App\Models\User;
+use App\Models\SignupAllow;
 
 use Log;
 use Mail;

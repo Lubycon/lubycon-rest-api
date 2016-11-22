@@ -11,7 +11,7 @@
 |
 */
 
-$factory->define(App\User::class, function (Faker\Generator $faker) {
+$factory->define(App\Models\User::class, function (Faker\Generator $faker) {
     return [
         'name' => $faker->name,
         'email' => $faker->safeEmail,
@@ -25,7 +25,7 @@ $factory->define(App\User::class, function (Faker\Generator $faker) {
     ];
 });
 
-$factory->define(App\Post::class, function (Faker\Generator $faker) {
+$factory->define(App\Models\Post::class, function (Faker\Generator $faker) {
     return [
         'board_id' => 11,
         'user_id' => mt_rand(1,100),
@@ -39,7 +39,7 @@ $factory->define(App\Post::class, function (Faker\Generator $faker) {
     ];
 });
 
-$factory->define(App\Content::class, function (Faker\Generator $faker) {
+$factory->define(App\Models\Content::class, function (Faker\Generator $faker) {
     return [
         'board_id' => 1,
         'user_id' => mt_rand(1,100),
@@ -58,7 +58,7 @@ $factory->define(App\Content::class, function (Faker\Generator $faker) {
     ];
 });
 
-$factory->define(App\Comment::class, function (Faker\Generator $faker) {
+$factory->define(App\Models\Comment::class, function (Faker\Generator $faker) {
     return [
         'give_user_id' => mt_rand(1,100),
         'take_user_id' => mt_rand(1,100),
@@ -69,14 +69,14 @@ $factory->define(App\Comment::class, function (Faker\Generator $faker) {
     ];
 });
 
-$factory->define(App\ContentCategoryKernel::class, function (Faker\Generator $faker) {
+$factory->define(App\Models\ContentCategoryKernel::class, function (Faker\Generator $faker) {
     return [
         'post_id' => mt_rand(1,100),
         "category_id" => mt_rand(1,24),
     ];
 });
 
-$factory->define(App\ContentTag::class, function (Faker\Generator $faker) {
+$factory->define(App\Models\ContentTag::class, function (Faker\Generator $faker) {
     return [
         'post_id' => mt_rand(1,100),
         "name" => $faker->name,

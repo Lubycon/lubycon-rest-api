@@ -1,10 +1,10 @@
 <?php
 namespace App\Traits;
 
-use App\ContentTag;
-use App\ContentCategory;
-use App\ContentCategoryKernel;
-use App\License;
+use App\Models\ContentTag;
+use App\Models\ContentCategory;
+use App\Models\ContentCategoryKernel;
+use App\Models\License;
 
 trait ConvertData{
     function convertContentCategoryIdToName($array){

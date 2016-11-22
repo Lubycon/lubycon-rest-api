@@ -4,11 +4,11 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-use App\Content;
-use App\Comment;
-use App\Board;
-use App\User;
-use App\ContentTag;
+use App\Models\Content;
+use App\Models\Comment;
+use App\Models\Board;
+use App\Models\User;
+use App\Models\ContentTag;
 use File;
 
 use Event;

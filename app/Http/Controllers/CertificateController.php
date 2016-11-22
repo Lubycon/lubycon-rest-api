@@ -7,9 +7,9 @@ use App\Http\Controllers\Auth\CheckContoller;
 use Auth;
 use Carbon\Carbon;
 
-use App\User;
+use App\Models\User;
+use App\Models\SignupAllow;
 
-use App\SignupAllow;
 use Validator;
 use Illuminate\Http\Request;
 use App\Http\Requests;

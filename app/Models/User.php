@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\Model;
@@ -37,30 +37,30 @@ class User extends Model implements AuthenticatableContract,
     // get reference data
     public function job()
     {
-        return $this->hasOne('App\Job','id','job_id');
+        return $this->hasOne('App\Models\Job','id','job_id');
     }
     public function country()
     {
-        return $this->hasOne('App\Country','id','country_id');
+        return $this->hasOne('App\Models\Country','id','country_id');
     }
     // get reference data
 
     // users children table
     public function log()
     {
-        return $this->hasMany('App\Log','user_id','id');
+        return $this->hasMany('App\Models\Log','user_id','id');
     }
     public function career()
     {
-        return $this->hasMany('App\Career','user_id','id');
+        return $this->hasMany('App\Models\Career','user_id','id');
     }
     public function language()
     {
-        return $this->hasMany('App\Language','user_id','id');
+        return $this->hasMany('App\Models\Language','user_id','id');
     }
     public function createOfTheMonth()
     {
-        return $this->hasMany('App\CreateOfTheMonth','user_id','id');
+        return $this->hasMany('App\Models\CreateOfTheMonth','user_id','id');
     }
     // users children table
 
@@ -68,7 +68,7 @@ class User extends Model implements AuthenticatableContract,
     //post
     public function post()
     {
-        return $this->belongsTo('App\Post','user_id','id');
+        return $this->belongsTo('App\Models\Post','user_id','id');
     }
     //post
 
@@ -76,20 +76,20 @@ class User extends Model implements AuthenticatableContract,
     // action
     public function giveView()
     {
-        return $this->hasMany('App\View','give_user_id','id');
+        return $this->hasMany('App\Models\View','give_user_id','id');
     }
     public function takeView()
     {
-        return $this->hasMany('App\View','take_user_id','id');
+        return $this->hasMany('App\Models\View','take_user_id','id');
     }
 
     public function takeComment()
     {
-        return $this->hasMany('App\Comment','take_user_id','id');
+        return $this->hasMany('App\Models\Comment','take_user_id','id');
     }
     public function giveComment()
     {
-        return $this->hasMany('App\Comment','give_user_id','id');
+        return $this->hasMany('App\Models\Comment','give_user_id','id');
     }
     // action
 }

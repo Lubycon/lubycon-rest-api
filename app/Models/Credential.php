@@ -1,10 +1,10 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use App\Country;
-use App\Job;
+use App\Models\Country;
+use App\Models\Job;
 
 use Log;
 

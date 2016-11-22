@@ -7,11 +7,11 @@ use DB;
 use Auth;
 use Event;
 
-use App\User;
-use App\Credential;
-use App\Validation;
-use App\Job;
-use App\Country;
+use App\Models\User;
+use App\Models\Credential;
+use App\Models\Validation;
+use App\Models\Job;
+use App\Models\Country;
 
 use Validator;
 use Illuminate\Http\Request;

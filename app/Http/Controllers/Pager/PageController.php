@@ -7,12 +7,12 @@ use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 
-use App\Content;
-use App\Post;
-use App\Comment;
-use App\User;
-use App\View;
-use App\Board;
+use App\Models\Content;
+use App\Models\Post;
+use App\Models\Comment;
+use App\Models\User;
+use App\Models\View;
+use App\Models\Board;
 
 use DB;
 use Log;

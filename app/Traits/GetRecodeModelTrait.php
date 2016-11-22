@@ -1,14 +1,14 @@
 <?php
 namespace App\Traits;
 
-use App\View;
-use App\Donwload;
-use App\Like;
-// use App\Bookmark;
+use App\Models\View;
+use App\Models\Donwload;
+use App\Models\Like;
+// use App\Models\Bookmark;
 
-use App\Content;
-use App\Post;
-use App\Comment;
+use App\Models\Content;
+use App\Models\Post;
+use App\Models\Comment;
 
 use Carbon\Carbon;
 

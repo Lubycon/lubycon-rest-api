@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Model;
@@ -13,21 +13,21 @@ class Content extends Model
     // 1 : 1
     public function board()
     {
-        return $this->hasOne('App\Board','id','board_id');
+        return $this->hasOne('App\Models\Board','id','board_id');
     }
     public function user()
     {
-        return $this->hasOne('App\User','id','user_id');
+        return $this->hasOne('App\Models\User','id','user_id');
     }
     public function license()
     {
-        return $this->hasOne('App\License','id','license_id');
+        return $this->hasOne('App\Models\License','id','license_id');
     }
 
     // 1 : n
     public function categoryKernel() //just create content's option of category
     {
-        return $this->hasMany('App\ContentCategoryKernel','post_id','id')->select('category_id');
+        return $this->hasMany('App\Models\ContentCategoryKernel','post_id','id')->select('category_id');
     }
     // public function category() //just get category reference table
     // {
@@ -35,21 +35,21 @@ class Content extends Model
     // }
     public function download()
     {
-        return $this->hasMany('App\Download','post_id','id');
+        return $this->hasMany('App\Models\Download','post_id','id');
     }
     public function view()
     {
-        return $this->hasMany('App\View','post_id','id');
+        return $this->hasMany('App\Models\View','post_id','id');
     }
     public function comment()
     {
-        return $this->hasMany('App\Comment','post_id','id');
+        return $this->hasMany('App\Models\Comment','post_id','id');
     }
     public function tag(){
-        return $this->hasMany('App\ContentTag','post_id','id')->select('name');
+        return $this->hasMany('App\Models\ContentTag','post_id','id')->select('name');
     }
     // public function bookmark()
     // {
-    //     return $this->hasMany('App\Bookmark','post_id','id');
+    //     return $this->hasMany('App\Models\Bookmark','post_id','id');
     // }
 }

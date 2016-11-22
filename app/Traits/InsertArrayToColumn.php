@@ -1,9 +1,9 @@
 <?php
 namespace App\Traits;
 
-use App\ContentTag;
-use App\ContentCategory;
-use App\ContentCategoryKernel;
+use App\Models\ContentTag;
+use App\Models\ContentCategory;
+use App\Models\ContentCategoryKernel;
 
 trait InsertArrayToColumn{
     //array is fure array, dataName is database culumne name

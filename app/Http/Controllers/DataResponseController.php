@@ -7,16 +7,16 @@ use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 
-use App\User;
-use App\Job;
-use App\Country;
+use App\Models\User;
+use App\Models\Job;
+use App\Models\Country;
 
-use App\Post;
-use App\PostSort;
+use App\Models\Post;
+use App\Models\PostSort;
 
-// use App\Content;
-use App\ContentSort;
-use App\ContentCategory;
+use App\Models\Content;
+use App\Models\ContentSort;
+use App\Models\ContentCategory;
 
 class DataResponseController extends Controller
 {

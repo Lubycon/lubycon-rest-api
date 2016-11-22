@@ -4,9 +4,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-use App\Comment;
-use App\Board;
-use App\User;
+use App\Models\Comment;
+use App\Models\Board;
+use App\Models\User;
 
 use Carbon\Carbon;
 

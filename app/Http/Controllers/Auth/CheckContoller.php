@@ -4,8 +4,8 @@ namespace App\Http\Controllers\Auth;
 
 use Illuminate\Http\Request;
 
-use App\User;
-use App\SignupAllow;
+use App\Models\User;
+use App\Models\SignupAllow;
 
 use Illuminate\Support\Str;
 

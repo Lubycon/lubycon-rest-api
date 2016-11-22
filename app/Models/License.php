@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
@@ -10,6 +10,6 @@ class License extends Model
 
     public function content()
     {
-        return $this->belongsTo('App\Content','license_id','id');
+        return $this->belongsTo('App\Models\Content','license_id','id');
     }
 }
