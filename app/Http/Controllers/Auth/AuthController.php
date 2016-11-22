@@ -20,6 +20,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\ThrottlesLogins;
 use Illuminate\Foundation\Auth\AuthenticatesAndRegistersUsers;
 
+use App\Exceptions\UserNotFound;
+
 use Log;
 
 class AuthController extends Controller
@@ -39,9 +41,10 @@ class AuthController extends Controller
         $credentials = Credential::signin($data);
 
         if ( !Auth::once($credentials)) {
-            return response()->error([
-                'code' => '0010'
-            ]);
+            throw new App\Exceptions\UserNotFound();
+            // return response()->error([
+            //     'code' => '0010'
+            // ]);
         }
 
         if(Auth::user()->status == 'active'){
@@ -75,12 +78,6 @@ class AuthController extends Controller
 
     protected function signup(Request $request)
     {
-
-            DB::connection()->enableQueryLog();
-
-
-
-
         $data = $request->json()->all();
         $credentialSignup = Credential::signup($data);
         $credentialSignin = Credential::signin($data);
@@ -95,7 +92,6 @@ class AuthController extends Controller
 
         if(User::create($credentialSignup)){
             if(Auth::once($credentialSignin)){
-            Log::debug('signup', [DB::getQueryLog()]);
                 $id = Auth::user()->getAuthIdentifier();
                 CheckContoller::insertSignupToken($id);
                 $rememberToken = CheckContoller::insertRememberToken($id);
