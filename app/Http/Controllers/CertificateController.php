@@ -38,8 +38,7 @@ class CertificateController extends Controller
     protected function certTokenTimeCheck(Request $request){
         $data = CheckContoller::checkToken($request);
 
-
-        $createTime = SignupAllow::find($data->id)->created_at;
+        $createTime = SignupAllow::findOrFail($data->id)->created_at;
         $minutes = 360;
         $diffTime = $this->checkDiffTime($createTime,$minutes);
 

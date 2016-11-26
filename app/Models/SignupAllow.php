@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class signupAllow extends Model
+class SignupAllow extends Model
 {
     //
 }
