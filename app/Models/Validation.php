@@ -11,7 +11,14 @@ class Validation extends Model
     # and excute validate
 
     public static function validater($data, $rules){
-      return Validator::make($data, $rules);
+      $result = Validator::make($data, $rules);
+      if($result->fails()){
+        return response()->error([
+            "code" => "0030",
+            "devMsg" => $result->errors()
+        ]);
+      }
+      return $result;
     }
 
     # for app/Http/Controller/Auth/AuthController.php file
@@ -23,8 +30,23 @@ class Validation extends Model
       ];
       return Validation::validater($data, $rules);
     }
-    protected function failedValidation(Validator $validator)
-    {
-        throw new ValidationException($validator);
+
+    public static function upload($data){
+      $rules = [
+          'bucket'    =>    'required',
+          'acl'       =>    'required',
+          'path'      =>    'required',
+          'files'      =>    'required | array',
+      ];
+
+      return Validation::validater($data, $rules);
+    }
+
+    public static function json($data){
+      $rules = [
+        'data'    =>    'required | json',
+      ];
+
+      return Validation::validater($data, $rules);
     }
 }

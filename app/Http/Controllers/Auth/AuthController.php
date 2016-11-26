@@ -35,13 +35,6 @@ class AuthController extends Controller
 
     protected function signin(Request $request)
     {
-
-        return response()->success((object)array(
-            'return' => config('error.0010')
-        ));
-
-
-        return response()->success(config('error,0010'));
         $data = $request->json()->all();
 
         # property
