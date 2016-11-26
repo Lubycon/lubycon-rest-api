@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Validator;
+use Abort;
 
 class Validation extends Model
 {
@@ -13,10 +14,7 @@ class Validation extends Model
     public static function validater($data, $rules){
       $result = Validator::make($data, $rules);
       if($result->fails()){
-        return response()->error([
-            "code" => "0030",
-            "devMsg" => $result->errors()
-        ]);
+          Abort::Error('0015');
       }
       return $result;
     }

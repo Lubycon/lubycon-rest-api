@@ -98,7 +98,7 @@ class Handler extends ExceptionHandler
                  return response()->error([
                      "httpCode" => 500,
                      "code" => "0073",
-                     "devMsg" => Carbon::now()->toDateTimeString()." -> error occur time. plz send to daniel this time."
+                     "devMsg" => var_dump($e),
                  ]);
              }
              if($e instanceof MethodNotAllowedHttpException){
@@ -125,19 +125,12 @@ class Handler extends ExceptionHandler
                      "code" => "0077"
                  ]);
              }
-             if($e instanceof UserNotFound){
+             if($e instanceof CustomException){
                  return response()->error([
-                     "httpCode" => 404,
-                     "code" => "0010"
+                     "httpCode" => $e->getStatusCode(),
+                     "code" => $e->getMessage()
                  ]);
              }
-             if($e instanceof ValidationException) {
-                 return response()->error([
-                     "httpCode" => 422,
-                     "code" => "0030"
-                 ]);
-            }
-
              return $this->response($request, $e); //for provide
          }
      }
@@ -152,17 +145,16 @@ class Handler extends ExceptionHandler
          $status = [
              'httpCode' => $exception->httpStatusCode,
              'code' => '9999',
-             'devMsg' => $exception->msg
+             'devMsg' => 'Undefined Error - '.$exception->msg
          ];
          return response()->error($status);
      }
 
      protected function getJsonMessage($e){
-         return method_exists($e, 'getMessage') ? $e->getMessage() : 500;;
+         return method_exists($e, 'getMessage') ? $e->getMessage() : 500;
      }
 
      protected function getExceptionHTTPStatusCode($e){
          return method_exists($e, 'getStatusCode') ? $e->getStatusCode() : 500;
      }
-
  }

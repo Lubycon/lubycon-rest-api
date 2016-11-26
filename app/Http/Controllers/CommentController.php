@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-
+use Abort;
 use App\Models\Comment;
 use App\Models\Board;
 use App\Models\User;
@@ -33,9 +33,7 @@ class CommentController extends Controller
         if($comments->save()){
           return response()->success();
         };
-        return response()->error([
-            "code" => "0030"
-        ]);
+        Abort::Error('0030');
     }
     public function getList(Request $request,$category,$board_id=false){
         $query = $request->query();
@@ -67,10 +65,7 @@ class CommentController extends Controller
         if(!is_null($result->comments)){
             return response()->success($result);
         }else{
-            return response()->error([
-                "code" => "0062",
-                "devMsg" => "Model not found error"
-            ]);
+            Abort::Error('0062');
         }
     }
     public function update(Request $request,$category,$board_id,$comment_id){
@@ -81,22 +76,13 @@ class CommentController extends Controller
         $comments = Comment::findOrFail($comment_id);
 
         if($this->isSameBoard($comments,$category)){
-            return response()->error([
-                "code" => "0012",
-                "devMsg" => "sector id is unmatched"
-            ]);
+            Abort::Error('0012');
         }
         if($this->isSamePost($comments,$board_id)){
-            return response()->error([
-                "code" => "0012",
-                "devMsg" => "post id is unmatched"
-            ]);
+            Abort::Error('0012');
         }
         if($this->isSameUser($findUser,$comments)){
-            return response()->error([
-                "code" => "0012",
-                "devMsg" => "user id is unmatched"
-            ]);
+            Abort::Error('0012');
         }
 
         $comments->content = $data['content'];
@@ -104,9 +90,7 @@ class CommentController extends Controller
           return response()->success();
         };
 
-        return response()->error([
-            "code" => "0030"
-        ]);
+        Abort::Error('0030');
     }
     public function delete(Request $request,$category,$board_id,$comment_id){
         $tokenData = CheckContoller::checkToken($request);
@@ -114,22 +98,13 @@ class CommentController extends Controller
         $comments = Comment::findOrFail($comment_id);
 
         if($this->isSameBoard($comments,$category)){
-            return response()->error([
-                "code" => "0012",
-                "devMsg" => "sector id is unmatched"
-            ]);
+            Abort::Error('0012');
         }
         if($this->isSamePost($comments,$board_id)){
-            return response()->error([
-                "code" => "0012",
-                "devMsg" => "post id is unmatched"
-            ]);
+            Abort::Error('0012');
         }
         if($this->isSameUser($findUser,$comments)){
-            return response()->error([
-                "code" => "0012",
-                "devMsg" => "user id is unmatched"
-            ]);
+            Abort::Error('0012');
         }
         if($comments->delete()){
           return response()->success();

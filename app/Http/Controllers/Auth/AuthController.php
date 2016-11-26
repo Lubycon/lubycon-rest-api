@@ -20,7 +20,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\ThrottlesLogins;
 use Illuminate\Foundation\Auth\AuthenticatesAndRegistersUsers;
 
-use Exception;
+use Abort;
 
 use Log;
 
@@ -36,22 +36,10 @@ class AuthController extends Controller
     protected function signin(Request $request)
     {
         $data = $request->json()->all();
-
-        # property
         $credentials = Credential::signin($data);
 
-        // prev exception code
-        try {
-            Auth::once($credentials);
-            $userId = isset(Auth::user()->id) ? Auth::user()->id : 0 ;
-            User::findOrFail($userId);
-        } catch (Exception $e) {
-            throw new Exception('error');
-        }
-
-        if(Auth::user()->status == 'active'){
-            $id = Auth::user()->getAuthIdentifier();
-            CheckContoller::insertRememberToken($id);
+        if(!Auth::once($credentials)){
+            Abort::Error('0010');
         }
 
         if (Auth::user()->status == 'inactive'){
@@ -62,6 +50,9 @@ class AuthController extends Controller
             return response()->success($result);
         }
 
+        if(Auth::user()->status == 'active'){
+            CheckContoller::insertRememberToken(Auth::user()->id);
+        }
 
         $result = (object)array(
             'token' => Auth::user()->remember_token,
@@ -84,13 +75,6 @@ class AuthController extends Controller
         $credentialSignup = Credential::signup($data);
         $credentialSignin = Credential::signin($data);
         $ResultOfValidation = Validation::auth($credentialSignup);
-
-        if ($ResultOfValidation->fails()){
-            return response()->error([
-                "code" => "0030",
-                "devMsg" => $ResultOfValidation->errors()
-            ]);
-        };
 
         if(User::create($credentialSignup)){
             if(Auth::once($credentialSignin)){
@@ -116,9 +100,7 @@ class AuthController extends Controller
             $user->delete();
             return response()->success();
         }else{
-            return response()->error([
-                'code' => '0030'
-            ]);
+            Abort::Error('0030');
         };
     }
 
@@ -130,9 +112,7 @@ class AuthController extends Controller
     //         $user->restore();
     //         return response()->success();
     //     }else{
-    //         return response()->error([
-    //             'code' => '0030'
-    //         ]);
+    //         Abort::Error('0030');
     //     };
     // }
 
@@ -158,9 +138,7 @@ class AuthController extends Controller
             );
             return response()->success($result);
         }else{
-            return response()->error([
-                'code' => '0030'
-            ]);
+            Abort::Error('0030');
         }
     }
 
@@ -198,10 +176,7 @@ class AuthController extends Controller
                 )
             ]);
         }else{
-            return response()->error([
-                'code' => '0030',
-                "devMsg" => "user number " . $id . " dose not exist"
-            ]);
+            Abort::Error('0030');
         }
     }
     public function postRetrieve(Request $request,$id)
@@ -232,10 +207,7 @@ class AuthController extends Controller
                 DB::table('careers')->insert($this->setCareerGroup($data['history'],$id));
             return response()->success($data);
         }else{
-            return response()->error([
-                'code' => '0030',
-                "devMsg" => "dose not match user id"
-            ]);
+            Abort::Error('0030');
         }
     }
     protected function insertDataGroup($array,$id){

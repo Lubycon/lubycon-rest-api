@@ -11,6 +11,7 @@ use App\Models\User;
 use App\Models\ContentTag;
 use File;
 
+use Abort;
 use Event;
 use App\Events\UserActionRecodeEvent;
 
@@ -71,9 +72,7 @@ class ContentController extends Controller
         if($contents->save()){ //check right access
           return response()->success();
         };
-        return response()->error([
-            "code" => "0030"
-        ]);
+        Abort::Error('0030');
     }
     public function getList(Request $request,$category){
         $query = $request->query();
@@ -111,10 +110,7 @@ class ContentController extends Controller
         if(!is_null($result->contents)){
             return response()->success($result);
         }else{
-            return response()->error([
-                "code" => "0062",
-                "devMsg" => "Nothing search Contents"
-            ]);
+            Abort::Error('0030');
         }
     }
     public function viewData($category,$board_id){
@@ -169,16 +165,10 @@ class ContentController extends Controller
         $contents = Content::findOrFail($board_id);
 
         if($this->isSameBoard($contents,$category)){
-            return response()->error([
-                "code" => "0012",
-                "devMsg" => "sector id is unmatched"
-            ]);
+            Abort::Error('0012');
         }
         if($this->isSameUser($findUser,$contents)){
-            return response()->error([
-                "code" => "0012",
-                "devMsg" => "user id is unmatched"
-            ]);
+            Abort::Error('0012');
         }
 
 
@@ -199,9 +189,7 @@ class ContentController extends Controller
           return response()->success();
         };
 
-        return response()->error([
-            "code" => "0030"
-        ]);
+        Abort::Error('0030');
     }
     public function delete(Request $request,$category,$board_id){
         $tokenData = CheckContoller::checkToken($request);
@@ -209,16 +197,10 @@ class ContentController extends Controller
         $contents = Content::findOrFail($board_id);
 
         if($this->isSameBoard($contents,$category)){
-            return response()->error([
-                "code" => "0012",
-                "devMsg" => "sector id is unmatched"
-            ]);
+            Abort::Error('0012');
         }
         if($this->isSameUser($findUser,$contents)){
-            return response()->error([
-                "code" => "0012",
-                "devMsg" => "user id is unmatched"
-            ]);
+            Abort::Error('0012');
         }
         $contents->categoryKernel()->delete();
         $contents->tag()->delete();

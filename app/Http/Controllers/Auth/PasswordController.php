@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Auth;
 
+use Abort;
 use DB;
 use Validator;
 use App\Http\Controllers\MailSendController;
@@ -55,10 +56,7 @@ class PasswordController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return response()->error([
-                'code' => '0030',
-                "devMsg" => $validator->errors()
-            ]);
+            Abort::Error('0030');
         }
 
         $credentials = array(
@@ -76,9 +74,7 @@ class PasswordController extends Controller
             case Password::PASSWORD_RESET:
                 return response()->success();
             default:
-                return response()->error([
-                    'code' => '0030'
-                ]);
+                Abort::Error('0030');
         }
     }
 

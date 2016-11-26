@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
+use Abort;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 
@@ -51,10 +52,7 @@ class DataResponseController extends Controller
         if( !is_null($models) ){
             return response()->success($models);
         }else{
-            return response()->error([
-                "code" => "0030",
-                "devMsg" => "Check WhiteList in Api document!"
-            ]);
+            Abort::Error('0030');
         }
     }
 }

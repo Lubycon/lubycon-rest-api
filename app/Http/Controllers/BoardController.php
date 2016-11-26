@@ -10,6 +10,7 @@ use App\Models\Comment;
 use App\Models\View;
 use App\Models\Board;
 
+use Abort;
 use Event;
 use App\Events\UserActionRecodeEvent;
 
@@ -54,10 +55,7 @@ class BoardController extends Controller
        if(!is_null($result->contents)){
            return response()->success($result);
        }else{
-           return response()->error([
-               "code" => "0062",
-               "devMsg" => "Model not found error"
-           ]);
+           Abort::Error('0062');
        }
    }
    public function viewPost(Request $request,$category,$board_id){
@@ -101,9 +99,7 @@ class BoardController extends Controller
           return response()->success();
         };
 
-        return response()->error([
-            "code" => "0030"
-        ]);
+        Abort::Error('0030');
    }
    public function updatePost(Request $request,$category,$board_id){
         $data = $request->json()->all();
@@ -113,9 +109,7 @@ class BoardController extends Controller
         $posts = Post::findOrFail($board_id);
 
         if($findUser->id != $posts->user_id){
-            return response()->error([
-                "code" => "0012"
-            ]);
+            Abort::Error('0012');
         }
 
         $posts->title = $data['title'];
@@ -124,9 +118,7 @@ class BoardController extends Controller
           return response()->success();
         };
 
-        return response()->error([
-            "code" => "0030"
-        ]);
+        Abort::Error('0030');
    }
    public function deletePost(Request $request,$category,$board_id){
         $tokenData = CheckContoller::checkToken($request);
@@ -134,9 +126,7 @@ class BoardController extends Controller
         $posts = Post::findOrFail($board_id);
 
         if($findUser->id != $posts->user_id){
-            return response()->error([
-                "code" => "0012"
-            ]);
+            Abort::Error('0012');
         }
         if($posts->delete()){
           return response()->success();

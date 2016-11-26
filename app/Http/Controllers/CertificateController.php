@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Abort;
 use DB;
 use App\Http\Controllers\Auth\CheckContoller;
 use Auth;
@@ -31,10 +32,7 @@ class CertificateController extends Controller
                 "validity" => true
             ]);
         }else{
-            return response()->error([
-                "code" => "0062",
-                "validity" => false
-            ]);
+            Abort::Error('0015');
         }
     }
     protected function certTokenTimeCheck(Request $request){
