@@ -5,7 +5,10 @@ namespace App\Exceptions;
 use Log;
 use Exception;
 
+use App\Exceptions\UserNotFound;
+
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Foundation\Validation\ValidationException;
 use Symfony\Component\Debug\Exception\FatalErrorException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -16,6 +19,7 @@ use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
 use Symfony\Component\HttpKernel\Exception\ServiceUnavailableHttpException;
 use Symfony\Component\HttpKernel\Exception\TooManyRequestsHttpException;
 use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
+
 
 use Carbon\Carbon;
 
@@ -121,6 +125,18 @@ class Handler extends ExceptionHandler
                      "code" => "0077"
                  ]);
              }
+             if($e instanceof UserNotFound){
+                 return response()->error([
+                     "httpCode" => 404,
+                     "code" => "0010"
+                 ]);
+             }
+             if($e instanceof ValidationException) {
+                 return response()->error([
+                     "httpCode" => 422,
+                     "code" => "0030"
+                 ]);
+            }
 
              return $this->response($request, $e); //for provide
          }
@@ -130,7 +146,7 @@ class Handler extends ExceptionHandler
      {
          $exception = (object)array(
              "httpStatusCode" => $this->getExceptionHTTPStatusCode($e),
-             "msg" => $this->getJsonMessage($e),
+             "msg" => Carbon::now()->toDateTimeString()." -> error occur time. plz send to daniel this time.".$this->getJsonMessage($e),
          );
 
          $status = [
@@ -138,7 +154,6 @@ class Handler extends ExceptionHandler
              'code' => '9999',
              'devMsg' => $exception->msg
          ];
-         return var_dump($e);
          return response()->error($status);
      }
 

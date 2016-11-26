@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Exceptions;
-class UserNotFound extends CustomException
+class UserNotFound extends Exception
 {
     public function __construct()
     {

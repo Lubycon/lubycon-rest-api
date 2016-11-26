@@ -20,7 +20,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\ThrottlesLogins;
 use Illuminate\Foundation\Auth\AuthenticatesAndRegistersUsers;
 
-use App\Exceptions\UserNotFound;
+use Exception;
 
 use Log;
 
@@ -40,11 +40,13 @@ class AuthController extends Controller
         # property
         $credentials = Credential::signin($data);
 
-        if ( !Auth::once($credentials)) {
-            throw new App\Exceptions\UserNotFound();
-            // return response()->error([
-            //     'code' => '0010'
-            // ]);
+        // prev exception code
+        try {
+            Auth::once($credentials);
+            $userId = isset(Auth::user()->id) ? Auth::user()->id : 0 ;
+            User::findOrFail($userId);
+        } catch (Exception $e) {
+            throw new Exception('error');
         }
 
         if(Auth::user()->status == 'active'){

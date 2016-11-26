@@ -23,4 +23,8 @@ class Validation extends Model
       ];
       return Validation::validater($data, $rules);
     }
+    protected function failedValidation(Validator $validator)
+    {
+        throw new ValidationException($validator);
+    }
 }

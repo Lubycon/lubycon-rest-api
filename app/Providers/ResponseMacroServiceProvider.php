@@ -38,6 +38,7 @@ class ResponseMacroServiceProvider extends ServiceProvider
                 "0060" => "Sign up Failure",
                 "0061" => "Redundant data",
                 "0062" => "Data does not exist",
+
                 "0070" => "Not Found Http Exception",
                 "0071" => "Conflict Http Exception",
                 "0072" => "Bad Request Http Exception",
