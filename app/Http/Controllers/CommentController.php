@@ -33,7 +33,7 @@ class CommentController extends Controller
         if($comments->save()){
           return response()->success();
         };
-        Abort::Error('0030');
+        Abort::Error('0040');
     }
     public function getList(Request $request,$category,$board_id=false){
         $query = $request->query();
@@ -65,7 +65,7 @@ class CommentController extends Controller
         if(!is_null($result->comments)){
             return response()->success($result);
         }else{
-            Abort::Error('0062');
+            Abort::Error('0014');
         }
     }
     public function update(Request $request,$category,$board_id,$comment_id){
@@ -76,13 +76,13 @@ class CommentController extends Controller
         $comments = Comment::findOrFail($comment_id);
 
         if($this->isSameBoard($comments,$category)){
-            Abort::Error('0012');
+            Abort::Error('0043');
         }
         if($this->isSamePost($comments,$board_id)){
-            Abort::Error('0012');
+            Abort::Error('0043');
         }
         if($this->isSameUser($findUser,$comments)){
-            Abort::Error('0012');
+            Abort::Error('0043');
         }
 
         $comments->content = $data['content'];
@@ -90,7 +90,7 @@ class CommentController extends Controller
           return response()->success();
         };
 
-        Abort::Error('0030');
+        Abort::Error('0040');
     }
     public function delete(Request $request,$category,$board_id,$comment_id){
         $tokenData = CheckContoller::checkToken($request);
@@ -98,13 +98,13 @@ class CommentController extends Controller
         $comments = Comment::findOrFail($comment_id);
 
         if($this->isSameBoard($comments,$category)){
-            Abort::Error('0012');
+            Abort::Error('0043');
         }
         if($this->isSamePost($comments,$board_id)){
-            Abort::Error('0012');
+            Abort::Error('0043');
         }
         if($this->isSameUser($findUser,$comments)){
-            Abort::Error('0012');
+            Abort::Error('0043');
         }
         if($comments->delete()){
           return response()->success();

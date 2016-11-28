@@ -1,126 +1,133 @@
 <?php
 return [
-    // custom error exception
-    "0010" => (object)array(
-        "httpCode" => 403,
-        "customCode" => "0010",
-        "msg" => "Login Failure"
-    ),
-    "0011" => (object)array(
-        "httpCode" => 403,
-        "customCode" => "0011",
-        "msg" => "Login is required"
-    ),
-    "0012" => (object)array(
-        "httpCode" => 403,
-        "customCode" => "0012",
-        "msg" => "No permission"
-    ),
-    "0013" => (object)array(
-        "httpCode" => 403,
-        "customCode" => "0013",
-        "msg" => "Verification code not match"
-    ),
-    "0014" => (object)array(
-        "httpCode" => 403,
-        "customCode" => "0014",
-        "msg" => "Not verified signup user"
-    ),
-    "0015" => (object)array(
-        "httpCode" => 422,
-        "customCode" => "0015",
-        "msg" => "Data Validation Fail"
-    ),
-    "0020" => (object)array(
-        "httpCode" => 403,
-        "customCode" => "0020",
-        "msg" => "Key generation failed"
-    ),
-    "0030" => (object)array(
-        "httpCode" => 403,
-        "customCode" => "0030",
-        "msg" => "Data type does not match"
-    ),
-    "0040" => (object)array(
-        "httpCode" => 403,
-        "customCode" => "0040",
-        "msg" => "Exceeded capacity"
-    ),
-    "0041" => (object)array(
-        "httpCode" => 403,
-        "customCode" => "0041",
-        "msg" => "The file is not supported"
-    ),
-    "0042" => (object)array(
-        "httpCode" => 403,
-        "customCode" => "0042",
-        "msg" => "Upload Failed(communication error with contents server)"
-    ),
-    "0050" => (object)array(
-        "httpCode" => 403,
-        "customCode" => "0050",
-        "msg" => "Sent mail Failure"
-    ),
-    "0060" => (object)array(
-        "httpCode" => 403,
-        "customCode" => "0060",
-        "msg" => "Sign up Failure"
-    ),
-    "0061" => (object)array(
-        "httpCode" => 403,
-        "customCode" => "0061",
-        "msg" => "Redundant data"
-    ),
-    "0062" => (object)array(
-        "httpCode" => 403,
-        "customCode" => "0062",
-        "msg" => "Data does not exist"
-    ),
+//↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
+//      2xx response
+//↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
+"0010" => (object)array(
+    "httpCode" => 201,
+    "msg" => "Resulting in the creation of a new resource."
+),
+"0011" => (object)array(
+    "httpCode" => 202,
+    "msg" => "Accepted for processing, but the processing has not been completed."
+),
+"0012" => (object)array(
+    "httpCode" => 204,
+    "msg" => "Login Failure"
+),
+"0013" => (object)array(
+    "httpCode" => 204,
+    "msg" => "Verification code not match"
+),
+"0014" => (object)array(
+    "httpCode" => 204,
+    "msg" => "Successfully processed the request and is not returning any content."
+),
+"0015" => (object)array(
+    "httpCode" => 208,
+    "msg" => "Already been enumerated in a previous reply to this request."
+),
+//↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
+//      2xx response
+//↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
 
-    // natural http exception
-    "0070" => (object)array(
-        "httpCode" => 403,
-        "customCode" => "0070",
-        "msg" => "Not Found Http Exception"
-    ),
-    "0071" => (object)array(
-        "httpCode" => 403,
-        "customCode" => "0071",
-        "msg" => "Conflict Http Exception"
-    ),
-    "0072" => (object)array(
-        "httpCode" => 403,
-        "customCode" => "0072",
-        "msg" => "Bad Request Http Exception"
-    ),
-    "0073" => (object)array(
-        "httpCode" => 403,
-        "customCode" => "0073",
-        "msg" => "Fatal Error, Call Backend Engineer"
-    ),
-    "0074" => (object)array(
-        "httpCode" => 403,
-        "customCode" => "0074",
-        "msg" => "Method Not Found Http Exception"
-    ),
-    "0075" => (object)array(
-        "httpCode" => 403,
-        "customCode" => "0075",
-        "msg" => "Service Unavailable Http Exception"
-    ),
-    "0076" => (object)array(
-        "httpCode" => 403,
-        "customCode" => "0076",
-        "msg" => "Too Many Requests Http Exception"
-    ),
-    "0077" => (object)array(
-        "httpCode" => 403,
-        "customCode" => "0077",
-        "msg" => "Unauthorized Http Exception"
-    ),
-    "9999" => (object)array(
-        "httpCode" => 403,
-        "customCode" => "9999",
-        "msg" => "Unknown Error"
-    ),
+//↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
+//      4xx response
+//↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
+"0040" => (object)array(
+    "httpCode" => 400,
+    "msg" => "Process the request due to an apparent client error"
+),
+"0041" => (object)array(
+    "httpCode" => 401,
+    "msg" => "Login is required"
+),
+"0042" => (object)array(
+    "httpCode" => 401,
+    "msg" => "Authentication is required"
+),
+"0043" => (object)array(
+    "httpCode" => 403,
+    "msg" => "User permission denied"
+),
+"0044" => (object)array(
+    "httpCode" => 404,
+    "msg" => "Not Found Http Exception"
+),
+"0045" => (object)array(
+    "httpCode" => 408,
+    "msg" => "Time out"
+),
+"0046" => (object)array(
+    "httpCode" => 409,
+    "msg" => "Request Conflict"
+),
+"0047" => (object)array(
+    "httpCode" => 411,
+    "msg" => "Some Header Required"
+),
+"0048" => (object)array(
+    "httpCode" => 413,
+    "msg" => "Payload Too Large"
+),
+"0049" => (object)array(
+    "httpCode" => 414,
+    "msg" => "URI Too Long"
+),
+"0050" => (object)array(
+    "httpCode" => 415,
+    "msg" => "Unsupported Media Type"
+),
+"0051" => (object)array(
+    "httpCode" => 422,
+    "msg" => "Unprocessable Validation"
+),
+"0052" => (object)array(
+    "httpCode" => 424,
+    "msg" => "Failed Dependency"
+),
+"0053" => (object)array(
+    "httpCode" => 429,
+    "msg" => "Too Many Requests"
+),
+"0054" => (object)array(
+    "httpCode" => 404,
+    "msg" => "Model Not Found"
+),
+//↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
+//      4xx response
+//↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
+
+//↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
+//      5xx response
+//↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
+
+"0070" => (object)array(
+    "httpCode" => 500,
+    "msg" => "Fatal server error"
+),
+"0071" => (object)array(
+    "httpCode" => 500,
+    "msg" => "Upload Failed with contents server"
+),
+"0072" => (object)array(
+    "httpCode" => 500,
+    "msg" => "Sent mail Failure"
+),
+"0073" => (object)array(
+    "httpCode" => 502,
+    "msg" => "Bad Gateway"
+),
+"0074" => (object)array(
+    "httpCode" => 503,
+    "msg" => "Service Unavailable temporary down"
+),
+"0075" => (object)array(
+    "httpCode" => 507,
+    "msg" => "Insufficient Storage"
+),
+
+//↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
+//      5xx response
+//↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
 ];

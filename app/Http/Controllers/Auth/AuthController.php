@@ -39,28 +39,25 @@ class AuthController extends Controller
         $credentials = Credential::signin($data);
 
         if(!Auth::once($credentials)){
-            Abort::Error('0010');
+            Abort::Error('0040','Login Failed, check email,password');
         }
 
         if (Auth::user()->status == 'inactive'){
-            $result = (object)array(
+            return response()->success([
                 'token' => Auth::user()->remember_token,
                 'condition' => 'inactive'
-            );
-            return response()->success($result);
+            ]);
         }
 
         if(Auth::user()->status == 'active'){
             CheckContoller::insertRememberToken(Auth::user()->id);
         }
 
-        $result = (object)array(
+        return response()->success([
             'token' => Auth::user()->remember_token,
             'condition' => 'active',
             'grade' => Auth::user()->grade,
-         );
-
-        return response()->success($result);
+        ]);
     }
 
 
@@ -93,14 +90,14 @@ class AuthController extends Controller
     {
         $tokenData = CheckContoller::checkToken($request);
 
-        $user = User::find($tokenData->id);
+        $user = User::findOrFail($tokenData->id);
         $userExist = CheckContoller::checkUserExistById($tokenData->id);
 
         if($userExist){
             $user->delete();
             return response()->success();
         }else{
-            Abort::Error('0030');
+            Abort::Error('0040');
         };
     }
 
@@ -119,7 +116,7 @@ class AuthController extends Controller
     protected function simpleRetrieve(Request $request){
         $tokenData = CheckContoller::checkToken($request);
 
-        $findUser = User::find($tokenData->id);
+        $findUser = User::findOrFail($tokenData->id);
         $userExist = CheckContoller::checkUserExistById($tokenData->id);
         $jobExists = $findUser->job;
         $counTryExists = $findUser->country;
@@ -138,7 +135,7 @@ class AuthController extends Controller
             );
             return response()->success($result);
         }else{
-            Abort::Error('0030');
+            Abort::Error('0040');
         }
     }
 
@@ -176,7 +173,7 @@ class AuthController extends Controller
                 )
             ]);
         }else{
-            Abort::Error('0030');
+            Abort::Error('0040');
         }
     }
     public function postRetrieve(Request $request,$id)
@@ -202,12 +199,13 @@ class AuthController extends Controller
                 $findUser->mobile_public = $data['publicOption']['mobile'];
                 $findUser->fax_public = $data['publicOption']['fax'];
                 $findUser->web_public = $data['publicOption']['website'];
-                $findUser->save();
                 DB::table('languages')->insert($this->insertDataGroup($data['language'],$id));
                 DB::table('careers')->insert($this->setCareerGroup($data['history'],$id));
-            return response()->success($data);
+                if($findUser->save()){
+                    return response()->success($data);
+                }
         }else{
-            Abort::Error('0030');
+            Abort::Error('0040');
         }
     }
     protected function insertDataGroup($array,$id){
@@ -238,15 +236,13 @@ class AuthController extends Controller
         $check = CheckContoller::checkUserExistByEmail($data);
 
         if($check){
-            $result = (object)array(
+            return response()->success([
                 "exist" => true
-            );
-            return response()->success($result);
+            ]);
         }else{
-            $result = (object)array(
+            return response()->success([
                 "exist" => false
-            );
-            return response()->success($result);
+            ]);
         }
     }
 }

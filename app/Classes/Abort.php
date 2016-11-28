@@ -1,19 +1,19 @@
 <?php
 
 namespace App\Classes;
-
+use Log;
 class Abort{
 
-    public static function Error($errorCode){
+    public static function Error($errorCode,$devMsg = null){
         $data = config('error.'.$errorCode);
-        $error = (object)array(
-            "httpCode" => $data->httpCode,
-            "code" => $data->customCode,
-            "msg" => $data->msg
+        $customJsonBefore = (object)array(
+            "customCode" => $errorCode,
+            "devMsg" => $devMsg,
         );
-        Abort::excute($error);
+        $customJson = json_encode($customJsonBefore);
+        Abort::excute($data->httpCode,$customJson);
     }
-    private static function excute($error){
-        throw new \App\Exceptions\CustomException($error->httpCode,$error->code);
+    private static function excute($httpCode,$json){
+        throw new \App\Exceptions\CustomException($httpCode,$json);
     }
 }

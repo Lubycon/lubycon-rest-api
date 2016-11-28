@@ -56,7 +56,7 @@ class PasswordController extends Controller
         ]);
 
         if ($validator->fails()) {
-            Abort::Error('0030');
+            Abort::Error('0051');
         }
 
         $credentials = array(
@@ -74,7 +74,7 @@ class PasswordController extends Controller
             case Password::PASSWORD_RESET:
                 return response()->success();
             default:
-                Abort::Error('0030');
+                Abort::Error('0040');
         }
     }
 
@@ -88,7 +88,6 @@ class PasswordController extends Controller
     protected function resetPassword($user, $password)
     {
         $user->password = bcrypt($password);
-
         $user->save();
     }
 }

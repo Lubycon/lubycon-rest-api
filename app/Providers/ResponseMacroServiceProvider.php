@@ -22,14 +22,19 @@ class ResponseMacroServiceProvider extends ServiceProvider
             ]);
         });
         $factory->macro('error', function ($data) use ($factory) {
+            $code = $data['code'];
+            $config = config('error.'.$data['code']);
+            $msg = $config->msg;
+            $httpCode = isset($data['httpCode']) ? $data['httpCode'] : $config->httpCode;
+            $devMsg = isset($data['devMsg']) ? $data['devMsg'] : '';
             return response()->json([
                 'status' => (object)array(
-                    'code' => $data['code'],
-                    'msg' => config('error.'.$data['code'])->msg,
-                    "devMsg" => isset($data['devMsg']) ? $data['devMsg'] : ''
+                    'code' => $code,
+                    'msg' => $msg,
+                    "devMsg" => $devMsg
                 ),
                 'result' => null
-            ],config('error.'.$data['code'])->httpCode);
+            ],$httpCode);
         });
     }
     public function register()

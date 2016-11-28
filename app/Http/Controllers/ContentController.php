@@ -72,7 +72,7 @@ class ContentController extends Controller
         if($contents->save()){ //check right access
           return response()->success();
         };
-        Abort::Error('0030');
+        Abort::Error('0040');
     }
     public function getList(Request $request,$category){
         $query = $request->query();
@@ -110,7 +110,7 @@ class ContentController extends Controller
         if(!is_null($result->contents)){
             return response()->success($result);
         }else{
-            Abort::Error('0030');
+            Abort::Error('0014');
         }
     }
     public function viewData($category,$board_id){
@@ -165,10 +165,10 @@ class ContentController extends Controller
         $contents = Content::findOrFail($board_id);
 
         if($this->isSameBoard($contents,$category)){
-            Abort::Error('0012');
+            Abort::Error('0043');
         }
         if($this->isSameUser($findUser,$contents)){
-            Abort::Error('0012');
+            Abort::Error('0043');
         }
 
 
@@ -189,7 +189,7 @@ class ContentController extends Controller
           return response()->success();
         };
 
-        Abort::Error('0030');
+        Abort::Error('0040');
     }
     public function delete(Request $request,$category,$board_id){
         $tokenData = CheckContoller::checkToken($request);
@@ -197,10 +197,10 @@ class ContentController extends Controller
         $contents = Content::findOrFail($board_id);
 
         if($this->isSameBoard($contents,$category)){
-            Abort::Error('0012');
+            Abort::Error('0043');
         }
         if($this->isSameUser($findUser,$contents)){
-            Abort::Error('0012');
+            Abort::Error('0043');
         }
         $contents->categoryKernel()->delete();
         $contents->tag()->delete();

@@ -52,7 +52,7 @@ class DataResponseController extends Controller
         if( !is_null($models) ){
             return response()->success($models);
         }else{
-            Abort::Error('0030');
+            Abort::Error('0014');
         }
     }
 }

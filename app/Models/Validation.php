@@ -14,7 +14,7 @@ class Validation extends Model
     public static function validater($data, $rules){
       $result = Validator::make($data, $rules);
       if($result->fails()){
-          Abort::Error('0015');
+          Abort::Error('0051');
       }
       return $result;
     }

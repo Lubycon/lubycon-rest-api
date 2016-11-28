@@ -19,7 +19,8 @@ use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
 use Symfony\Component\HttpKernel\Exception\ServiceUnavailableHttpException;
 use Symfony\Component\HttpKernel\Exception\TooManyRequestsHttpException;
 use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
-
+use Symfony\Component\HttpKernel\Exception\LengthRequiredHttpException;
+use Symfony\Component\HttpKernel\Exception\UnsupportedMediaTypeHttpException;
 
 use Carbon\Carbon;
 
@@ -27,134 +28,72 @@ use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 
 class Handler extends ExceptionHandler
 {
-    /**
-     * A list of the exception types that should not be reported.
-     *
-     * @var array
-     */
+    private $customCode;
+    private $devMsg;
+
     protected $dontReport = [
         HttpException::class,
         ModelNotFoundException::class,
     ];
 
-    /**
-     * Report or log an exception.
-     *
-     * This is a great spot to send exceptions to Sentry, Bugsnag, etc.
-     *
-     * @param  \Exception  $e
-     * @return void
-     */
     public function report(Exception $e)
     {
         return parent::report($e);
     }
 
-    /**
-     * Render an exception into an HTTP response.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \Exception  $e
-     * @return \Illuminate\Http\Response
-     */
-     public function render($request, Exception $e)
-     {
-         log::error($e);
+    public function render($request, Exception $e)
+    {
+        if(env('APP_DEBUG')){ //for develop
+            return parent::render($request , $e);
+        }else{ //for provision
+            $getCustom = $this->getCustomCode($e);
+            if(!is_null($getCustom)){
+                $customCode = is_object($getCustom) ? $getCustom->customCode : $getCustom;
+                $devMsg = is_object($getCustom) ? $getCustom->devMsg : null;
+                return response()->error([
+                    "code" => $customCode,
+                    "devMsg" => $devMsg
+                ]);
+            }
+            return $this->lastResponse($request, $e); //for provide, make 9999 error
+        }
+    }
+    public function lastResponse($request, Exception $e)
+    {
+        $exception = (object)array(
+            "httpStatusCode" => $this->getExceptionHTTPStatusCode($e),
+            "msg" => Carbon::now()->toDateTimeString()." -> error occur time. plz send to daniel this time. & Error Msg -> ".$this->getJsonMessage($e),
+        );
+        $status = [
+            'httpCode' => $exception->httpStatusCode,
+            'code' => '9999',
+            'devMsg' => $exception->msg
+        ];
+        return response()->error($status);
+    }
 
-         if(env('APP_DEBUG')){
-             return parent::render($request , $e); //for develop
-         }else{
-             if ($e instanceof ModelNotFoundException) {
-                 return response()->error([
-                     "httpCode" => 404,
-                     "code" => "0062"
-                 ]);
-             }
-             if($e instanceof NotFoundHttpException){
-                 return response()->error([
-                     "httpCode" => 404,
-                     "code" => "0070"
-                 ]);
-             }
-             if($e instanceof ConflictHttpException){
-                 return response()->error([
-                     "httpCode" => 409,
-                     "code" => "0071"
-                 ]);
-             }
-             if($e instanceof AccessDeniedHttpException){
-                 return response()->error([
-                     "httpCode" => 403,
-                     "code" => "0012"
-                 ]);
-             }
-             if($e instanceof BadRequestHttpException){
-                 return response()->error([
-                     "httpCode" => 400,
-                     "code" => "0072"
-                 ]);
-             }
-             if($e instanceof FatalErrorException){
-                 return response()->error([
-                     "httpCode" => 500,
-                     "code" => "0073",
-                     "devMsg" => var_dump($e),
-                 ]);
-             }
-             if($e instanceof MethodNotAllowedHttpException){
-                 return response()->error([
-                     "httpCode" => 405,
-                     "code" => "0074"
-                 ]);
-             }
-             if($e instanceof ServiceUnavailableHttpException){
-                 return response()->error([
-                     "httpCode" => 503,
-                     "code" => "0075"
-                 ]);
-             }
-             if($e instanceof TooManyRequestsHttpException){
-                 return response()->error([
-                     "httpCode" => 429,
-                     "code" => "0076"
-                 ]);
-             }
-             if($e instanceof UnauthorizedHttpException){
-                 return response()->error([
-                     "httpCode" => 401,
-                     "code" => "0077"
-                 ]);
-             }
-             if($e instanceof CustomException){
-                 return response()->error([
-                     "httpCode" => $e->getStatusCode(),
-                     "code" => $e->getMessage()
-                 ]);
-             }
-             return $this->response($request, $e); //for provide
-         }
-     }
-
-     public function response($request, Exception $e)
-     {
-         $exception = (object)array(
-             "httpStatusCode" => $this->getExceptionHTTPStatusCode($e),
-             "msg" => Carbon::now()->toDateTimeString()." -> error occur time. plz send to daniel this time.".$this->getJsonMessage($e),
-         );
-
-         $status = [
-             'httpCode' => $exception->httpStatusCode,
-             'code' => '9999',
-             'devMsg' => 'Undefined Error - '.$exception->msg
-         ];
-         return response()->error($status);
-     }
-
-     protected function getJsonMessage($e){
-         return method_exists($e, 'getMessage') ? $e->getMessage() : 500;
-     }
-
-     protected function getExceptionHTTPStatusCode($e){
-         return method_exists($e, 'getStatusCode') ? $e->getStatusCode() : 500;
-     }
+    private function getCustomCode($e){
+        switch ($e) {
+            case $e instanceof CustomException:                    return json_decode($e->getMessage()); break;
+            case $e instanceof BadRequestHttpException:            return '0040';  break;
+            case $e instanceof UnauthorizedHttpException:          return '0041';  break;
+            case $e instanceof AccessDeniedHttpException:          return '0043';  break;
+            case $e instanceof NotFoundHttpException:              return '0044';  break;
+            case $e instanceof ConflictHttpException:              return '0046';  break;
+            case $e instanceof LengthRequiredHttpException:        return '0047';  break;
+            case $e instanceof UnsupportedMediaTypeHttpException:  return '0050';  break;
+            case $e instanceof MethodNotAllowedHttpException:      return '0052';  break;
+            case $e instanceof TooManyRequestsHttpException:       return '0053';  break;
+            case $e instanceof ModelNotFoundException:             return '0054';  break;
+            case $e instanceof FatalErrorException:                return '0070';  break;
+            case $e instanceof ServiceUnavailableHttpException:    return '0074';  break;
+            default: return null; break;
+        }
+    }
+    protected function getJsonMessage($e){
+        return method_exists($e, 'getMessage') ? $e->getMessage() : 500;
+    }
+    protected function getExceptionHTTPStatusCode($e){
+        return method_exists($e, 'getStatusCode') ? $e->getStatusCode() : 500;
+    }
  }

@@ -32,7 +32,9 @@ class CertificateController extends Controller
                 "validity" => true
             ]);
         }else{
-            Abort::Error('0015');
+            return response()->success([
+                "validity" => false
+            ]);
         }
     }
     protected function certTokenTimeCheck(Request $request){

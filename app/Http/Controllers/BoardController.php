@@ -55,7 +55,7 @@ class BoardController extends Controller
        if(!is_null($result->contents)){
            return response()->success($result);
        }else{
-           Abort::Error('0062');
+           Abort::Error('0014');
        }
    }
    public function viewPost(Request $request,$category,$board_id){
@@ -99,7 +99,7 @@ class BoardController extends Controller
           return response()->success();
         };
 
-        Abort::Error('0030');
+        Abort::Error('0040');
    }
    public function updatePost(Request $request,$category,$board_id){
         $data = $request->json()->all();
@@ -109,7 +109,7 @@ class BoardController extends Controller
         $posts = Post::findOrFail($board_id);
 
         if($findUser->id != $posts->user_id){
-            Abort::Error('0012');
+            Abort::Error('0042');
         }
 
         $posts->title = $data['title'];
@@ -118,7 +118,7 @@ class BoardController extends Controller
           return response()->success();
         };
 
-        Abort::Error('0030');
+        Abort::Error('0040');
    }
    public function deletePost(Request $request,$category,$board_id){
         $tokenData = CheckContoller::checkToken($request);
@@ -126,7 +126,7 @@ class BoardController extends Controller
         $posts = Post::findOrFail($board_id);
 
         if($findUser->id != $posts->user_id){
-            Abort::Error('0012');
+            Abort::Error('0042');
         }
         if($posts->delete()){
           return response()->success();
