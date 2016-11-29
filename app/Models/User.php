@@ -19,6 +19,38 @@ class User extends Model implements AuthenticatableContract,
 
     protected $table = 'users';
 
+    protected function rules(){
+        // Must be :: without unique value you must be adding unique value to form request required array!!
+        return [
+            "email" => 'email|max:255',
+            "name" => 'max:255',
+            "password" => 'max:255',
+            "grade" => 'in:user',
+            'status' => 'in:active,inactive,drop',
+            'newsletter' => 'boolean',
+            'terms_of_service' => 'boolean',
+            'private_policy' => 'boolean',
+            'job_id' => 'integer',
+            'country_id' => 'integer',
+            'profile_img' => 'active_url',
+            'description' => 'max:255',
+            'company' => 'max:255',
+            'city' => 'max:255',
+            'mobile' => 'max:255',
+            'fax' => 'max:255',
+            'web' => 'max:255',
+            'email_public' => 'in:Public,Private',
+            'mobile_public' => 'in:Public,Private',
+            'fax_public' => 'in:Public,Private',
+            'web_public' => 'in:Public,Private',
+            'sns_id' => 'integer',
+            'sns_code' => 'in:0100,0101,0102',
+            'sns_token' => 'max:100',
+            'rememberToken' => 'max:100',
+            'last_login_time' => 'date'
+        ];
+    }
+
     protected $fillable = [
         'name',
         'email',
@@ -26,8 +58,7 @@ class User extends Model implements AuthenticatableContract,
         'sns_code',
         'country_id',
         'status',
-        'newsletter',
-        'is_opened'
+        'newsletter'
     ];
 
     protected $hidden = ['password', 'remember_token'];

@@ -2,34 +2,31 @@
 
 namespace App\Http\Requests;
 
-use Illuminate\Foundation\Http\FormRequest;
-use Abort;
+use App\Http\Requests\Request;
+use Log;
+use App\Models\User;
 
-class AuthSigninRequest extends FormRequest
+class AuthSigninRequest extends Request
 {
-    public function rules()
-    {
-        return [
-            'email' => 'required',
-            'password' => 'required',
-            'snsCode' => 'required'
-        ];
-    }
-
     public function authorize()
     {
         return true;
     }
 
-    // OPTIONAL OVERRIDE
-    public function forbiddenResponse()
+    public function rules()
     {
-        Abort::Error('0043');
+        $requiredRule = [
+            'email' => 'required',
+            'password' => 'required',
+            'snsCode' => 'required'
+        ];
+        $validateRule = $this->getModelValidateRule();
+        $rule = $this->ruleMapping($requiredRule,$validateRule);
+        
+        return $rule;
     }
 
-    // OPTIONAL OVERRIDE
-    public function response(array $errors)
-    {
-        Abort::Error('0052',$errors);
+    public function getModelValidateRule(){
+        return User::rules();
     }
 }
