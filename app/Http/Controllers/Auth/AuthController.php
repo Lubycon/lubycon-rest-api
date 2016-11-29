@@ -20,6 +20,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\ThrottlesLogins;
 use Illuminate\Foundation\Auth\AuthenticatesAndRegistersUsers;
 
+use App\Http\Requests\AuthSigninRequest;
+
 use Abort;
 
 use Log;
@@ -33,7 +35,7 @@ class AuthController extends Controller
         $this->middleware('guest', ['except' => 'getLogout']);
     }
 
-    protected function signin(Request $request)
+    protected function signin(AuthSigninRequest $request)
     {
         $data = $request->json()->all();
         $credentials = Credential::signin($data);

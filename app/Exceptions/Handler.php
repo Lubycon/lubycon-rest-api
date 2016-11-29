@@ -21,6 +21,7 @@ use Symfony\Component\HttpKernel\Exception\TooManyRequestsHttpException;
 use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 use Symfony\Component\HttpKernel\Exception\LengthRequiredHttpException;
 use Symfony\Component\HttpKernel\Exception\UnsupportedMediaTypeHttpException;
+use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 
 use Carbon\Carbon;
 
@@ -82,6 +83,7 @@ class Handler extends ExceptionHandler
             case $e instanceof ConflictHttpException:              return '0046';  break;
             case $e instanceof LengthRequiredHttpException:        return '0047';  break;
             case $e instanceof UnsupportedMediaTypeHttpException:  return '0050';  break;
+            case $e instanceof UnprocessableEntityHttpException:   return '0051';  break;
             case $e instanceof MethodNotAllowedHttpException:      return '0052';  break;
             case $e instanceof TooManyRequestsHttpException:       return '0053';  break;
             case $e instanceof ModelNotFoundException:             return '0054';  break;
