@@ -23,7 +23,7 @@ class User extends Model implements AuthenticatableContract,
         // Must be :: without unique value you must be adding unique value to form request required array!!
         return [
             "email" => 'email|max:255',
-            "name" => 'max:255',
+            "nickname" => 'max:255',
             "password" => 'max:255',
             "grade" => 'in:user',
             'status' => 'in:active,inactive,drop',
@@ -39,20 +39,18 @@ class User extends Model implements AuthenticatableContract,
             'mobile' => 'max:255',
             'fax' => 'max:255',
             'web' => 'max:255',
-            'email_public' => 'in:Public,Private',
-            'mobile_public' => 'in:Public,Private',
-            'fax_public' => 'in:Public,Private',
-            'web_public' => 'in:Public,Private',
-            'sns_id' => 'integer',
-            'sns_code' => 'in:0100,0101,0102',
-            'sns_token' => 'max:100',
-            'rememberToken' => 'max:100',
-            'last_login_time' => 'date'
+            'emailPublic' => 'in:Public,Private',
+            'mobilePublic' => 'in:Public,Private',
+            'faxPublic' => 'in:Public,Private',
+            'webPublic' => 'in:Public,Private',
+            'snsId' => 'integer',
+            'snsCode' => 'in:0100,0101,0102',
+            'snsToken' => 'max:100'
         ];
     }
 
     protected $fillable = [
-        'name',
+        'nickname',
         'email',
         'password',
         'sns_code',

@@ -21,6 +21,7 @@ use Illuminate\Foundation\Auth\ThrottlesLogins;
 use Illuminate\Foundation\Auth\AuthenticatesAndRegistersUsers;
 
 use App\Http\Requests\AuthSigninRequest;
+use App\Http\Requests\AuthSignupRequest;
 
 use Abort;
 
@@ -68,12 +69,11 @@ class AuthController extends Controller
         // need somthing other logic
     }
 
-    protected function signup(Request $request)
+    protected function signup(AuthSignupRequest $request)
     {
         $data = $request->json()->all();
         $credentialSignup = Credential::signup($data);
         $credentialSignin = Credential::signin($data);
-        $ResultOfValidation = Validation::auth($credentialSignup);
 
         if(User::create($credentialSignup)){
             if(Auth::once($credentialSignin)){
@@ -127,7 +127,7 @@ class AuthController extends Controller
             $result = (object)array(
                 "id" => $findUser->id,
                 "email" => $findUser->email,
-                "name" => $findUser->name,
+                "nickname" => $findUser->nickname,
                 "profile" => $findUser->profile_img,
                 "job" => is_null($jobExists) ? null : $findUser->job->name,
                 "country" => is_null($counTryExists) ? null : $findUser->country->name,
@@ -154,7 +154,7 @@ class AuthController extends Controller
                 'userData' => (object)array(
                     "id" => $findUser->id,
                     "email" => $findUser->email,
-                    "name" => $findUser->name,
+                    "nickname" => $findUser->nickname,
                     "profile" => $findUser->profile_img,
                     "job" => is_null($jobExists) ? null : $findUser->job->name,
                     "country" => is_null($counTryExists) ? null : $findUser->country->name,

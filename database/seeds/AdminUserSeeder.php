@@ -15,7 +15,7 @@ class AdminUserSeeder extends Seeder
         $admin = array(
             array(
             	'email'=>'lubycon@gmail.com',
-            	'name' => 'Admin',
+            	'nickname' => 'Admin',
             	'password' => bcrypt('qwerqwer'),
                 'remember_token' => 'wmLRmEIui4DtFz5ikU5mZ6Cm2gKCIOW1',
             	'country_id' => 201,
