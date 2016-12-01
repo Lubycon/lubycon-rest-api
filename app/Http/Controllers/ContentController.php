@@ -26,13 +26,15 @@ use App\Http\Controllers\Controller;
 use App\Http\Controllers\Auth\CheckContoller;
 use App\Http\Controllers\Pager\PageController;
 
+use App\Http\Requests\Content\ContentUploadRequest;
+
 class ContentController extends Controller
 {
     use InsertArrayToColumn,
         GetUserModelTrait,
         ConvertData;
 
-    public function store(Request $request,$category){
+    public function store(ContentUploadRequest $request,$category){
         $data = $request->json()->all();
 
         $getToken = $this->getUserToken($request);
@@ -157,7 +159,7 @@ class ContentController extends Controller
              )
          ]);
     }
-    public function update(Request $request,$category,$board_id){
+    public function update(ContentUploadRequest $request,$category,$board_id){
         $data = $request->json()->all();
 
         $tokenData = CheckContoller::checkToken($request);
@@ -171,19 +173,13 @@ class ContentController extends Controller
             Abort::Error('0043');
         }
 
-
-        // $contents->content = $data['content'];
-        // $contents->save(); //first, contents save
-
-
-        $tagRender = $this->InsertContentTagName($data['setting']['tags']);
         $contents->tag()->delete();
+        $tagRender = $this->InsertContentTagName($data['setting']['tags']);
         $contents->tag()->saveMany($tagRender); //second, tags save relationship
 
-        $category = $this->convertContentCategoryData($data['setting']['category']);
-        $categoryRender = $this->InsertContentCategoryId($category);
         $contents->categoryKernel()->delete();
-        $contents->categoryKernel()->saveMany($categoryRender); //thrid, categorys save relationship
+        $category = $this->InsertContentCategoryId($data['setting']['category']);
+        $contents->categoryKernel()->saveMany($category); //thrid, categorys save relationship
 
         if($contents->save()){
           return response()->success();

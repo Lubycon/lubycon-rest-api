@@ -21,6 +21,8 @@ use App\Http\Controllers\Controller;
 use App\Http\Controllers\Auth\CheckContoller;
 use App\Http\Controllers\Pager\PageController;
 
+use App\Http\Requests\Post\PostUploadRequest;
+
 class BoardController extends Controller
 {
 
@@ -83,7 +85,7 @@ class BoardController extends Controller
             )
         ]);
    }
-   public function uploadPost(Request $request,$category){
+   public function uploadPost(PostUploadRequest $request,$category){
         $data = $request->json()->all();
 
         $tokenData = CheckContoller::checkToken($request);
@@ -101,7 +103,7 @@ class BoardController extends Controller
 
         Abort::Error('0040');
    }
-   public function updatePost(Request $request,$category,$board_id){
+   public function updatePost(PostUploadRequest $request,$category,$board_id){
         $data = $request->json()->all();
 
         $tokenData = CheckContoller::checkToken($request);

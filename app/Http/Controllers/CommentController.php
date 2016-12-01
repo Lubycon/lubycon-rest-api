@@ -7,6 +7,8 @@ use Abort;
 use App\Models\Comment;
 use App\Models\Board;
 use App\Models\User;
+use App\Models\Post;
+use App\Models\Content;
 
 use Carbon\Carbon;
 
@@ -15,17 +17,24 @@ use App\Http\Controllers\Controller;
 use App\Http\Controllers\Auth\CheckContoller;
 use App\Http\Controllers\Pager\PageController;
 
+use App\Http\Requests\Comment\CommentUploadRequest;
+use App\Http\Requests\Comment\CommentUpdateRequest;
+
+use Log;
+
 class CommentController extends Controller
 {
-    public function store(Request $request,$category,$board_id){
+    public function store(CommentUploadRequest $request,$category,$board_id){
         $data = $request->json()->all();
 
         $tokenData = CheckContoller::checkToken($request);
         $findUser = User::findOrFail($tokenData->id);
+        $targetPostModel = "App\Models\\".title_case(Board::where('name','=',$category)->value('group'));
+        $getUserId = $targetPostModel::find($board_id)->value('user_id');
         $comments = new Comment;
 
         $comments->give_user_id = $findUser->id;
-        $comments->take_user_id = $data['getUserId'];
+        $comments->take_user_id = $getUserId;
         $comments->board_id = Board::where('name','=',$category)->value('id');
         $comments->post_id = $board_id;
         $comments->content = $data['content'];
@@ -68,22 +77,12 @@ class CommentController extends Controller
             Abort::Error('0014');
         }
     }
-    public function update(Request $request,$category,$board_id,$comment_id){
+    public function update(CommentUpdateRequest $request,$category,$board_id,$comment_id){
         $data = $request->json()->all();
 
         $tokenData = CheckContoller::checkToken($request);
         $findUser = User::findOrFail($tokenData->id);
         $comments = Comment::findOrFail($comment_id);
-
-        if($this->isSameBoard($comments,$category)){
-            Abort::Error('0043');
-        }
-        if($this->isSamePost($comments,$board_id)){
-            Abort::Error('0043');
-        }
-        if($this->isSameUser($findUser,$comments)){
-            Abort::Error('0043');
-        }
 
         $comments->content = $data['content'];
         if($comments->save()){
@@ -97,15 +96,6 @@ class CommentController extends Controller
         $findUser = User::findOrFail($tokenData->id);
         $comments = Comment::findOrFail($comment_id);
 
-        if($this->isSameBoard($comments,$category)){
-            Abort::Error('0043');
-        }
-        if($this->isSamePost($comments,$board_id)){
-            Abort::Error('0043');
-        }
-        if($this->isSameUser($findUser,$comments)){
-            Abort::Error('0043');
-        }
         if($comments->delete()){
           return response()->success();
         }
