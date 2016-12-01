@@ -23,7 +23,7 @@ class Credential extends Model
     protected static function signup($data){
 
       $credential = [
-          'nickname' => $data['nickname'],
+          'name' => $data['nickname'],
           'email' => $data['email'],
           'password' => bcrypt($data['password']),
           'sns_code' => $data['snsCode'],

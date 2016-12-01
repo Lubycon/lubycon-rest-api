@@ -14,7 +14,7 @@ class Validation extends Model
     public static function validater($data, $rules){
       $result = Validator::make($data, $rules);
       if($result->fails()){
-          Abort::Error('0051');
+          Abort::Error('0051', "Validator not matched");
       }
       return $result;
     }
@@ -34,7 +34,7 @@ class Validation extends Model
           'bucket'    =>    'required',
           'acl'       =>    'required',
           'path'      =>    'required',
-          'files'      =>    'required | array',
+          'files'      =>    'required',
       ];
 
       return Validation::validater($data, $rules);
