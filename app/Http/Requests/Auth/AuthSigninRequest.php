@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\Auth;
 
 use App\Http\Requests\Request;
 use App\Models\User;
 
-class AuthSignupRequest extends Request
+class AuthSigninRequest extends Request
 {
     public function authorize()
     {
@@ -15,12 +15,9 @@ class AuthSignupRequest extends Request
     public function rules()
     {
         $requiredRule = [
-            'email' => 'required|unique:users,email',
-            'nickname' => 'required|unique:users,nickname',
+            'email' => 'required',
             'password' => 'required',
-            'snsCode' => 'required',
-            'country' => 'required',
-            'newsletter' => 'required'
+            'snsCode' => 'required'
         ];
         $validateRule = $this->getModelValidateRule();
         $rule = $this->ruleMapping($requiredRule,$validateRule);

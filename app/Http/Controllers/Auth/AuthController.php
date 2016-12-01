@@ -20,9 +20,10 @@ use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\ThrottlesLogins;
 use Illuminate\Foundation\Auth\AuthenticatesAndRegistersUsers;
 
-use App\Http\Requests\AuthSigninRequest;
-use App\Http\Requests\AuthSignupRequest;
-
+use App\Http\Requests\Auth\AuthSigninRequest;
+use App\Http\Requests\Auth\AuthSignupRequest;
+use App\Http\Requests\Auth\AuthSigndropRequest;
+use App\Http\Requests\Auth\AuthRetrieveRequest;
 use Abort;
 
 use Log;
@@ -30,11 +31,6 @@ use Log;
 class AuthController extends Controller
 {
     use AuthenticatesAndRegistersUsers, ThrottlesLogins;
-
-    public function __construct()
-    {
-        $this->middleware('guest', ['except' => 'getLogout']);
-    }
 
     protected function signin(AuthSigninRequest $request)
     {
@@ -88,7 +84,7 @@ class AuthController extends Controller
         }
     }
 
-    protected function signdrop(Request $request)
+    protected function signdrop(AuthSigndropRequest $request)
     {
         $tokenData = CheckContoller::checkToken($request);
 
@@ -103,7 +99,7 @@ class AuthController extends Controller
         };
     }
 
-    // protected function signrestore($id){
+    // protected function signrestore($id){ //restore droped user
     //     $user = User::onlyTrashed()->find($id);
     //     $userExist = CheckContoller::checkUserExistByIdOnlyTrashed($id);
     //
@@ -178,7 +174,7 @@ class AuthController extends Controller
             Abort::Error('0040');
         }
     }
-    public function postRetrieve(Request $request,$id)
+    public function postRetrieve(AuthRetrieveRequest $request,$id)
     {
         $data = $request->json()->all();
         $tokenData = CheckContoller::checkToken($request);
@@ -201,8 +197,8 @@ class AuthController extends Controller
                 $findUser->mobile_public = $data['publicOption']['mobile'];
                 $findUser->fax_public = $data['publicOption']['fax'];
                 $findUser->web_public = $data['publicOption']['website'];
-                DB::table('languages')->insert($this->insertDataGroup($data['language'],$id));
-                DB::table('careers')->insert($this->setCareerGroup($data['history'],$id));
+                if( isset($data['language']) )DB::table('languages')->insert($this->insertDataGroup($data['language'],$id));
+                if( isset($data['history']) )DB::table('careers')->insert($this->setCareerGroup($data['history'],$id));
                 if($findUser->save()){
                     return response()->success($data);
                 }
