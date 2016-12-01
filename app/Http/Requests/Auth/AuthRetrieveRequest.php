@@ -48,8 +48,4 @@ class AuthRetrieveRequest extends Request
 
         return $requiredRule;
     }
-
-    public function getModelValidateRule(){
-        return User::rules();
-    }
 }

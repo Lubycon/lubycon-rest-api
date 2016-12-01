@@ -19,6 +19,8 @@ use Illuminate\Mail\Message;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 
+use App\Http\Requests\Certs\CertsPasswordMailSendRequest;
+
 class MailSendController extends Controller
 {
     public static function getSignupToken($email){
@@ -57,7 +59,7 @@ class MailSendController extends Controller
     }
 
 
-    public static function passwordResetTokenSend(Request $request){
+    public static function passwordResetTokenSend(CertsPasswordMailSendRequest $request){
         $data = $request->json()->all();
         $sendMail = Event::fire(new PasswordMailSendEvent([
             'email'    =>  $data['email'],
