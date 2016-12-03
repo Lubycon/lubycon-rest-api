@@ -18,7 +18,7 @@ $factory->define(App\Models\User::class, function (Faker\Generator $faker) {
         'password' => bcrypt(str_random(10)),
         'remember_token' => str_random(10),
         'job_id' => mt_rand(1,5),
-        'country_id' => mt_rand(1,250),
+        'country_id' => mt_rand(1,240),
         'profile_img' => "http://lorempixel.com/640/640/",
         'status' => 'active',
         'newsletter' => mt_rand(0,1),
