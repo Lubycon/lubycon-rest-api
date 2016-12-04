@@ -12,25 +12,19 @@ use Illuminate\Mail\Message;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Password;
 
-use App\Http\Requests\Password\PasswordPostMailRequest;
-use App\Http\Requests\Password\PasswordResetRequest;
 
 class PasswordController extends Controller
 {
-    public function postEmail(PasswordPostMailRequest $request)
+    public function postEmail(Request $request)
     {
         $response = MailSendController::passwordResetTokenSend($request);
 
         return response()->success();
     }
 
-    public function postReset(PasswordResetRequest $request)
+    public function postReset(Request $request)
     {
         $data = $request->json()->all();
-
-        if ($validator->fails()) {
-            Abort::Error('0051');
-        }
 
         $credentials = array(
             "email" => DB::table('password_resets')->where('token','=',$data['code'])->value('email'),
