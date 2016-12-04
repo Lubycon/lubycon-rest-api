@@ -36,7 +36,7 @@ return [
 //↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
 "0040" => (object)array(
     "httpCode" => 400,
-    "msg" => "Process the request due to an apparent client error"
+    "msg" => "Bad request"
 ),
 "0041" => (object)array(
     "httpCode" => 401,
