@@ -103,7 +103,7 @@ class ContentController extends Controller
                 ),
                 "userData" => (object)array(
                     "id" => $array->user->id,
-                    "name" => $array->user->name,
+                    "nickname" => $array->user->nickname,
                     "profile" => $array->user->profile_img
                 )
             );
@@ -151,7 +151,7 @@ class ContentController extends Controller
              ),
              "userData" => (object)array(
                  "id" => $content->user_id,
-                 "name" => $content->user->name,
+                 "nickname" => $content->user->nickname,
                  "profile" => $content->user->profile_img,
                  "job" => is_null($content->user->job) ? null : $content->user->name,
                  "country" => is_null($content->user->country) ? null : $content->user->country->name,

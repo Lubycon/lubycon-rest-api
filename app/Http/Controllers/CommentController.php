@@ -65,7 +65,7 @@ class CommentController extends Controller
                 ),
                 "userData" => (object)array(
                     "id" => $array->user->id,
-                    "name" => $array->user->name,
+                    "nickname" => $array->user->nickname,
                     "profile" => $array->user->profile_img
                 )
             );

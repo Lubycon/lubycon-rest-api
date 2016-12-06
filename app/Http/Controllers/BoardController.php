@@ -48,7 +48,7 @@ class BoardController extends Controller
                ),
                "userData" => (object)array(
                    "id" => $array->user->id,
-                   "name" => $array->user->name,
+                   "nickname" => $array->user->nickname,
                    "profile" => $array->user->profile_img
                )
            );
@@ -77,7 +77,7 @@ class BoardController extends Controller
             ),
             "userData" => (object)array(
                 "id" => $post->user_id,
-                "name" => $post->user->name,
+                "nickname" => $post->user->nickname,
                 "profile" => $post->user->profile_img,
                 "job" => is_null($job) ? null : $job->name,
                 "country" => $post->user->country->name,
