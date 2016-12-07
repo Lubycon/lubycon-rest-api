@@ -54,7 +54,7 @@
                     cursor: pointer;
                     box-shadow: 0 3px 0 0 rgba(0,0,0,0.2);
                 "
-                href="{{ $_SERVER['HTTP_ORIGIN'].'/certs/code/signup?code='.$token }}"
+                href="{{ $_SERVER['HTTP_ORIGIN'] or 'localhost' }}{{ '/certs/code/signup?code='.$token }}"
             >
                 메일 인증하기
             </a>

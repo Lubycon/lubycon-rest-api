@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Auth;
 use Carbon\Carbon;
 use DB;
 use Auth;
-use Event;
 
 use App\Models\User;
 use App\Models\Credential;
@@ -13,9 +12,7 @@ use App\Models\Validation;
 use App\Models\Occupation;
 use App\Models\Country;
 
-use Validator;
 use Illuminate\Http\Request;
-use App\Http\Controllers\MailSendController;
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\ThrottlesLogins;
 use Illuminate\Foundation\Auth\AuthenticatesAndRegistersUsers;
@@ -25,6 +22,8 @@ use App\Http\Requests\Auth\AuthSignupRequest;
 use App\Http\Requests\Auth\AuthSigndropRequest;
 use App\Http\Requests\Auth\AuthRetrieveRequest;
 use Abort;
+
+use App\Jobs\SignupMailSendJob;
 
 use Log;
 
@@ -77,7 +76,7 @@ class AuthController extends Controller
                 CheckContoller::insertSignupToken($id);
                 $rememberToken = CheckContoller::insertRememberToken($id);
             }
-            MailSendController::signupTokenSet(Auth::user());
+            $this->dispatch(new SignupMailSendJob(Auth::getUser()));
             return response()->success([
                 "token" => $rememberToken
             ]);

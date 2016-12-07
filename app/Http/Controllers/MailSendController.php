@@ -1,4 +1,4 @@
-<?php
+<!-- <?php
 
 namespace App\Http\Controllers;
 
@@ -29,17 +29,17 @@ class MailSendController extends Controller
         return DB::table('signup_allows')->where('email','=',$email)->value('token');
     }
 
-    // public function signupTokenSet($user){
-    //
-    //     $data = (object)array(
-    //         "email" => $user->email,
-    //         "type" => 'signup',
-    //         "subject" => 'account success to Lubycon!',
-    //         'token' => MailSendController::getSignupToken($user->email),
-    //         "user" => $user
-    //     );
-    //     MailSendController::normalMailSend($data);
-    // }
+    public function signupTokenSet($user){
+
+        $data = (object)array(
+            "email" => $user->email,
+            "type" => 'signup',
+            "subject" => 'account success to Lubycon!',
+            'token' => MailSendController::getSignupToken($user->email),
+            "user" => $user
+        );
+        MailSendController::normalMailSend($data);
+    }
 
     public function againSignupTokenSet(Request $request){
         Log::info(111);
@@ -72,4 +72,4 @@ class MailSendController extends Controller
     //
     //     return $sendMail;
     // }
-}
+} -->

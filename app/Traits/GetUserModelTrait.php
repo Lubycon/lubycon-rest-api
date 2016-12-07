@@ -2,6 +2,7 @@
 namespace App\Traits;
 
 use App\Models\User;
+use App\Models\SignupAllow;
 use Log;
 
 trait GetUserModelTrait{
@@ -40,6 +41,10 @@ trait GetUserModelTrait{
     function getUserModelOrFail($userId){
         $user = User::findOrFail($userId);
         return $user;
+    }
+
+    function getSignupToken($email){
+        return SignupAllow::whereEmail($email)->value('token');
     }
 }
 ?>
