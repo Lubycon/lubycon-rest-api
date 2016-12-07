@@ -2,18 +2,24 @@
 
 namespace App\Http\Controllers;
 
+use Abort;
 use DB;
 use App\Http\Controllers\Auth\CheckContoller;
 use Auth;
 use Carbon\Carbon;
 
-use App\User;
+use App\Models\User;
+use App\Models\SignupAllow;
 
-use App\SignupAllow;
 use Validator;
 use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
+
+use App\Http\Requests\Certs\CertsSignupTokenRequest;
+use App\Http\Requests\Certs\CertsPasswordLimitTimeRequest;
+use App\Http\Requests\Certs\CertsPasswordTokenRequest;
+use App\Http\Requests\Certs\CertsPasswordRequest;
 
 class CertificateController extends Controller
 {
@@ -31,8 +37,7 @@ class CertificateController extends Controller
                 "validity" => true
             ]);
         }else{
-            return response()->error([
-                "code" => "0062",
+            return response()->success([
                 "validity" => false
             ]);
         }
@@ -40,8 +45,7 @@ class CertificateController extends Controller
     protected function certTokenTimeCheck(Request $request){
         $data = CheckContoller::checkToken($request);
 
-
-        $createTime = SignupAllow::find($data->id)->created_at;
+        $createTime = SignupAllow::findOrFail($data->id)->created_at;
         $minutes = 360;
         $diffTime = $this->checkDiffTime($createTime,$minutes);
 
@@ -50,7 +54,7 @@ class CertificateController extends Controller
         ]);
     }
 
-    protected function certPasswordTimeCheck(Request $request){
+    protected function certPasswordTimeCheck(CertsPasswordLimitTimeRequest $request){
         $data = $request->json()->all();
 
         $createTime = new Carbon(DB::table('password_resets')->where('email','=',$data['email'])->value('created_at'));
@@ -73,7 +77,7 @@ class CertificateController extends Controller
         return $nowTime->diffInSeconds($createTimeParse);
     }
 
-    protected function certSignupToken(Request $request){
+    protected function certSignupToken(CertsSignupTokenRequest $request){
         $data = CheckContoller::checkToken($request);
         $code = $request->only('code');
         $user = User::find($data->id);
@@ -93,7 +97,7 @@ class CertificateController extends Controller
         ]);
     }
 
-    protected function certPasswordToken(Request $request){ // edit
+    protected function certPasswordToken(CertsPasswordTokenRequest $request){ // edit
         $code = $request->only('code');
         $codeCheck = DB::table('password_resets')->where('token','=',$code['code'])->first();
 
@@ -109,7 +113,7 @@ class CertificateController extends Controller
         ]);
     }
 
-    protected function certPassword(Request $request){
+    protected function certPassword(CertsPasswordRequest $request){
         $data = $request->json()->all();
 
         $dataToken = CheckContoller::checkToken($request);

@@ -24,7 +24,7 @@
         </div>
         <div class="card" style="text-align: center;">
             <div style="font-size: 20px;">
-                 HELLO! <span class="username" style="font-size: 35px; font-weight: 600;">"{{ $user->name }}"</span>!<br>
+                 HELLO! <span class="username" style="font-size: 35px; font-weight: 600;">"{{ $user->nickname }}"</span>!<br>
             </div>
             <div style="
                 background: #fff;
@@ -33,7 +33,7 @@
                 margin: 20px 0 40px;
                 box-shadow: 0 15px 0 -8px rgba(0,0,0,0.1);
             ">
-                <span class="username">{{ $user->name }}</span>님의 계정 생성은 아래의 '메일 인증하기'버튼을 눌러 완료할 수 있습니다.<br>
+                <span class="username">{{ $user->nickname }}</span>님의 계정 생성은 아래의 '메일 인증하기'버튼을 눌러 완료할 수 있습니다.<br>
                 간편하게 이메일 등록을 마치고 Lubycon 서비스에서 더욱 다양한 각 종 게임 커뮤니티를 즐겨보세요!
             </div>
         </div>

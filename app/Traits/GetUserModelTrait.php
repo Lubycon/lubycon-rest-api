@@ -1,7 +1,7 @@
 <?php
 namespace App\Traits;
 
-use App\User;
+use App\Models\User;
 use Log;
 
 trait GetUserModelTrait{

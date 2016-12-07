@@ -4,19 +4,20 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
+use Abort;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 
-use App\User;
-use App\Occupation;
-use App\Country;
+use App\Models\User;
+use App\Models\Occupation;
+use App\Models\Country;
 
-use App\Post;
-use App\PostSort;
+use App\Models\Post;
+use App\Models\PostSort;
 
-// use App\Content;
-use App\ContentSort;
-use App\ContentCategory;
+use App\Models\Content;
+use App\Models\ContentSort;
+use App\Models\ContentCategory;
 
 class DataResponseController extends Controller
 {
@@ -51,10 +52,7 @@ class DataResponseController extends Controller
         if( !is_null($models) ){
             return response()->success($models);
         }else{
-            return response()->error([
-                "code" => "0030",
-                "devMsg" => "Check WhiteList in Api document!"
-            ]);
+            Abort::Error('0014');
         }
     }
 }

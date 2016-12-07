@@ -4,13 +4,14 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-use App\Content;
-use App\Comment;
-use App\Board;
-use App\User;
-use App\ContentTag;
+use App\Models\Content;
+use App\Models\Comment;
+use App\Models\Board;
+use App\Models\User;
+use App\Models\ContentTag;
 use File;
 
+use Abort;
 use Event;
 use App\Events\UserActionRecodeEvent;
 
@@ -25,13 +26,15 @@ use App\Http\Controllers\Controller;
 use App\Http\Controllers\Auth\CheckContoller;
 use App\Http\Controllers\Pager\PageController;
 
+use App\Http\Requests\Content\ContentUploadRequest;
+
 class ContentController extends Controller
 {
     use InsertArrayToColumn,
         GetUserModelTrait,
         ConvertData;
 
-    public function store(Request $request,$category){
+    public function store(ContentUploadRequest $request,$category){
         $data = $request->json()->all();
 
         $getToken = $this->getUserToken($request);
@@ -71,9 +74,7 @@ class ContentController extends Controller
         if($contents->save()){ //check right access
           return response()->success();
         };
-        return response()->error([
-            "code" => "0030"
-        ]);
+        Abort::Error('0040');
     }
     public function getList(Request $request,$category){
         $query = $request->query();
@@ -102,7 +103,7 @@ class ContentController extends Controller
                 ),
                 "userData" => (object)array(
                     "id" => $array->user->id,
-                    "name" => $array->user->name,
+                    "nickname" => $array->user->nickname,
                     "profile" => $array->user->profile_img
                 )
             );
@@ -111,10 +112,7 @@ class ContentController extends Controller
         if(!is_null($result->contents)){
             return response()->success($result);
         }else{
-            return response()->error([
-                "code" => "0062",
-                "devMsg" => "Nothing search Contents"
-            ]);
+            Abort::Error('0014');
         }
     }
     public function viewData($category,$board_id){
@@ -153,7 +151,7 @@ class ContentController extends Controller
              ),
              "userData" => (object)array(
                  "id" => $content->user_id,
-                 "name" => $content->user->name,
+                 "nickname" => $content->user->nickname,
                  "profile" => $content->user->profile_img,
                  "job" => is_null($content->user->job) ? null : $content->user->name,
                  "country" => is_null($content->user->country) ? null : $content->user->country->name,
@@ -161,7 +159,7 @@ class ContentController extends Controller
              )
          ]);
     }
-    public function update(Request $request,$category,$board_id){
+    public function update(ContentUploadRequest $request,$category,$board_id){
         $data = $request->json()->all();
 
         $tokenData = CheckContoller::checkToken($request);
@@ -169,39 +167,25 @@ class ContentController extends Controller
         $contents = Content::findOrFail($board_id);
 
         if($this->isSameBoard($contents,$category)){
-            return response()->error([
-                "code" => "0012",
-                "devMsg" => "sector id is unmatched"
-            ]);
+            Abort::Error('0043');
         }
         if($this->isSameUser($findUser,$contents)){
-            return response()->error([
-                "code" => "0012",
-                "devMsg" => "user id is unmatched"
-            ]);
+            Abort::Error('0043');
         }
 
-
-        // $contents->content = $data['content'];
-        // $contents->save(); //first, contents save
-
-
-        $tagRender = $this->InsertContentTagName($data['setting']['tags']);
         $contents->tag()->delete();
+        $tagRender = $this->InsertContentTagName($data['setting']['tags']);
         $contents->tag()->saveMany($tagRender); //second, tags save relationship
 
-        $category = $this->convertContentCategoryData($data['setting']['category']);
-        $categoryRender = $this->InsertContentCategoryId($category);
         $contents->categoryKernel()->delete();
-        $contents->categoryKernel()->saveMany($categoryRender); //thrid, categorys save relationship
+        $category = $this->InsertContentCategoryId($data['setting']['category']);
+        $contents->categoryKernel()->saveMany($category); //thrid, categorys save relationship
 
         if($contents->save()){
           return response()->success();
         };
 
-        return response()->error([
-            "code" => "0030"
-        ]);
+        Abort::Error('0040');
     }
     public function delete(Request $request,$category,$board_id){
         $tokenData = CheckContoller::checkToken($request);
@@ -209,16 +193,10 @@ class ContentController extends Controller
         $contents = Content::findOrFail($board_id);
 
         if($this->isSameBoard($contents,$category)){
-            return response()->error([
-                "code" => "0012",
-                "devMsg" => "sector id is unmatched"
-            ]);
+            Abort::Error('0043');
         }
         if($this->isSameUser($findUser,$contents)){
-            return response()->error([
-                "code" => "0012",
-                "devMsg" => "user id is unmatched"
-            ]);
+            Abort::Error('0043');
         }
         $contents->categoryKernel()->delete();
         $contents->tag()->delete();

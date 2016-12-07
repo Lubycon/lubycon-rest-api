@@ -7,11 +7,11 @@ use DB;
 use Auth;
 use Event;
 
-use App\User;
-use App\Credential;
-use App\Validation;
-use App\Occupation;
-use App\Country;
+use App\Models\User;
+use App\Models\Credential;
+use App\Models\Validation;
+use App\Models\Occupation;
+use App\Models\Country;
 
 use Validator;
 use Illuminate\Http\Request;
@@ -20,51 +20,43 @@ use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\ThrottlesLogins;
 use Illuminate\Foundation\Auth\AuthenticatesAndRegistersUsers;
 
+use App\Http\Requests\Auth\AuthSigninRequest;
+use App\Http\Requests\Auth\AuthSignupRequest;
+use App\Http\Requests\Auth\AuthSigndropRequest;
+use App\Http\Requests\Auth\AuthRetrieveRequest;
+use Abort;
+
 use Log;
 
 class AuthController extends Controller
 {
     use AuthenticatesAndRegistersUsers, ThrottlesLogins;
 
-    public function __construct()
-    {
-        $this->middleware('guest', ['except' => 'getLogout']);
-    }
-
-    protected function signin(Request $request)
+    protected function signin(AuthSigninRequest $request)
     {
         $data = $request->json()->all();
-
-        # property
         $credentials = Credential::signin($data);
 
-        if ( !Auth::once($credentials)) {
-            return response()->error([
-                'code' => '0010'
+        if(!Auth::once($credentials)){
+            Abort::Error('0040','Login Failed, check email,password');
+        }
+
+        if (Auth::user()->status == 'inactive'){
+            return response()->success([
+                'token' => Auth::user()->remember_token,
+                'condition' => 'inactive'
             ]);
         }
 
         if(Auth::user()->status == 'active'){
-            $id = Auth::user()->getAuthIdentifier();
-            CheckContoller::insertRememberToken($id);
+            CheckContoller::insertRememberToken(Auth::user()->id);
         }
 
-        if (Auth::user()->status == 'inactive'){
-            $result = (object)array(
-                'token' => Auth::user()->remember_token,
-                'condition' => 'inactive'
-            );
-            return response()->success($result);
-        }
-
-
-        $result = (object)array(
+        return response()->success([
             'token' => Auth::user()->remember_token,
             'condition' => 'active',
             'grade' => Auth::user()->grade,
-         );
-
-        return response()->success($result);
+        ]);
     }
 
 
@@ -73,29 +65,14 @@ class AuthController extends Controller
         // need somthing other logic
     }
 
-    protected function signup(Request $request)
+    protected function signup(AuthSignupRequest $request)
     {
-
-            DB::connection()->enableQueryLog();
-
-
-
-
         $data = $request->json()->all();
         $credentialSignup = Credential::signup($data);
         $credentialSignin = Credential::signin($data);
-        $ResultOfValidation = Validation::auth($credentialSignup);
-
-        if ($ResultOfValidation->fails()){
-            return response()->error([
-                "code" => "0030",
-                "devMsg" => $ResultOfValidation->errors()
-            ]);
-        };
 
         if(User::create($credentialSignup)){
             if(Auth::once($credentialSignin)){
-            Log::debug('signup', [DB::getQueryLog()]);
                 $id = Auth::user()->getAuthIdentifier();
                 CheckContoller::insertSignupToken($id);
                 $rememberToken = CheckContoller::insertRememberToken($id);
@@ -107,24 +84,22 @@ class AuthController extends Controller
         }
     }
 
-    protected function signdrop(Request $request)
+    protected function signdrop(AuthSigndropRequest $request)
     {
         $tokenData = CheckContoller::checkToken($request);
 
-        $user = User::find($tokenData->id);
+        $user = User::findOrFail($tokenData->id);
         $userExist = CheckContoller::checkUserExistById($tokenData->id);
 
         if($userExist){
             $user->delete();
             return response()->success();
         }else{
-            return response()->error([
-                'code' => '0030'
-            ]);
+            Abort::Error('0040');
         };
     }
 
-    // protected function signrestore($id){
+    // protected function signrestore($id){ //restore droped user
     //     $user = User::onlyTrashed()->find($id);
     //     $userExist = CheckContoller::checkUserExistByIdOnlyTrashed($id);
     //
@@ -132,16 +107,14 @@ class AuthController extends Controller
     //         $user->restore();
     //         return response()->success();
     //     }else{
-    //         return response()->error([
-    //             'code' => '0030'
-    //         ]);
+    //         Abort::Error('0030');
     //     };
     // }
 
     protected function simpleRetrieve(Request $request){
         $tokenData = CheckContoller::checkToken($request);
 
-        $findUser = User::find($tokenData->id);
+        $findUser = User::findOrFail($tokenData->id);
         $userExist = CheckContoller::checkUserExistById($tokenData->id);
         $jobExists = $findUser->job;
         $counTryExists = $findUser->country;
@@ -150,7 +123,7 @@ class AuthController extends Controller
             $result = (object)array(
                 "id" => $findUser->id,
                 "email" => $findUser->email,
-                "name" => $findUser->name,
+                "nickname" => $findUser->nickname,
                 "profile" => $findUser->profile_img,
                 "job" => is_null($jobExists) ? null : $findUser->job->name,
                 "country" => is_null($counTryExists) ? null : $findUser->country->name,
@@ -160,9 +133,7 @@ class AuthController extends Controller
             );
             return response()->success($result);
         }else{
-            return response()->error([
-                'code' => '0030'
-            ]);
+            Abort::Error('0040');
         }
     }
 
@@ -179,7 +150,7 @@ class AuthController extends Controller
                 'userData' => (object)array(
                     "id" => $findUser->id,
                     "email" => $findUser->email,
-                    "name" => $findUser->name,
+                    "nickname" => $findUser->nickname,
                     "profile" => $findUser->profile_img,
                     "job" => is_null($jobExists) ? null : $findUser->job->name,
                     "country" => is_null($counTryExists) ? null : $findUser->country->name,
@@ -200,13 +171,10 @@ class AuthController extends Controller
                 )
             ]);
         }else{
-            return response()->error([
-                'code' => '0030',
-                "devMsg" => "user number " . $id . " dose not exist"
-            ]);
+            Abort::Error('0040');
         }
     }
-    public function postRetrieve(Request $request,$id)
+    public function postRetrieve(AuthRetrieveRequest $request,$id)
     {
         $data = $request->json()->all();
         $tokenData = CheckContoller::checkToken($request);
@@ -229,15 +197,13 @@ class AuthController extends Controller
                 $findUser->mobile_public = $data['publicOption']['mobile'];
                 $findUser->fax_public = $data['publicOption']['fax'];
                 $findUser->web_public = $data['publicOption']['website'];
-                $findUser->save();
-                DB::table('languages')->insert($this->insertDataGroup($data['language'],$id));
-                DB::table('careers')->insert($this->setCareerGroup($data['history'],$id));
-            return response()->success($data);
+                if( isset($data['language']) )DB::table('languages')->insert($this->insertDataGroup($data['language'],$id));
+                if( isset($data['history']) )DB::table('careers')->insert($this->setCareerGroup($data['history'],$id));
+                if($findUser->save()){
+                    return response()->success($data);
+                }
         }else{
-            return response()->error([
-                'code' => '0030',
-                "devMsg" => "dose not match user id"
-            ]);
+            Abort::Error('0040');
         }
     }
     protected function insertDataGroup($array,$id){
@@ -268,15 +234,13 @@ class AuthController extends Controller
         $check = CheckContoller::checkUserExistByEmail($data);
 
         if($check){
-            $result = (object)array(
+            return response()->success([
                 "exist" => true
-            );
-            return response()->success($result);
+            ]);
         }else{
-            $result = (object)array(
+            return response()->success([
                 "exist" => false
-            );
-            return response()->success($result);
+            ]);
         }
     }
 }

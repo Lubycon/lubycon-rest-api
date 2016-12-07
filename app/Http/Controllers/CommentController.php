@@ -3,10 +3,12 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-
-use App\Comment;
-use App\Board;
-use App\User;
+use Abort;
+use App\Models\Comment;
+use App\Models\Board;
+use App\Models\User;
+use App\Models\Post;
+use App\Models\Content;
 
 use Carbon\Carbon;
 
@@ -15,17 +17,24 @@ use App\Http\Controllers\Controller;
 use App\Http\Controllers\Auth\CheckContoller;
 use App\Http\Controllers\Pager\PageController;
 
+use App\Http\Requests\Comment\CommentUploadRequest;
+use App\Http\Requests\Comment\CommentUpdateRequest;
+
+use Log;
+
 class CommentController extends Controller
 {
-    public function store(Request $request,$category,$board_id){
+    public function store(CommentUploadRequest $request,$category,$board_id){
         $data = $request->json()->all();
 
         $tokenData = CheckContoller::checkToken($request);
         $findUser = User::findOrFail($tokenData->id);
+        $targetPostModel = "App\Models\\".title_case(Board::where('name','=',$category)->value('group'));
+        $getUserId = $targetPostModel::find($board_id)->value('user_id');
         $comments = new Comment;
 
         $comments->give_user_id = $findUser->id;
-        $comments->take_user_id = $data['getUserId'];
+        $comments->take_user_id = $getUserId;
         $comments->board_id = Board::where('name','=',$category)->value('id');
         $comments->post_id = $board_id;
         $comments->content = $data['content'];
@@ -33,9 +42,7 @@ class CommentController extends Controller
         if($comments->save()){
           return response()->success();
         };
-        return response()->error([
-            "code" => "0030"
-        ]);
+        Abort::Error('0040');
     }
     public function getList(Request $request,$category,$board_id=false){
         $query = $request->query();
@@ -58,7 +65,7 @@ class CommentController extends Controller
                 ),
                 "userData" => (object)array(
                     "id" => $array->user->id,
-                    "name" => $array->user->name,
+                    "nickname" => $array->user->nickname,
                     "profile" => $array->user->profile_img
                 )
             );
@@ -67,70 +74,28 @@ class CommentController extends Controller
         if(!is_null($result->comments)){
             return response()->success($result);
         }else{
-            return response()->error([
-                "code" => "0062",
-                "devMsg" => "Model not found error"
-            ]);
+            Abort::Error('0014');
         }
     }
-    public function update(Request $request,$category,$board_id,$comment_id){
+    public function update(CommentUpdateRequest $request,$category,$board_id,$comment_id){
         $data = $request->json()->all();
 
         $tokenData = CheckContoller::checkToken($request);
         $findUser = User::findOrFail($tokenData->id);
         $comments = Comment::findOrFail($comment_id);
 
-        if($this->isSameBoard($comments,$category)){
-            return response()->error([
-                "code" => "0012",
-                "devMsg" => "sector id is unmatched"
-            ]);
-        }
-        if($this->isSamePost($comments,$board_id)){
-            return response()->error([
-                "code" => "0012",
-                "devMsg" => "post id is unmatched"
-            ]);
-        }
-        if($this->isSameUser($findUser,$comments)){
-            return response()->error([
-                "code" => "0012",
-                "devMsg" => "user id is unmatched"
-            ]);
-        }
-
         $comments->content = $data['content'];
         if($comments->save()){
           return response()->success();
         };
 
-        return response()->error([
-            "code" => "0030"
-        ]);
+        Abort::Error('0040');
     }
     public function delete(Request $request,$category,$board_id,$comment_id){
         $tokenData = CheckContoller::checkToken($request);
         $findUser = User::findOrFail($tokenData->id);
         $comments = Comment::findOrFail($comment_id);
 
-        if($this->isSameBoard($comments,$category)){
-            return response()->error([
-                "code" => "0012",
-                "devMsg" => "sector id is unmatched"
-            ]);
-        }
-        if($this->isSamePost($comments,$board_id)){
-            return response()->error([
-                "code" => "0012",
-                "devMsg" => "post id is unmatched"
-            ]);
-        }
-        if($this->isSameUser($findUser,$comments)){
-            return response()->error([
-                "code" => "0012",
-                "devMsg" => "user id is unmatched"
-            ]);
-        }
         if($comments->delete()){
           return response()->success();
         }

@@ -4,12 +4,13 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-use App\Post;
-use App\User;
-use App\Comment;
-use App\View;
-use App\Board;
+use App\Models\Post;
+use App\Models\User;
+use App\Models\Comment;
+use App\Models\View;
+use App\Models\Board;
 
+use Abort;
 use Event;
 use App\Events\UserActionRecodeEvent;
 
@@ -19,6 +20,8 @@ use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Auth\CheckContoller;
 use App\Http\Controllers\Pager\PageController;
+
+use App\Http\Requests\Post\PostUploadRequest;
 
 class BoardController extends Controller
 {
@@ -45,7 +48,7 @@ class BoardController extends Controller
                ),
                "userData" => (object)array(
                    "id" => $array->user->id,
-                   "name" => $array->user->name,
+                   "nickname" => $array->user->nickname,
                    "profile" => $array->user->profile_img
                )
            );
@@ -54,10 +57,7 @@ class BoardController extends Controller
        if(!is_null($result->contents)){
            return response()->success($result);
        }else{
-           return response()->error([
-               "code" => "0062",
-               "devMsg" => "Model not found error"
-           ]);
+           Abort::Error('0014');
        }
    }
    public function viewPost(Request $request,$category,$board_id){
@@ -77,7 +77,7 @@ class BoardController extends Controller
             ),
             "userData" => (object)array(
                 "id" => $post->user_id,
-                "name" => $post->user->name,
+                "nickname" => $post->user->nickname,
                 "profile" => $post->user->profile_img,
                 "job" => is_null($job) ? null : $job->name,
                 "country" => $post->user->country->name,
@@ -85,7 +85,7 @@ class BoardController extends Controller
             )
         ]);
    }
-   public function uploadPost(Request $request,$category){
+   public function uploadPost(PostUploadRequest $request,$category){
         $data = $request->json()->all();
 
         $tokenData = CheckContoller::checkToken($request);
@@ -101,11 +101,9 @@ class BoardController extends Controller
           return response()->success();
         };
 
-        return response()->error([
-            "code" => "0030"
-        ]);
+        Abort::Error('0040');
    }
-   public function updatePost(Request $request,$category,$board_id){
+   public function updatePost(PostUploadRequest $request,$category,$board_id){
         $data = $request->json()->all();
 
         $tokenData = CheckContoller::checkToken($request);
@@ -113,9 +111,7 @@ class BoardController extends Controller
         $posts = Post::findOrFail($board_id);
 
         if($findUser->id != $posts->user_id){
-            return response()->error([
-                "code" => "0012"
-            ]);
+            Abort::Error('0042');
         }
 
         $posts->title = $data['title'];
@@ -124,9 +120,7 @@ class BoardController extends Controller
           return response()->success();
         };
 
-        return response()->error([
-            "code" => "0030"
-        ]);
+        Abort::Error('0040');
    }
    public function deletePost(Request $request,$category,$board_id){
         $tokenData = CheckContoller::checkToken($request);
@@ -134,9 +128,7 @@ class BoardController extends Controller
         $posts = Post::findOrFail($board_id);
 
         if($findUser->id != $posts->user_id){
-            return response()->error([
-                "code" => "0012"
-            ]);
+            Abort::Error('0042');
         }
         if($posts->delete()){
           return response()->success();

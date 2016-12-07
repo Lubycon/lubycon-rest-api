@@ -7,12 +7,14 @@ use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 
-use App\Content;
-use App\Post;
-use App\Comment;
-use App\User;
-use App\View;
-use App\Board;
+use App\Models\Content;
+use App\Models\Post;
+use App\Models\Comment;
+use App\Models\User;
+use App\Models\View;
+use App\Models\Board;
+
+use Abort;
 
 use DB;
 use Log;
@@ -156,10 +158,14 @@ class PageController extends Controller
         $this->paginator = $this->withUserModel->
             orderBy($this->sort->option,$this->sort->direction)->
             paginate($this->pageSize, ['*'], 'page', $this->setPage);
-            Log::debug('pagnator', [DB::getQueryLog()]);
+            // Log::debug('pagnator', [DB::getQueryLog()]);
         $this->totalCount = $this->paginator->total();
         $this->currentPage = $this->paginator->currentPage();
         $this->collection = $this->paginator->getCollection();
+
+        if($this->collection->isEmpty()){
+            Abort::Error('0014');
+        }
     }
 
     public function getCollection(){
