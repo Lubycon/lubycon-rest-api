@@ -34,6 +34,7 @@ class UserActionRecodeJob extends Job implements SelfHandling, ShouldQueue
     protected $willCheck;
 
     // get data model
+    protected $modelInfo;
     protected $recodeModel;
     protected $countType;
     protected $postColumn;
@@ -45,53 +46,34 @@ class UserActionRecodeJob extends Job implements SelfHandling, ShouldQueue
     protected $overlap;
 
 
-    public function __construct()
+    public function __construct($request,$type,$data)
     {
-        // // setting variable
-        // $this->request = $request->all();
-        // $this->token = $request->header('X-lubycon-token');
-        // $this->type = $type;
-        // $this->data = $data;
-        // $this->sectorGroup = Board::find($this->data->board_id)->value('group');
-        // $this->boardId = $this->data->board_id;
-        // $this->postId = $this->data->id;
-        // $this->giveUser = $this->getUserByToken($this->token);
-        // $this->giveUserIp = $request->ip();
-        // $this->giveUserId = is_null($this->giveUser) ? null : $this->giveUser->id ;
-        // $this->takeUserId = $this->data->user_id;
-        // $this->willCheck; //for bookmark like comment_like
+        // setting variable
+        $this->request = $request->all();
+        $this->token = $request->header('X-lubycon-token');
+        $this->type = $type;
+        $this->data = $data;
+        $this->sectorGroup = Board::find($this->data->board_id)->value('group');
+        $this->boardId = $this->data->board_id;
+        $this->postId = $this->data->id;
+        $this->giveUser = $this->getUserByToken($this->token);
+        $this->giveUserIp = $request->ip();
+        $this->giveUserId = is_null($this->giveUser) ? null : $this->giveUser->id ;
+        $this->takeUserId = $this->data->user_id;
+        $this->willCheck; //for bookmark like comment_like
         // // setting model
-        // $modelInfo = $this->setModel($this->type);
-        // $this->recodeModel = $modelInfo->model;
-        // $this->countType = $modelInfo->type;
-        // $this->postColumn = $modelInfo->column;
-        // $this->postModel = $this->setPostModel($this->sectorGroup);
-        // $this->post = $this->setPost($this->postModel,$this->postId);
-        // $this->overlap = $this->overlapCheck($this->recodeModel,$this->postId);
+        $this->modelInfo = $this->defineModel($this->type);
+        $this->recodeModel = $this->modelInfo->model;
+        $this->countType = $this->modelInfo->type;
+        $this->postColumn = $this->modelInfo->column;
+        $this->postModel = $this->getPostModel($this->sectorGroup);
+        $this->post = $this->getPost($this->postModel,$this->postId);
+        $this->overlap = $this->isOverlapCheck($this->recodeModel,$this->postId);
     }
-
-
-    // setting model
-    // private function setModel($type){
-    //     return $this->defineModel($type);
-    // }
-    // private function setPostModel($sector){
-    //     return $this->getPostModel($sector);
-    // }
-    // private function setPost($model,$postId){
-    //     return $this->getPost($model,$postId);
-    // }
-    // private function setCountColumn($type){
-    //     return $this->getCountColumn($type);
-    // }
-    // private function overlapCheck($model,$postId){
-    //     return $this->isOverlapCheck($model,$postId);
-    // }
 
 
     public function handle()
     {
-    Log::info('User Action event listen seccess / not recode cuz overlap');
         $countColumn = $this->postColumn;
         if( $this->countType == 'simplex' ){
             if($this->overlap){

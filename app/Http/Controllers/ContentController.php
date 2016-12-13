@@ -133,7 +133,8 @@ class ContentController extends Controller
     }
     public function viewPost(Request $request,$category,$board_id){
          $content = Content::findOrFail($board_id);
-         $this->dispatch(new UserActionRecodeJob());
+         $this->dispatch(new UserActionRecodeJob($request,'view',$content));
+
         //  $this->dispatch(new UserActionRecodeJob($request,'view',$content));
         //  Event::fire(new UserActionRecodeEvent($request,'view',$content));
          return response()->success([
