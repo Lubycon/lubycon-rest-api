@@ -71,4 +71,6 @@ Route::group(['prefix' => '/v1'], function () {
         Route::put('{category}/{board_id}','ContentController@update');
         Route::delete('{category}/{board_id}','ContentController@delete');
     });
+
+    Route::post('/tracker','TrackerController@create');
 });
