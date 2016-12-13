@@ -12,8 +12,6 @@ use App\Models\ContentTag;
 use File;
 
 use Abort;
-use Event;
-use App\Events\UserActionRecodeEvent;
 
 use App\Traits\InsertArrayToColumn;
 use App\Traits\GetUserModelTrait;
@@ -27,6 +25,9 @@ use App\Http\Controllers\Auth\CheckContoller;
 use App\Http\Controllers\Pager\PageController;
 
 use App\Http\Requests\Content\ContentUploadRequest;
+
+use Illuminate\Foundation\Bus\DispatchesJobs;
+use App\Jobs\UserActionRecodeJob;
 
 class ContentController extends Controller
 {
@@ -132,7 +133,9 @@ class ContentController extends Controller
     }
     public function viewPost(Request $request,$category,$board_id){
          $content = Content::findOrFail($board_id);
-         Event::fire(new UserActionRecodeEvent($request,'view',$content));
+         $this->dispatch(new UserActionRecodeJob());
+        //  $this->dispatch(new UserActionRecodeJob($request,'view',$content));
+        //  Event::fire(new UserActionRecodeEvent($request,'view',$content));
          return response()->success([
              "contents" => (object)array(
                  "id" => $content->id,

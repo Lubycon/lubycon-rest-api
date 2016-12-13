@@ -26,11 +26,6 @@ class SignupMailSendJob extends Job implements SelfHandling, ShouldQueue
         $this->user = $user;
     }
 
-    /**
-     * Execute the job.
-     *
-     * @return void
-     */
     public function handle()
     {
         Log::info('mail send start');

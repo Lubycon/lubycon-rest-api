@@ -73,12 +73,12 @@ trait GetRecodeModelTrait{
     function isOverlapCheck($model,$postId){
         $ipColumnName = 'ipv4';
         $idColumnName = 'give_user_id';
-        $userId = $this->getGiveUserId();
-        $userIp = $this->getGiveUserIp();
+        $userId = $this->giveUserId;
+        $userIp = $this->giveUserIp;
         $limitHours = -5;
         $limitTime = Carbon::now($limitHours)->toDateTimeString();
-        $boardId = $this->getBoardId();
-        $postId = $this->getPostId();
+        $boardId = $this->boardId;
+        $postId = $this->postId;
 
         if($this->countType == 'simplex' ){
             $whereModel = $model->where($ipColumnName,'=',$userIp)
@@ -99,24 +99,24 @@ trait GetRecodeModelTrait{
     }
 
     function setViewData($class){
-        $class->give_user_id = $this->getGiveUserId();
-        $class->take_user_id = $this->getTakeUserId();
-        $class->ipv4 = $this->getGiveUserIp();
-        $class->board_id = $this->getBoardId();
-        $class->post_id = $this->getPostId();
+        $class->give_user_id = $this->giveUserId;
+        $class->take_user_id = $this->takeUserId;
+        $class->ipv4 = $this->giveUserIp;
+        $class->board_id = $this->boardId;
+        $class->post_id = $this->postId;
     }
     function setDownloadData($class){
-        $class->give_user_id = $this->getGiveUserId();
-        $class->take_user_id = $this->getTakeUserId();
-        $class->ipv4 = $this->getGiveUserIp();
-        $class->board_id = $this->getBoardId();
-        $class->post_id = $this->getPostId();
+        $class->give_user_id = $this->giveUserId;
+        $class->take_user_id = $this->takeUserId;
+        $class->ipv4 = $this->giveUserIp;
+        $class->board_id = $this->boardId;
+        $class->post_id = $this->postId;
     }
     function setLikeData($class){
-        $class->give_user_id = $this->getGiveUserId();
-        $class->take_user_id = $this->getTakeUserId();
-        $class->board_id = $this->getBoardId();
-        $class->post_id = $this->getPostId();
+        $class->give_user_id = $this->giveUserId;
+        $class->take_user_id = $this->takeUserId;
+        $class->board_id = $this->boardId;
+        $class->post_id = $this->postId;
     }
 }
  ?>

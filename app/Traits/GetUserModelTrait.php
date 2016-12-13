@@ -10,6 +10,13 @@ trait GetUserModelTrait{
         return $request->header('X-lubycon-token');
     }
 
+    function getUserByTokenRequestOrFail($request){
+        $userId = $this->findUserIdByToken($this->getUserToken($request));
+        $user = $this->getUserModelOrFail($userId);
+
+        return $user;
+    }
+
     function getUserByToken($token){
         $userId = $this->findUserIdByToken($token);
         $user = $this->getUserModel($userId);

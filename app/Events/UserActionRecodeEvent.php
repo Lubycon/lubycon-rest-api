@@ -22,26 +22,26 @@ class UserActionRecodeEvent extends Event
         GetRecodeModelTrait;
 
     // get data variable
-    protected $type;
-    protected $data;
-    protected $request;
-    protected $sectorGroup;
-    protected $boardId;
-    protected $postId;
-    protected $giveUser;
-    protected $giveUserIp;
-    protected $giveUserId;
-    protected $takeUserId;
-    protected $willCheck;
+    public $type;
+    public $data;
+    public $request;
+    public $sectorGroup;
+    public $boardId;
+    public $postId;
+    public $giveUser;
+    public $giveUserIp;
+    public $giveUserId;
+    public $takeUserId;
+    public $willCheck;
 
     // get data model
-    protected $recodeModel;
-    protected $postModel;
-    protected $post;
-    protected $insertData;
+    public $recodeModel;
+    public $postModel;
+    public $post;
+    public $insertData;
 
     //get overlap check
-    protected $overlap;
+    public $overlap;
 
     public function __construct(Request $request,$type,$data)
     {

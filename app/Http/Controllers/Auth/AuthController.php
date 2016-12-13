@@ -23,13 +23,18 @@ use App\Http\Requests\Auth\AuthSigndropRequest;
 use App\Http\Requests\Auth\AuthRetrieveRequest;
 use Abort;
 
+use App\Traits\GetUserModelTrait;
+
 use App\Jobs\SignupMailSendJob;
+use App\Jobs\SignupReminderMailSendJob;
 
 use Log;
 
 class AuthController extends Controller
 {
-    use AuthenticatesAndRegistersUsers, ThrottlesLogins;
+    use AuthenticatesAndRegistersUsers,
+        ThrottlesLogins,
+        GetUserModelTrait;
 
     protected function signin(AuthSigninRequest $request)
     {
@@ -81,6 +86,13 @@ class AuthController extends Controller
                 "token" => $rememberToken
             ]);
         }
+    }
+    protected function signupTokenReminder(Request $request){
+        $data = $request->json()->all();
+        $user = $this->getUserByTokenRequestOrFail($request);
+        $this->dispatch(new SignupReminderMailSendJob($user));
+
+        return response()->success();
     }
 
     protected function signdrop(AuthSigndropRequest $request)
