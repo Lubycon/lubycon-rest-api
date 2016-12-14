@@ -5,7 +5,7 @@ namespace App\Http\Requests\Auth;
 use App\Http\Requests\Request;
 use App\Models\User;
 
-class AuthSignupRequest extends Request
+class AuthSigndropRequest extends Request
 {
     public function authorize()
     {
