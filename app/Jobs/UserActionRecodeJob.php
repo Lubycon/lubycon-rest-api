@@ -75,27 +75,31 @@ class UserActionRecodeJob extends Job implements SelfHandling, ShouldQueue
         $this->post = $this->getPost($this->postModel,$this->postId);
         $this->overlap = $this->isOverlapCheck($this->recodeModel,$this->postId);
         $countColumn = $this->postColumn;
+
+
+
+
         if( $this->countType == 'simplex' ){
             if($this->overlap){
                 //count up
                 $this->post->$countColumn++;
                 $this->post->save();
-
+                
                 //recode write
                 $this->recodeModel->save();
-                Log::info('User Action event listen seccess');
+                Log::info('User Action Simplex event listen seccess');
                 return;
             }
         }
         if($this->countType == 'toggle'){
-            if($this->overlap){
+            if(!$this->overlap){
                 //count up
                 $this->post->$countColumn++;
                 $this->post->save();
 
                 //recode write
                 $this->recodeModel->save();
-                Log::info('User Action event listen seccess');
+                Log::info('User Action Toggle event listen seccess');
                 return;
             }else{
                 //count down
