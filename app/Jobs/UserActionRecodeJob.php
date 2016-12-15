@@ -62,18 +62,18 @@ class UserActionRecodeJob extends Job implements SelfHandling, ShouldQueue
         $this->takeUserId = $this->data->user_id;
         $this->willCheck; //for bookmark like comment_like
         // // setting model
-        $this->modelInfo = $this->defineModel($this->type);
-        // $this->recodeModel = $this->modelInfo->model;
-        // $this->countType = $this->modelInfo->type;
-        // $this->postColumn = $this->modelInfo->column;
-        // $this->postModel = $this->getPostModel($this->sectorGroup);
-        // $this->post = $this->getPost($this->postModel,$this->postId);
-        // $this->overlap = $this->isOverlapCheck($this->recodeModel,$this->postId);
     }
 
 
     public function handle()
     {
+        $this->modelInfo = $this->defineModel($this->type);
+        $this->recodeModel = $this->modelInfo->model;
+        $this->countType = $this->modelInfo->type;
+        $this->postColumn = $this->modelInfo->column;
+        $this->postModel = $this->getPostModel($this->sectorGroup);
+        $this->post = $this->getPost($this->postModel,$this->postId);
+        $this->overlap = $this->isOverlapCheck($this->recodeModel,$this->postId);
         $countColumn = $this->postColumn;
         if( $this->countType == 'simplex' ){
             if($this->overlap){
