@@ -3,8 +3,9 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+
 use App\Models\Country;
-use App\Models\Job;
+use App\Models\Occupation;
 
 use Log;
 

@@ -2,11 +2,19 @@
 namespace App\Traits;
 
 use App\Models\User;
+use App\Models\SignupAllow;
 use Log;
 
 trait GetUserModelTrait{
     function getUserToken($request){
         return $request->header('X-lubycon-token');
+    }
+
+    function getUserByTokenRequestOrFail($request){
+        $userId = $this->findUserIdByToken($this->getUserToken($request));
+        $user = $this->getUserModelOrFail($userId);
+
+        return $user;
     }
 
     function getUserByToken($token){
@@ -40,6 +48,15 @@ trait GetUserModelTrait{
     function getUserModelOrFail($userId){
         $user = User::findOrFail($userId);
         return $user;
+    }
+
+    function getUserModelByEmailOrFail($email){
+        $user = User::whereemail($email)->firstOrFail();
+        return $user;
+    }
+
+    function getSignupToken($email){
+        return SignupAllow::whereEmail($email)->value('token');
     }
 }
 ?>

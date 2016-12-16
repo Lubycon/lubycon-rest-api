@@ -4,7 +4,6 @@ namespace App\Http\Requests\Auth;
 
 use App\Http\Requests\Request;
 use App\Models\User;
-use Log;
 
 class AuthRetrieveRequest extends Request
 {

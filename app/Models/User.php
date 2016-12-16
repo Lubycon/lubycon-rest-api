@@ -66,7 +66,7 @@ class User extends Model implements AuthenticatableContract,
     // get reference data
     public function job()
     {
-        return $this->hasOne('App\Models\Job','id','job_id');
+        return $this->hasOne('App\Models\Occupation','id','occupation_id');
     }
     public function country()
     {

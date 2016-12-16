@@ -5,17 +5,14 @@ namespace App\Http\Controllers\Auth;
 use Carbon\Carbon;
 use DB;
 use Auth;
-use Event;
 
 use App\Models\User;
 use App\Models\Credential;
 use App\Models\Validation;
-use App\Models\Job;
+use App\Models\Occupation;
 use App\Models\Country;
 
-use Validator;
 use Illuminate\Http\Request;
-use App\Http\Controllers\MailSendController;
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\ThrottlesLogins;
 use Illuminate\Foundation\Auth\AuthenticatesAndRegistersUsers;
@@ -26,11 +23,18 @@ use App\Http\Requests\Auth\AuthSigndropRequest;
 use App\Http\Requests\Auth\AuthRetrieveRequest;
 use Abort;
 
+use App\Traits\GetUserModelTrait;
+
+use App\Jobs\SignupMailSendJob;
+use App\Jobs\SignupReminderMailSendJob;
+
 use Log;
 
 class AuthController extends Controller
 {
-    use AuthenticatesAndRegistersUsers, ThrottlesLogins;
+    use AuthenticatesAndRegistersUsers,
+        ThrottlesLogins,
+        GetUserModelTrait;
 
     protected function signin(AuthSigninRequest $request)
     {
@@ -77,11 +81,18 @@ class AuthController extends Controller
                 CheckContoller::insertSignupToken($id);
                 $rememberToken = CheckContoller::insertRememberToken($id);
             }
-            MailSendController::signupTokenSet(Auth::user());
+            $this->dispatch(new SignupMailSendJob(Auth::getUser()));
             return response()->success([
                 "token" => $rememberToken
             ]);
         }
+    }
+    protected function signupTokenReminder(Request $request){
+        $data = $request->json()->all();
+        $user = $this->getUserByTokenRequestOrFail($request);
+        $this->dispatch(new SignupReminderMailSendJob($user));
+
+        return response()->success();
     }
 
     protected function signdrop(AuthSigndropRequest $request)
@@ -186,7 +197,7 @@ class AuthController extends Controller
                 $this->resetDataGroup($findUser);
 
                 //$findUser->profile_img = $data['userData']['profile'];
-                $findUser->job_id = Job::where('name','=',$data['userData']['job'])->value('id');
+                $findUser->occupation_id = Occupation::where('name','=',$data['userData']['job'])->value('id');
                 $findUser->country_id = Country::where('name','=',$data['userData']['country'])->value('id');
                 $findUser->city = $data['userData']['city'];
                 $findUser->mobile = $data['userData']['mobile'];

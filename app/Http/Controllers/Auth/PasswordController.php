@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Auth;
 
+use Log;
 use Abort;
 use DB;
 use Validator;
@@ -12,12 +13,18 @@ use Illuminate\Mail\Message;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Password;
 
+use App\Traits\GetUserModelTrait;
+use App\Jobs\PasswordReMinderSendMailJob;
 
 class PasswordController extends Controller
 {
+    use GetUserModelTrait;
+
     public function postEmail(Request $request)
     {
-        $response = MailSendController::passwordResetTokenSend($request);
+        $email =  $request->only('email');
+        $user = $this->getUserModelByEmailOrFail($email);
+        $res = $this->dispatch(new PasswordReMinderSendMailJob($user));
 
         return response()->success();
     }

@@ -40,7 +40,7 @@ Route::group(['prefix' => '/v1'], function () {
 
     //just send mail
     Route::group(['prefix' => '/mail/'], function () {
-        Route::put('signup','MailSendController@againSignupTokenSet');
+        Route::put('signup','Auth\AuthController@signupTokenReminder');
         Route::put('pwd','Auth\PasswordController@postEmail');
     });
 
