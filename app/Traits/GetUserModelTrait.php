@@ -50,6 +50,11 @@ trait GetUserModelTrait{
         return $user;
     }
 
+    function getUserModelByEmailOrFail($email){
+        $user = User::whereemail($email)->firstOrFail();
+        return $user;
+    }
+
     function getSignupToken($email){
         return SignupAllow::whereEmail($email)->value('token');
     }

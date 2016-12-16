@@ -33,8 +33,8 @@ class PasswordReMinderSendMailJob extends Job implements SelfHandling, ShouldQue
     {
         $email = ["email" => $this->user->email];
         $subject = '잃어버린 비밀번호를 찾아서';
-
-        return Password::sendResetLink($email, function (Message $message) use($subject) {
+        
+        Password::sendResetLink($email, function (Message $message) use($subject) {
             $message->subject($subject);
         });
     }

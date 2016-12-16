@@ -22,9 +22,9 @@ class PasswordController extends Controller
 
     public function postEmail(Request $request)
     {
-        $user = $this->getUserByTokenRequestOrFail($request);
+        $email =  $request->only('email');
+        $user = $this->getUserModelByEmailOrFail($email);
         $res = $this->dispatch(new PasswordReMinderSendMailJob($user));
-        Log::info($res);
 
         return response()->success();
     }
